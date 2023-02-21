@@ -14,14 +14,20 @@ On a map, players can see local QR codes that other players have scanned.
 | Name| Github Username|
 | ----------- | ----------- |
 | Anushka Khare | AnushkaKhare-Eng|
-| Eric Khumbata| ekhumbata|
-| Kevin Tonkich| tonkich7|
-| Nicholas Chin| nic3-14159|
-| Rachel Ellis| rachel-ellis|
-| Zhiwen Liu| real-rookie|
+| Eric Khumbata | ekhumbata|
+| Kevin Tonkich | tonkich7|
+| Nicholas Chin | nic3-14159|
+| Rachel Ellis | rachel-ellis|
+| Zhiwen Liu | real-rookie|
 
 
 
-
-
+# Contribution Rules
+Please create a new branch with your name and a description of the feature you are working on: e.g. `rachel/feature1'
+Your changes must be approved by at least 1 individual to merge into `main` in a PR. 
+In your PR (Pull Request):
+- link the user story -> # <git issue number>
+- brief summary of changes, list any known limitations/bugs (create any new github issue for things to fix later)
+- screenshot of changes if front-end
+- please try to write unit/integration tests relevant to your changes
 
