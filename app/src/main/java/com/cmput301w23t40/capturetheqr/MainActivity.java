@@ -18,6 +18,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* Adapted code from the following resource for the nav bar functionality
+        author: https://stackoverflow.com/users/13523077/abu-saeed
+        url: https://stackoverflow.com/a/68412210
+        last updated: 20 July, 2021
+         */
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
