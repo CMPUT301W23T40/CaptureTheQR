@@ -7,13 +7,40 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CaptureTheQR"
         tools:targetApi="31">
         <activity
+            android:name=".MapActivity"
+            android:label="@string/map"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+        <activity
+            android:name=".AddQRActivity"
+            android:label="@string/add_qr"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".LibraryActivity"
+            android:label="@string/qr_library"
+            android:parentActivityName=".MainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+        <activity
             android:name=".MainActivity"
+            android:label="Home Page"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
