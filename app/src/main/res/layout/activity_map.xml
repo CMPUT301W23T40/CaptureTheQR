@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtvw_mapFillerText"
-        android:text="This is the Map page!"
+        android:text="@string/map_page_main_txt"
         android:textSize="35dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/med_blue"

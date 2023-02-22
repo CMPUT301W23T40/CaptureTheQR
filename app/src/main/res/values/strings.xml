@@ -7,4 +7,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="add_qr_page_main_txt">This is the Add QR page!</string>
+    <string name="library_page_main_txt">This is the Library page!</string>
+    <string name="home_page_main_txt">Hello {USERNAME}</string>
+    <string name="main_page_contact_txt">{CONTACT INFO}</string>
+    <string name="map_page_main_txt">This is the Map page!</string>
 </resources>
