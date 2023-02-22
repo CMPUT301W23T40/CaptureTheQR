@@ -5,7 +5,15 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This class defines the main UI page for the Add QR Code flow
+ */
 public class AddQRActivity extends AppCompatActivity {
+
+    /**
+     * override Activity onCreate method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

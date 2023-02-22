@@ -11,8 +11,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.navigation.NavigationBarView;
 
+/**
+ * This class defines the UI home page and starts the app
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * override Activity onCreate method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -5,8 +5,15 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This class defines the main UI page for the Map flow
+ */
 public class MapActivity extends AppCompatActivity {
 
+    /**
+     * override Activity onCreate method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,6 +22,11 @@ public class MapActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * override Activity onOptionsItemSelection method for our actionBar back button
+     * @param item
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

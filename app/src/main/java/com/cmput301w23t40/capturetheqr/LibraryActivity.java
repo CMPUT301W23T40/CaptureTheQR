@@ -5,7 +5,14 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This class defines the UI page for the QR Code Library
+ */
 public class LibraryActivity extends AppCompatActivity {
+    /**
+     * override Activity onCreate method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,6 +21,11 @@ public class LibraryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * override Activity onOptionsItemSelection method for our actionBar back button
+     * @param item
+     * @return boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
