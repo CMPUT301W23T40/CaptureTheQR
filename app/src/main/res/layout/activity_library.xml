@@ -6,19 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".LibraryActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtvw_mapFillerText"
-        android:text="@string/library_page_main_txt"
-        android:textSize="35dp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/med_blue"
-        android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/qrcode_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
