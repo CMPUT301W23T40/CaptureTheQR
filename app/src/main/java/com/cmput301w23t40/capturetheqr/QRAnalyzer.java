@@ -100,9 +100,6 @@ public class QRAnalyzer {
         // init the sum
         int sum = 0;
 
-        // intermediate variable for storing the current score
-        // int num = 0;
-
         // loop through the map
         for (Map.Entry<Character, Integer> entry : map.entrySet()) {
             // check for entry being 0, scoring system changes
@@ -118,7 +115,6 @@ public class QRAnalyzer {
         }
 
         return sum;
-
     }
 
 
@@ -197,8 +193,6 @@ public class QRAnalyzer {
 
         for (int i = 0; i < 6; i++) {
             name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i))));
-            // System.out.println(nameDict.get(i));
-            // System.out.println(Integer.parseInt(String.valueOf(bits.charAt(i))));
         }
 
         return name;
@@ -222,8 +216,6 @@ public class QRAnalyzer {
         // if the bits of the string is less than 8, prefix 0's
         while (bits.length() < 8)
             bits = "0" + bits;
-
-        // System.out.println(bits);
 
         String face = "";
 
