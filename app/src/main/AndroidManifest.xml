@@ -12,36 +12,39 @@
         android:theme="@style/Theme.CaptureTheQR"
         tools:targetApi="31">
         <activity
+            android:name=".FirstTimeLogInActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapActivity"
+            android:exported="false"
             android:label="@string/map"
-            android:parentActivityName=".MainActivity"
-            android:exported="false">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".AddQRActivity"
+            android:exported="false"
             android:label="@string/add_qr"
-            android:parentActivityName=".MainActivity"
-            android:exported="false">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".LibraryActivity"
+            android:exported="false"
             android:label="@string/qr_library"
-            android:parentActivityName=".MainActivity"
-            android:exported="false">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="Home Page"
-            android:exported="true">
+            android:exported="true"
+            android:label="Home Page">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 /**
@@ -23,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!whetherDeviceIDExists(FirstTimeLogInActivity.getUserIdentifier(this))){
+            startActivity(new Intent(this, FirstTimeLogInActivity.class));
+        }
         setContentView(R.layout.activity_main);
 
         /* Adapted code from the following resource for the nav bar functionality
@@ -47,4 +49,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+    public boolean whetherDeviceIDExists(String userIdentifier){
+        // TODO DB queries
+        return false;
+    }
 }
