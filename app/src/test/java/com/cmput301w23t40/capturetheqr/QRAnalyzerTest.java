@@ -23,8 +23,7 @@ public class QRAnalyzerTest {
     @Test
     void testScoreZeros(){
         QRAnalyzer qra = new QRAnalyzer();
-        String s = qra.generateHash("0000");
-        assertEquals(qra.generateScore(s),8000);
+        assertEquals(qra.generateScore("0000"),8000);
     }
 
     @Test
