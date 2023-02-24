@@ -1,15 +1,28 @@
 package com.cmput301w23t40.capturetheqr;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,12 +59,17 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeDataList = new ArrayList<>();
         ArrayList<String> visFake = new ArrayList<String>(Arrays.asList("vis", "fake", "list"));
 
-        QRCode qr1 = new QRCode("fakeHash", "name1", visFake, 10);
+        QRCode qr1 = new QRCode("fakeHash", "BFG5DGW54", visFake, 10);
         QRCode qr2 = new QRCode("fakeHash", "name2", visFake, 20);
         qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
         qrCodeList = new QRCodeList(this, qrCodeDataList);
 
         qrCodeView.setAdapter(qrCodeList);
+        FirebaseFirestore database;
+
+        database = FirebaseFirestore.getInstance();
+        // adding a reference to QR code collection
+        final CollectionReference collectionReference = database.collection("qrcode");
 
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
             author: https://auth.geeksforgeeks.org/user/chaitanyamunje
@@ -70,11 +88,56 @@ public class LibraryActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 // TODO: delete via Firestore (so changes are persistent)
-                qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
+
+                //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
+
+                if(qrCodeDataList.size()>0) {
+
+                    database.collection("qrcode").document(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getCodeName())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
+
+                                    Log.d(TAG, "Data has been deleted successfully!");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Data could not be deleted!" + e.toString());
+                                }
+                            });
+                }
+
                 qrCodeList.notifyDataSetChanged();
 
             }
         }).attachToRecyclerView(qrCodeView);
+
+        //real time updates from Firebase
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+            FirebaseFirestoreException error) {
+                // Clear the old list
+                //qrCodeDataList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData().get("BFG5DGW54")));
+                    String qrcode = doc.getId();
+                    String qrid = (String) doc.getData().get("BFG5DGW54");
+                    qrCodeDataList.remove(new QRCode(qrcode, qrid,visFake, 10)); // Adding the cities and provinces from FireStore
+                }
+                qrCodeList.notifyDataSetChanged(); // Notifying the adapter to render any new data fetched from the cloud
+
+            }
+        });
+
+
+
+
+
     }
 
     /**
