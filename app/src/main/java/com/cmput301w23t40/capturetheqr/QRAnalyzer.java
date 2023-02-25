@@ -15,14 +15,15 @@ import java.util.Map;
  */
 public class QRAnalyzer {
     /**
-     * Analyze a QR code given its contents. If the hash value for this code does not exist in the DB,
+     * Scan a QR code. If the hash value for this code does not exist in the DB,
      * then generate a name, a visualization, and a score for the code and save them in the DB; if
-     * the QR code already exists, add the scanner to the code's scanners list.
+     * the QR code already exists, add the scanner to the code's scanners list and add the code to
+     * the user's list of codes.
      * // FIXME add code to the player's list of scanned codes
      * @param codeContents
      */
-    public void analyzeQRCode(String codeContents){
-        String hashValue = generateHash(codeContents);
+    public static void scanQRCode(String codeContents){
+        String hashValue = generateHashValue(codeContents);
         /*
         //query if the QR code exists nearby
         if(){
@@ -44,7 +45,7 @@ public class QRAnalyzer {
      * @return a byte array to be passed to toHexString to get the string value of the hash
      * @throws NoSuchAlgorithmException
      */
-    private byte[] getSHA(String input) throws NoSuchAlgorithmException {
+    private static byte[] getSHA(String input) throws NoSuchAlgorithmException {
         // Static getInstance method is called with hashing SHA
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
@@ -64,7 +65,7 @@ public class QRAnalyzer {
      * @param hash the byte array to be turned into a string
      * @return a string representing the SHA-256 hash of the input string
      */
-    private String toHexString(byte[] hash) {
+    private static String toHexString(byte[] hash) {
         // Convert byte array into signum representation
         BigInteger number = new BigInteger(1, hash);
 
@@ -89,7 +90,7 @@ public class QRAnalyzer {
      * @param input - the input string to hash
      * @return a string representing the SHA-256 hash of the input string
      */
-    public String generateHash(String input) {
+    public static String generateHashValue(String input) {
         try {
             return toHexString(getSHA(input + "\n"));
         } catch (NoSuchAlgorithmException e) {
@@ -105,7 +106,7 @@ public class QRAnalyzer {
      * @param inputString - the string to generate the score from
      * @return an integer representing the score of the string
      */
-    public int generateScore(String inputString) {
+    public static int generateScore(String inputString) {
 
         Map<Character, Integer> map = getConsecutiveRepeats(inputString);
 
@@ -135,9 +136,9 @@ public class QRAnalyzer {
      * @param inputString - string to find repeated characters from
      * @return a map<char,int> representing each character and the amount of repeats
      */
-    private Map<Character, Integer> getConsecutiveRepeats(String inputString) {
+    private static Map<Character, Integer> getConsecutiveRepeats(String inputString) {
 
-        // init an emtpy map to load the occurence in
+        // init an empty map to load the occurrence in
         Map<Character, Integer> occurrences = new HashMap<Character, Integer>();
 
         // init the current char
@@ -176,7 +177,7 @@ public class QRAnalyzer {
      * @param hashString - the string to generate a name from
      * @return a string representing the new name
      */
-    public String generateName(String hashString) {
+    public static String generateName(String hashString) {
         // create a dictionary for the names
         Map<Integer, ArrayList<String>> nameDict = new HashMap<Integer, ArrayList<String>>();
 
@@ -212,11 +213,11 @@ public class QRAnalyzer {
 
 
     /**
-     * This function generates an image based on the first byte of the hashed value of a string
-     * @param hashString - the string to generate an image from
-     * @return a string representing the the image
+     * This function generates a visualization based on the first byte of the hashed value of a string
+     * @param hashString - the string to generate a visualization from
+     * @return a string representing the visualization
      */
-    public String generatePicture(String hashString) {
+    public static String generateVisualization(String hashString) {
 
         // get the first byte of the hashed string
         byte arrHash = hashString.getBytes()[0];

@@ -64,13 +64,13 @@ public class QRCode {
     }
     private final String hashValue;
     private final String codeName;
-    private final ArrayList<String> visualization;
+    private final String visualization;
     private final int score;
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
     private int timesScanned;
 
-    public QRCode(String hashValue, String codeName, ArrayList<String> visualization, int score) {
+    public QRCode(String hashValue, String codeName, String visualization, int score) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
@@ -98,7 +98,7 @@ public class QRCode {
         return codeName;
     }
 
-    public ArrayList<String> getVisualization() {
+    public String getVisualization() {
         return visualization;
     }
 
