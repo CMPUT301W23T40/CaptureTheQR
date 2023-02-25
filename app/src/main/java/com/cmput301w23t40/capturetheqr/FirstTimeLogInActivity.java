@@ -41,32 +41,14 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      */
     public void createNewUser(){
         while(editTextUsername.toString().length() < 6 ||
-                !UsernameIsNew(editTextUsername.toString())){
+                !DB.UsernameIsNew(editTextUsername.toString())){
             // FIXME need to let the user know the reason of failure
             // FIXME prompt to input another username
         }
-        saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
+        DB.saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
     }
 
-    /**
-     * Query if the username is new in the database
-     * @param username the username to be searched for
-     * @return true if the username is new in the DB; false if it exists
-     */
-    public boolean UsernameIsNew(String username){
-        // FIXME DB queries
-        return false;
-    }
 
-    /**
-     * Create a new user record in the database
-     * @param username username, which is unique for each user
-     * @param contactInfo phone number for now
-     * @param deviceID Android_ID
-     */
-    public void saveUser(String username, String contactInfo, String deviceID){
-        // FIXME DB queries
-    }
 
     /**
      * Get ANDROID_ID as the unique device ID. According to the android documentation:

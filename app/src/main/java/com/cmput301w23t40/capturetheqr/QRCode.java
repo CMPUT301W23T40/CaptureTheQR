@@ -10,7 +10,7 @@ import java.util.Date;
  * the dates of the comments, and the comment contents.
  */
 public class QRCode {
-    private static class ScannerInfo {
+    protected static class ScannerInfo {
         private String username;
         private String imageLink;
         private Date scannedDate;
@@ -39,7 +39,7 @@ public class QRCode {
         }
     }
 
-    private static class Comment{
+    protected static class Comment{
         private String username;
         private Date date;
         private String content;
@@ -75,31 +75,19 @@ public class QRCode {
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        saveQRCodeInDB();
-    }
-
-    private void saveQRCodeInDB(){
-    // FIXME DB
+        DB.saveQRCodeInDB(this);
     }
 
     public void comment(String username, Date date, String content){
         Comment comment = new Comment(username, date, content);
         comments.add(comment);
-        saveCommentInDB(comment);
-    }
-
-    private void saveCommentInDB(Comment comment){
-        // FIXME need to save the comment to DB
+        DB.saveCommentInDB(this, comment);
     }
 
     public void addScanner(String username, String imageLink, Date scannedDate){
         ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
         scannersInfo.add(newScannerInfo);
-        saveScannerInfoInDB(newScannerInfo);
-    }
-
-    private void saveScannerInfoInDB(ScannerInfo scannerInfo){
-        // FIXME need to save the comment to DB
+        DB.saveScannerInfoInDB(this, newScannerInfo);
     }
 
     public String getHashValue() {
@@ -129,6 +117,4 @@ public class QRCode {
     public int getTimesScanned() {
         return timesScanned;
     }
-
-
 }
