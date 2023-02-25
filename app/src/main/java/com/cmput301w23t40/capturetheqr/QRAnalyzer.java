@@ -5,8 +5,19 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+/**
+ * The QRAnalyzer class takes in the contents of a QR code, then it generates a hash value for it.
+ * Based on the hash value, it then generates a name, a visualization, and a score for this QR code.
+ */
 public class QRAnalyzer {
-    public static void analyzeQRCode(String codeContents){
+    /**
+     * Analyze a QR code given its contents. If the hash value for this code does not exist in the DB,
+     * then generate a name, a visualization, and a score for the code and save them in the DB; if
+     * the QR code already exists, add the scanner to the code's scanners list.
+     * // FIXME add code to the player's list of scanned codes
+     * @param codeContents
+     */
+    public static void addQRCodeToScanner(String codeContents){
         String hashValue = generateHashValue(codeContents);
         /*
         //query if the QR code exists nearby
@@ -30,14 +41,14 @@ public class QRAnalyzer {
         byte[] hash = digest.digest(codeContents.getBytes(StandardCharsets.UTF_8));
         return hash.toString();
     }
-    public static String generateName(String hashValue){
+    private static String generateName(String hashValue){
         return null;
     }
 
-    public static ArrayList<String> generateVisualization(String hashValue){
+    private static ArrayList<String> generateVisualization(String hashValue){
         return null;
     }
-    public static int generateScore(String hashValue){
+    private static int generateScore(String hashValue){
         return 0;
     }
 }

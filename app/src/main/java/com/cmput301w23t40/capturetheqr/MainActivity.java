@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(!whetherDeviceIDExists(FirstTimeLogInActivity.getUserIdentifier(this))){
+        // query the device ID in the database, if it does not exist, show the signin page; if it
+        // exists already, show the homepage of the app
+        if(deviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this))){
             startActivity(new Intent(this, FirstTimeLogInActivity.class));
         }
         setContentView(R.layout.activity_main);
@@ -50,8 +52,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    public boolean whetherDeviceIDExists(String userIdentifier){
+    /**
+     * Query if the device ID is new in the database
+     * @param deviceID deviceID to be searched for in the database
+     * @return true if the device is new in the database; false if it exists
+     */
+    public boolean deviceIDIsNew(String deviceID){
         // TODO DB queries
         return false;
     }

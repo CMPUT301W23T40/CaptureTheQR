@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * If the program detects this device is new, the user needs to sign up with
+ * a unique username and a phone number
+ */
 public class FirstTimeLogInActivity extends AppCompatActivity {
     private EditText editTextUsername;
     private EditText editTextContactInfo;
@@ -30,30 +34,59 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Take the username and phone number the user entered and try to find the username
+     * in the database. If the username is unique and has proper length, save the info in
+     * the database; if not, prompt the user to input again.
+     */
     public void createNewUser(){
         while(editTextUsername.toString().length() < 6 ||
-                whetherUsernameExists(editTextUsername.toString())){
+                !UsernameIsNew(editTextUsername.toString())){
             // FIXME need to let the user know the reason of failure
             // FIXME prompt to input another username
         }
-        saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getUserIdentifier(this));
+        saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
     }
 
-    public boolean whetherUsernameExists(String username){
+    /**
+     * Query if the username is new in the database
+     * @param username the username to be searched for
+     * @return true if the username is new in the DB; false if it exists
+     */
+    public boolean UsernameIsNew(String username){
         // FIXME DB queries
         return false;
     }
 
+    /**
+     * Create a new user record in the database
+     * @param username username, which is unique for each user
+     * @param contactInfo phone number for now
+     * @param deviceID Android_ID
+     */
     public void saveUser(String username, String contactInfo, String deviceID){
         // FIXME DB queries
     }
 
-    // FIXME citation
-    // https://stackoverflow.com/questions/59640456/how-to-get-device-unique-id-in-my-android-application
-    // https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID
-    // https://developer.android.com/about/versions/oreo/android-8.0-changes#privacy-all
+    /**
+     * Get ANDROID_ID as the unique device ID. According to the android documentation:
+     * "The value of ANDROID_ID is unique for each combination of app-signing key, user, and device."
+     * "The value of ANDROID_ID does not change on package uninstall or reinstall, as long as the
+     * signing key is the same." "The value may change if a factory reset is performed on the device ..."
+     * More about ANDROID_ID is available at https://developer.android.com/reference/android/provider/Settings.Secure#ANDROID_ID
+     * and https://developer.android.com/about/versions/oreo/android-8.0-changes#privacy-all
+     * @param context the context from which to get the ANDROID_ID
+     * @return ANDROID_ID
+     */
     @SuppressLint("HardwareIds")
-    public static String getUserIdentifier(Context context){
+    public static String getDeviceID(Context context){
+        /*
+        Adapted code from the following resource for getting ANDROID_ID:
+        author: https://stackoverflow.com/users/4360419/arsal-imam
+        url: https://stackoverflow.com/questions/59640456/how-to-get-device-unique-id-in-my-android-application
+        last updated: Jan 8, 2020
+        licence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/deed.en
+        */
         return Settings.Secure.getString(
                 context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }

@@ -3,20 +3,26 @@ package com.cmput301w23t40.capturetheqr;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Each QR code object maintains the actual code's hash value, the generated code name, visualization,
+ * score. It also has a list of ScannerInfo objects, which maintains the scanners' names, the links to
+ * the pictures, the dates of scan, and a list of Comment objects, which maintains the commenters' names,
+ * the dates of the comments, and the comment contents.
+ */
 public class QRCode {
     private static class ScannerInfo {
-        private int scannerID;
+        private String username;
         private String imageLink;
         private Date scannedDate;
 
-        public ScannerInfo(int scannerID, String imageLink, Date scannedDate) {
-            this.scannerID = scannerID;
+        public ScannerInfo(String username, String imageLink, Date scannedDate) {
+            this.username = username;
             this.imageLink = imageLink;
             this.scannedDate = scannedDate;
         }
 
-        public int getScannerID() {
-            return scannerID;
+        public String getUsername() {
+            return username;
         }
 
         public String getImageLink() {
@@ -34,17 +40,18 @@ public class QRCode {
     }
 
     private static class Comment{
-        private String player;
+        private String username;
         private Date date;
         private String content;
-        public Comment(String player, Date date, String content) {
-            this.player = player;
+
+        public Comment(String username, Date date, String content) {
+            this.username = username;
             this.date = date;
             this.content = content;
         }
 
-        public String getPlayer() {
-            return player;
+        public String getUsername() {
+            return username;
         }
 
         public Date getDate() {
@@ -68,15 +75,31 @@ public class QRCode {
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        saveInDB();
+        saveQRCodeInDB();
     }
 
-    public void saveInDB(){
-
+    private void saveQRCodeInDB(){
+    // FIXME DB
     }
-    // FIXME also need to save to DB
-    public void comment(String player, Date date, String content){
-        comments.add(new Comment(player, date, content));
+
+    public void comment(String username, Date date, String content){
+        Comment comment = new Comment(username, date, content);
+        comments.add(comment);
+        saveCommentInDB(comment);
+    }
+
+    private void saveCommentInDB(Comment comment){
+        // FIXME need to save the comment to DB
+    }
+
+    public void addScanner(String username, String imageLink, Date scannedDate){
+        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
+        scannersInfo.add(newScannerInfo);
+        saveScannerInfoInDB(newScannerInfo);
+    }
+
+    private void saveScannerInfoInDB(ScannerInfo scannerInfo){
+        // FIXME need to save the comment to DB
     }
 
     public String getHashValue() {
@@ -106,4 +129,6 @@ public class QRCode {
     public int getTimesScanned() {
         return timesScanned;
     }
+
+
 }
