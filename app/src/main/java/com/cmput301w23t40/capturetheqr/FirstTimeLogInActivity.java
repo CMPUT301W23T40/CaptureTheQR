@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -42,10 +43,11 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
     public void createNewUser(){
         while(editTextUsername.toString().length() < 6 ||
                 !DB.UsernameIsNew(editTextUsername.toString())){
-            // FIXME need to let the user know the reason of failure
-            // FIXME prompt to input another username
+            // FIXME front-end, need to let the user know the reason of failure
+            // FIXME front-end, prompt to input another username
         }
         DB.saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 
