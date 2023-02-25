@@ -25,10 +25,6 @@ public class Player {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getUsername() {
         return this.username;
     }
@@ -47,5 +43,18 @@ public class Player {
      */
     public ArrayList<QRCode> getScannedCodes() {
         return this.codes;
+    }
+
+    /**
+     * Add a QR code to the player's list if they have not scanned it already
+     * @param qr
+     * The candidate QR code to add
+     */
+    public void addQR(QRCode qr) {
+        /* TODO: also save on Firebase */
+        if (codes.contains(qr)) {
+            throw new IllegalArgumentException();
+        }
+        codes.add(qr);
     }
 }
