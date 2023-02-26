@@ -66,7 +66,7 @@ public class LibraryActivity extends AppCompatActivity {
 
         qrCodeView.setAdapter(qrCodeList);
 
-        DB.setDB(FirebaseFirestore.getInstance());
+
 
 
 
