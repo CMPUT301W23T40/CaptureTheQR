@@ -1,14 +1,68 @@
 package com.cmput301w23t40.capturetheqr;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 /**
  * This class does all the database queries.
  */
 public class DB {
+    static private FirebaseFirestore database;
+    static private CollectionReference collectionReferenceQR;
+    static private CollectionReference collectionReferencePlayer;
+
+
+    /**
+     * Adding a setter to establish connection between firebase*/
+    static public void setDB(FirebaseFirestore instance){
+
+        database = instance;
+        collectionReferenceQR = database.collection("qrcode");
+        collectionReferencePlayer = database.collection("player");
+
+    }
+
+    /**Getting the Collection Reference for QR */
+
+    static public CollectionReference getCollectionReferenceQR(){
+        return collectionReferenceQR;
+    }
+
+    /**
+     * Method for deleting QR codes from DB
+     * */
+
+    static public void delQRCodeInDB(String hashValue){
+        database.collection("qrcode").document(hashValue)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+// These are a method which gets executed when the task is succeeded
+
+                        Log.d(TAG, "Data has been deleted successfully!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Data could not be deleted!" + e.toString());
+                    }
+                });
+    }
     /**
      * Query if the username is new in the database
      * @param username the username to be searched for
      * @return true if the username is new in the DB; false if it exists
      */
+    //static private
     static public boolean UsernameIsNew(String username){
         // FIXME DB queries
         return false;
@@ -50,4 +104,5 @@ public class DB {
     static protected void saveScannerInfoInDB(QRCode qrCode, QRCode.ScannerInfo scannerInfo){
         // FIXME need to save the comment to DB
     }
+
 }

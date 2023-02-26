@@ -65,11 +65,10 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeList = new QRCodeList(this, qrCodeDataList);
 
         qrCodeView.setAdapter(qrCodeList);
-        FirebaseFirestore database;
 
-        database = FirebaseFirestore.getInstance();
-        // adding a reference to QR code collection
-        final CollectionReference collectionReference = database.collection("qrcode");
+        DB.setDB(FirebaseFirestore.getInstance());
+
+
 
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
             author: https://auth.geeksforgeeks.org/user/chaitanyamunje
@@ -91,32 +90,18 @@ public class LibraryActivity extends AppCompatActivity {
 
                 //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 
-                if(qrCodeDataList.size()>0) {
+                if (qrCodeDataList.size() > 0) {
+                    DB.delQRCodeInDB(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue());
 
-                    database.collection("qrcode").document(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getCodeName())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-// These are a method which gets executed when the task is succeeded
+                    qrCodeList.notifyDataSetChanged();
 
-                                    Log.d(TAG, "Data has been deleted successfully!");
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Data could not be deleted!" + e.toString());
-                                }
-                            });
                 }
-
-                qrCodeList.notifyDataSetChanged();
-
             }
         }).attachToRecyclerView(qrCodeView);
 
         //real time updates from Firebase
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//        collectionRefQR=DB.getCollectionReferenceQR();
+        DB.getCollectionReferenceQR().addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
             FirebaseFirestoreException error) {

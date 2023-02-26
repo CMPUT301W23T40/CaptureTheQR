@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.cmput301w23t40.capturetheqr"
-        minSdk 30
+        minSdk 31
         targetSdk 33
         versionCode 1
         versionName "1.0"
