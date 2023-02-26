@@ -8,29 +8,25 @@ public class QRAnalyzerTest {
 
     @Test
     void testHash(){
-        QRAnalyzer qra = new QRAnalyzer();
-        String s = qra.generateHash("BFG5DGW54");
+        String s = QRAnalyzer.generateHashValue("BFG5DGW54");
         assertEquals(s,"696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
     }
 
     @Test
     void testScore(){
-        QRAnalyzer qra = new QRAnalyzer();
-        String s = qra.generateHash("BFG5DGW54");
-        assertEquals(qra.generateScore(s),111);
+        String s = QRAnalyzer.generateHashValue("BFG5DGW54");
+        assertEquals(QRAnalyzer.generateScore(s),111);
     }
 
     @Test
     void testScoreZeros(){
-        QRAnalyzer qra = new QRAnalyzer();
-        assertEquals(qra.generateScore("0000"),8000);
+        assertEquals(QRAnalyzer.generateScore("0000"),8000);
     }
 
     @Test
     void testName(){
-        QRAnalyzer qra = new QRAnalyzer();
-        String s = qra.generateHash("BFG5DGW54");
-        assertEquals(qra.generateName(s),"coolFroLoUltraSpectralShark");
+        String s = QRAnalyzer.generateHashValue("BFG5DGW54");
+        assertEquals(QRAnalyzer.generateName(s),"coolFroLoUltraSpectralShark");
     }
 
 }
