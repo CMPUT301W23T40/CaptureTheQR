@@ -57,7 +57,7 @@ public class LibraryActivity extends AppCompatActivity {
         // TODO: using fake data rn (waiting for Firestore integration)
         // TODO: right now, only qr code name is being displayed
         qrCodeDataList = new ArrayList<>();
-        ArrayList<String> visFake = new ArrayList<String>(Arrays.asList("vis", "fake", "list"));
+        String visFake = new String("vis\nfake\nlist\n");
 
         QRCode qr1 = new QRCode("fakeHash", "BFG5DGW54", visFake, 10);
         QRCode qr2 = new QRCode("fakeHash", "name2", visFake, 20);

@@ -16,6 +16,9 @@
             android:exported="true"
             tools:node="merge" />
         <activity
+            android:name=".FirstTimeLogInActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapActivity"
             android:exported="false"
             android:label="@string/map"
@@ -35,10 +38,8 @@
         </activity>
         <activity
             android:name=".LibraryActivity"
-            android:exported="false"
             android:label="@string/qr_library"
-            android:parentActivityName=".MainActivity" >
-
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -46,7 +47,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="Home Page" >
+            android:label="Home Page">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
