@@ -20,6 +20,10 @@ public class Player {
     private ArrayList<QRCode> codes;
 
 
+
+    private String deviceID;
+
+
     public Player(String username, String phoneNumber) {
         this.username = username;
         this.phoneNumber = phoneNumber;
@@ -45,6 +49,10 @@ public class Player {
         return this.codes;
     }
 
+    public String getDeviceID() {
+        return deviceID;
+    }
+
     /**
      * Add a QR code to the player's list if they have not scanned it already
      * @param qr
@@ -56,5 +64,6 @@ public class Player {
             throw new IllegalArgumentException();
         }
         codes.add(qr);
+        DB.addQRToPlayerInDB(this, qr);
     }
 }
