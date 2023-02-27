@@ -62,7 +62,6 @@ public class DB {
      * @param username the username to be searched for
      * @return true if the username is new in the DB; false if it exists
      */
-    //static private
     static public boolean UsernameIsNew(String username){
         // FIXME DB queries
         return false;

@@ -106,22 +106,18 @@ public class LibraryActivity extends AppCompatActivity {
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
             FirebaseFirestoreException error) {
                 // Clear the old list
-                //qrCodeDataList.clear();
+                qrCodeDataList.clear();
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
-                    Log.d(TAG, String.valueOf(doc.getData().get("BFG5DGW54")));
+                    Log.d(TAG, String.valueOf(doc.getData()));
                     String qrcode = doc.getId();
-                    String qrid = (String) doc.getData().get("BFG5DGW54");
-                    qrCodeDataList.remove(new QRCode(qrcode, qrid,visFake, 10)); // Adding the cities and provinces from FireStore
+                    String qrid = (String) doc.getData().get("codeName");
+                    qrCodeDataList.add(new QRCode(qrcode, qrid,visFake, 10));
                 }
                 qrCodeList.notifyDataSetChanged(); // Notifying the adapter to render any new data fetched from the cloud
 
             }
         });
-
-
-
-
 
     }
 
