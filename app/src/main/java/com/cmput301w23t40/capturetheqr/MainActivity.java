@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * This class defines the UI home page and starts the app
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // query the device ID in the database, if it does not exist, show the signin page; if it
         // exists already, show the homepage of the app
+        DB.setDB(FirebaseFirestore.getInstance());
         if(DB.deviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this))){
             startActivity(new Intent(this, FirstTimeLogInActivity.class));
         }
