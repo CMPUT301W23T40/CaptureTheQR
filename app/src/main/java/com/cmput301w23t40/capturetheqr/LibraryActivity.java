@@ -1,6 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +31,7 @@ import java.util.List;
  * This class defines the UI page for the QR Code Library
  */
 public class LibraryActivity extends AppCompatActivity {
-
+    static final String TAG ="Database update";
     RecyclerView qrCodeView;
     ArrayList<QRCode> qrCodeDataList;
     QRCodeList qrCodeList;
@@ -110,9 +109,12 @@ public class LibraryActivity extends AppCompatActivity {
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
                 {
                     Log.d(TAG, String.valueOf(doc.getData()));
-                    String qrcode = doc.getId();
-                    String qrid = (String) doc.getData().get("codeName");
-                    qrCodeDataList.add(new QRCode(qrcode, qrid,visFake, 10));
+
+                    //below commented code is for reference, will be removed in a future PR
+
+                    //String qrcode = doc.getId();
+                    //String qrid = (String) doc.getData().get("codeName");
+                    //qrCodeDataList.add(new QRCode(qrcode, qrid,visFake, 10));
                 }
                 qrCodeList.notifyDataSetChanged(); // Notifying the adapter to render any new data fetched from the cloud
 
