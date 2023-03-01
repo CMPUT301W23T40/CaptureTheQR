@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "205881291129",
+    "project_id": "capturetheqr",
+    "storage_bucket": "capturetheqr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205881291129:android:b13006d587ec5d6b637fa8",
+        "android_client_info": {
+          "package_name": "com.cmput301w23t40.capturetheqr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "205881291129-te41fial0d7cd7a9o1hn2bsgtoogfiiv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu0i1jySrmGdT1QwZQa5KmFMx6tT_bl5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "205881291129-te41fial0d7cd7a9o1hn2bsgtoogfiiv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

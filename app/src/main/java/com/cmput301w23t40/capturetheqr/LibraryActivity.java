@@ -1,15 +1,27 @@
 package com.cmput301w23t40.capturetheqr;
 
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +31,7 @@ import java.util.List;
  * This class defines the UI page for the QR Code Library
  */
 public class LibraryActivity extends AppCompatActivity {
-
+    static final String TAG ="Database update";
     RecyclerView qrCodeView;
     ArrayList<QRCode> qrCodeDataList;
     QRCodeList qrCodeList;
@@ -46,12 +58,16 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeDataList = new ArrayList<>();
         String visFake = new String("vis\nfake\nlist\n");
 
-        QRCode qr1 = new QRCode("fakeHash", "name1", visFake, 10);
+        QRCode qr1 = new QRCode("fakeHash", "BFG5DGW54", visFake, 10);
         QRCode qr2 = new QRCode("fakeHash", "name2", visFake, 20);
         qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
         qrCodeList = new QRCodeList(this, qrCodeDataList);
 
         qrCodeView.setAdapter(qrCodeList);
+
+
+
+
 
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
             author: https://auth.geeksforgeeks.org/user/chaitanyamunje
@@ -70,11 +86,41 @@ public class LibraryActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 // TODO: delete via Firestore (so changes are persistent)
-                qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
-                qrCodeList.notifyDataSetChanged();
 
+                //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
+
+                if (qrCodeDataList.size() > 0) {
+                    DB.delQRCodeInDB(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue());
+
+                    qrCodeList.notifyDataSetChanged();
+
+                }
             }
         }).attachToRecyclerView(qrCodeView);
+
+        //real time updates from Firebase
+//        collectionRefQR=DB.getCollectionReferenceQR();
+        DB.getCollectionReferenceQR().addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+            FirebaseFirestoreException error) {
+                // Clear the old list
+                qrCodeDataList.clear();
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
+                {
+                    Log.d(TAG, String.valueOf(doc.getData()));
+
+                    //below commented code is for reference, will be removed in a future PR
+
+                    //String qrcode = doc.getId();
+                    //String qrid = (String) doc.getData().get("codeName");
+                    //qrCodeDataList.add(new QRCode(qrcode, qrid,visFake, 10));
+                }
+                qrCodeList.notifyDataSetChanged(); // Notifying the adapter to render any new data fetched from the cloud
+
+            }
+        });
+
     }
 
     /**
