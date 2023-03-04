@@ -38,44 +38,8 @@ public class AddQRActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast,Toast.LENGTH_LONG).show();
         });
-//        buttonScan = findViewById(R.id.btn_scanCode);
-//        buttonScan.setOnClickListener(v->
-//        {
-//            scanCode();
-//        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-//    /**
-//     * Opens the QR code Scanner and initializes the scan options.
-//     */
-//    private void scanCode() {
-//        ScanOptions options = new ScanOptions();
-//        options.setPrompt("Scan a QR Code");
-//        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-//        options.setBeepEnabled(true);
-//        options.setOrientationLocked(true);
-//        options.setCaptureActivity(ScanActivity.class);
-//        barLauncher.launch(options);
-//    }
-
-//    ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result ->
-//    {
-//        if(result.getContents() != null)
-//        {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(AddQRActivity.this);
-//            builder.setTitle("Result");
-//            builder.setMessage(result.getContents());
-//            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            }).show();
-//
-//        }
-//
-//    });
 
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
