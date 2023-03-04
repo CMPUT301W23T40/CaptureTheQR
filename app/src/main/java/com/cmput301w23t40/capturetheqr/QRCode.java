@@ -11,9 +11,9 @@ import java.util.Date;
  */
 public class QRCode {
     protected static class ScannerInfo {
-        private String username;
+        private final String username;
         private String imageLink;
-        private Date scannedDate;
+        private final Date scannedDate;
 
         public ScannerInfo(String username, String imageLink, Date scannedDate) {
             this.username = username;
@@ -40,9 +40,9 @@ public class QRCode {
     }
 
     protected static class Comment{
-        private String username;
-        private Date date;
-        private String content;
+        private final String username;
+        private final Date date;
+        private final String content;
 
         public Comment(String username, Date date, String content) {
             this.username = username;
@@ -68,7 +68,6 @@ public class QRCode {
     private final int score;
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
-    private int timesScanned;
 
     public QRCode(String hashValue, String codeName, String visualization, int score) {
         this.hashValue = hashValue;
@@ -112,9 +111,5 @@ public class QRCode {
 
     public ArrayList<Comment> getComments() {
         return comments;
-    }
-
-    public int getTimesScanned() {
-        return timesScanned;
     }
 }
