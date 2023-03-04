@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.navigation_map) {
                     startActivity(new Intent(getApplicationContext(), MapActivity.class));
                 } else if (id == R.id.navigation_addQR) {
-                    //startActivity(new Intent(getApplicationContext(), AddQRActivity.class));
                     scanCode();
                 } else if (id == R.id.navigation_qrLibrary){
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
