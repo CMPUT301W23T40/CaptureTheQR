@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // query the device ID in the database, if it does not exist, show the signin page; if it
         // exists already, show the homepage of the app
         DB.setDB(FirebaseFirestore.getInstance());
+        DB.refreshTestingDataInDB();
         if(DB.deviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this))){
             startActivity(new Intent(this, FirstTimeLogInActivity.class));
         }
