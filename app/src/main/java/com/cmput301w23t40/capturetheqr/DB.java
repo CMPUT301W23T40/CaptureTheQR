@@ -127,5 +127,4 @@ public class DB {
     static protected void saveScannerInfoInDB(QRCode qrCode, QRCode.ScannerInfo scannerInfo){
         // FIXME need to save the comment to DB
     }
-
 }
