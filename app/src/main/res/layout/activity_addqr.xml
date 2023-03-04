@@ -112,20 +112,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <!--    <Button-->
-    <!--        android:id="@+id/btn_scanCode"-->
-    <!--        android:layout_width="300dp"-->
-    <!--        android:layout_height="400dp"-->
-    <!--        android:fontFamily="sans-serif"-->
-    <!--        android:text="Tap to open Scanner"-->
-    <!--        android:textColor="@color/med_blue"-->
-    <!--        android:textSize="30dp"-->
-    <!--        android:textStyle="bold|italic"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
