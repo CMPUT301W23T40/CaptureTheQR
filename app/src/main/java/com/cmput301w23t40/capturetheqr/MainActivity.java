@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() != null)
         {
-            String codeContent = result.getContents(); // this is the String of the qr code
+            byte[] codeContent = result.getRawBytes(); // these are the bytes of the QR code
             startActivity(new Intent(getApplicationContext(), AddQRActivity.class));
         }
 
