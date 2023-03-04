@@ -3,7 +3,9 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -53,18 +55,9 @@ public class LibraryActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         qrCodeView.setLayoutManager(manager);
 
-        // TODO: using fake data rn (waiting for Firestore integration)
-        // TODO: right now, only qr code name is being displayed
-        qrCodeDataList = new ArrayList<>();
-        String visFake = new String("vis\nfake\nlist\n");
-
-        QRCode qr1 = new QRCode("fakeHash", "BFG5DGW54", visFake, 10);
-        QRCode qr2 = new QRCode("fakeHash", "name2", visFake, 20);
-        qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
-        qrCodeList = new QRCodeList(this, qrCodeDataList);
-
-        qrCodeView.setAdapter(qrCodeList);
-
+        // By default only show that Player's QR Codes
+        // TODO: nothing shows initially (maybe since we aren't using DB properly yet?)
+        showPlayerQR();
 
 
 
@@ -123,6 +116,13 @@ public class LibraryActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.qrlibrary_actions, menu);
+        return true;
+    }
+
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
      * @param item
@@ -134,7 +134,41 @@ public class LibraryActivity extends AppCompatActivity {
             case android.R.id.home:
                 this.finish();
                 return true;
+            case R.id.action_allqr:
+                showAllQR();
+                return true;
+            case R.id.action_myqr:
+                showPlayerQR();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: for these methods actually get data from Firestore
+    // TODO: add logic to only show Player's QR (rn just hardcoded data)
+    // TODO: right now, only qr code name is being displayed
+    private void showPlayerQR() {
+        qrCodeDataList = new ArrayList<>();
+        String visFake = new String("vis\nfake\nlist");
+
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
+        qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
+        qrCodeList = new QRCodeList(this, qrCodeDataList);
+
+        qrCodeView.setAdapter(qrCodeList);
+    }
+
+    private void showAllQR() {
+        qrCodeDataList = new ArrayList<>();
+        String visFake = new String("vis\nfake\nlist");
+
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
+        QRCode qr3 = new QRCode("fakeHash", "otherPlayerQR", visFake, 50);
+        qrCodeDataList.addAll(Arrays.asList(qr1, qr2, qr3));
+        qrCodeList = new QRCodeList(this, qrCodeDataList);
+
+        qrCodeView.setAdapter(qrCodeList);
     }
 }
