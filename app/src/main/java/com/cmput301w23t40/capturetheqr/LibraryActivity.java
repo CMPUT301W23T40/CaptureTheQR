@@ -4,7 +4,6 @@ package com.cmput301w23t40.capturetheqr;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,18 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
@@ -90,7 +84,8 @@ public class LibraryActivity extends AppCompatActivity {
                 //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 
                 if (qrCodeDataList.size() > 0) {
-                    DB.delQRCodeInDB(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue());
+                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(),
+                            DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this)));
 
                     qrCodeList.notifyDataSetChanged();
 

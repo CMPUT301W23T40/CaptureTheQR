@@ -69,6 +69,8 @@ public class QRCode {
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
 
+    private int timesScanned;
+
     public QRCode(String hashValue, String codeName, String visualization, int score) {
         this.hashValue = hashValue;
         this.codeName = codeName;
@@ -111,5 +113,13 @@ public class QRCode {
 
     public ArrayList<Comment> getComments() {
         return comments;
+    }
+
+    public int getTimesScanned(){
+        return timesScanned;
+    }
+
+    public void updateTimesScanned(){
+        // FIXME
     }
 }

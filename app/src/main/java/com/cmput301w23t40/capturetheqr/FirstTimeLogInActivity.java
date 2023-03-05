@@ -1,15 +1,14 @@
 package com.cmput301w23t40.capturetheqr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * If the program detects this device is new, the user needs to sign up with
@@ -46,8 +45,8 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
             // FIXME front-end, need to let the user know the reason of failure
             // FIXME front-end, prompt to input another username
         }
-        DB.saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
-        startActivity(new Intent(this, MainActivity.class));
+        DB.savePlayerInDB(new Player(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this)));
+        finish();
     }
 
 
