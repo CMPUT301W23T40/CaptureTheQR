@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+
 /**
  * This class keeps track of the list of QR Code objects
  */
@@ -20,10 +21,23 @@ public class QRCodeList extends RecyclerView.Adapter<QRCodeList.RecyclerViewHold
 
     private ArrayList<QRCode> qrCodes;
     private Context context;
+    private static OnItemClickListener onItemClickListener;
 
     public QRCodeList(Context context, ArrayList<QRCode> qrCodes){
         this.qrCodes = qrCodes;
         this.context = context;
+    }
+
+    public QRCode getCode(int position) {
+        return qrCodes.get(position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener =  onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 
 
@@ -41,6 +55,11 @@ public class QRCodeList extends RecyclerView.Adapter<QRCodeList.RecyclerViewHold
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             qrCodeName = itemView.findViewById(R.id.txtvw_qrcodeName);
+
+            itemView.setOnClickListener(view -> {
+                int position  = RecyclerViewHolder.super.getBindingAdapterPosition();
+                onItemClickListener.onItemClick(view,position);
+            });
         }
     }
 

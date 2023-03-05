@@ -96,6 +96,11 @@ public class DB {
         // FIXME DB
     }
 
+    static protected void getQRCodeInDB(String hash, String location){
+        // FIXME DB
+        //  logic: loop through all QRCodes and find object matching the hash + location
+    }
+
     static protected void saveCommentInDB(QRCode qrCode, QRCode.Comment comment){
         // FIXME need to save the comment to DB
     }

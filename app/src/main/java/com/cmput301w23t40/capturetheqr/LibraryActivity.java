@@ -1,11 +1,14 @@
 package com.cmput301w23t40.capturetheqr;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
@@ -59,7 +62,16 @@ public class LibraryActivity extends AppCompatActivity {
         // TODO: nothing shows initially (maybe since we aren't using DB properly yet?)
         showPlayerQR();
 
+        qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
+            Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
+            // TODO: right now this assumes that QRCode is identifiable by the hashValue but
+            // it's actually unique by (hashValue, location) so we need to change this later
 
+            // intent.putExtra("qrcode", qrCodeList.getCode(position).getHashValue());
+            // TODO: have hardcoded hashValue for now to test
+            intent.putExtra("qrcode", "696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
+            startActivity(intent);
+        });
 
 
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
@@ -90,6 +102,7 @@ public class LibraryActivity extends AppCompatActivity {
                 }
             }
         }).attachToRecyclerView(qrCodeView);
+
 
         //real time updates from Firebase
 //        collectionRefQR=DB.getCollectionReferenceQR();

@@ -14,4 +14,5 @@
     <string name="map_page_main_txt">This is the Map page!</string>
     <string name="action_myqr">My QRs</string>
     <string name="action_allqr">All QRs</string>
+    <string name="qr_details">QR Details</string>
 </resources>
