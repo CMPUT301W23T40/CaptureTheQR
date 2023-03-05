@@ -4,22 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:outlineAmbientShadowColor="#FEFEFE"
+    android:outlineSpotShadowColor="#FEFEFE"
     tools:context=".AddQRActivity">
 
     <TextView
+        android:id="@+id/txtvw_codeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/txtvw_mapFillerText"
-        android:text="@string/add_qr_page_main_txt"
-        android:textSize="35dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/med_blue"
+        android:text="@string/add_qr_code_name"
+        android:textColor="@color/black"
+        android:textSize="35dp"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_codePoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/add_qr_code_points"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_codeName" />
 
+    <TextView
+        android:id="@+id/txtvw_codeDrawing"
+        android:layout_width="280dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_codePoints" />
+
+    <TextView
+        android:id="@+id/txtvw_scanCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/add_qr_scan_count"
+        android:textColor="@color/med_blue"
+        android:textSize="26dp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_codeDrawing" />
+
+    <EditText
+        android:id="@+id/edtxt_comment"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="176dp"
+        android:background="@color/white"
+        android:ems="30"
+        android:gravity="start|top"
+        android:hint="@string/add_qr_optional_comment"
+        android:inputType="textMultiLine"
+        android:textColorHint="#CAC2C2"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/btn_geoToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
+        android:text="@string/add_qr_geolocation_toggle"
+        android:textColor="@color/med_blue"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_uploadPic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:text="@string/add_qr_optional_pic"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtxt_comment" />
+
+    <Button
+        android:id="@+id/btn_Submit"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_qr_submit"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

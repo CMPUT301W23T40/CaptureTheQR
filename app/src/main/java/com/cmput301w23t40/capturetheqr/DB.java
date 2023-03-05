@@ -19,6 +19,30 @@ public class DB {
     static private CollectionReference collectionReferenceQR;
     static private CollectionReference collectionReferencePlayer;
 
+    /**
+     * This method is for refreshing all the testing data in the DB, should be called in
+     * MainActivity.onCreate()
+     */
+    static public void refreshTestingDataInDB(){
+        removeTestingDataFromDB();
+        addTestingDataToDB();
+    }
+
+    /**
+     * This method is for adding testing data to the database, so developers
+     * do not have to create fake data locally.
+     */
+    static private void addTestingDataToDB(){
+        // a whole bunch of testing data
+    }
+
+    /**
+     * This method is for removing all of the testing data added by addTestingDataToDB().
+     */
+    static private void removeTestingDataFromDB(){
+        // remove all of the testing data added
+    }
+
 
     /**
      * Adding a setter to establish connection between firebase*/
@@ -108,5 +132,4 @@ public class DB {
     static protected void saveScannerInfoInDB(QRCode qrCode, QRCode.ScannerInfo scannerInfo){
         // FIXME need to save the comment to DB
     }
-
 }
