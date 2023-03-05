@@ -38,7 +38,7 @@
         </activity>
         <activity
             android:name=".LibraryActivity"
-            android:label="@string/qr_details"
+            android:label="@string/qr_library"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -46,7 +46,7 @@
         </activity>
         <activity
             android:name=".QRDetailsActivity"
-            android:label="@string/qr_library"
+            android:label="@string/qr_details"
             android:parentActivityName=".LibraryActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

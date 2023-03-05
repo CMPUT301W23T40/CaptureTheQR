@@ -32,7 +32,6 @@ public class QRDetailsActivity extends AppCompatActivity {
         String nameFake = generateName(hash);
         int countFake = 10;
 
-        getSupportActionBar().setTitle("QR Details");
         TextView vis = findViewById(R.id.txtvw_qrdetvis);
         TextView name = findViewById(R.id.txtvw_qrdetname);
         TextView score = findViewById(R.id.txtvw_qrdetscore);
