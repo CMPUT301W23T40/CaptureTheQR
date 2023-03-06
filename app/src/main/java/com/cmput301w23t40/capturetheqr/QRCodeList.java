@@ -23,6 +23,10 @@ public class QRCodeList extends RecyclerView.Adapter<QRCodeList.RecyclerViewHold
     private Context context;
     private static OnItemClickListener onItemClickListener;
 
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
     public QRCodeList(Context context, ArrayList<QRCode> qrCodes){
         this.qrCodes = qrCodes;
         this.context = context;
@@ -36,9 +40,6 @@ public class QRCodeList extends RecyclerView.Adapter<QRCodeList.RecyclerViewHold
         this.onItemClickListener =  onItemClickListener;
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
 
 
     /* Adapted code from the following resource for the swipe-to-delete functionality:
