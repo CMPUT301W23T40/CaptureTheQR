@@ -11,6 +11,9 @@
     <string name="home_page_main_txt">Hello {USERNAME}</string>
     <string name="main_page_contact_txt">{CONTACT INFO}</string>
     <string name="map_page_main_txt">This is the Map page!</string>
+    <string name="action_myqr">My QRs</string>
+    <string name="action_allqr">All QRs</string>
+    <string name="qr_details">QR Details</string>
     <string name="add_qr_code_name">{CODE NAME}</string>
     <string name="add_qr_scan_count">This code has been scanned {COUNT} times!</string>
     <string name="add_qr_code_points">{POINTS} points</string>

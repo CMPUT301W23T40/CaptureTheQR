@@ -46,6 +46,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".QRDetailsActivity"
+            android:label="@string/qr_details"
+            android:parentActivityName=".LibraryActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LibraryActivity" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="Home Page">
@@ -65,6 +73,9 @@
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme" >
         </activity>
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
