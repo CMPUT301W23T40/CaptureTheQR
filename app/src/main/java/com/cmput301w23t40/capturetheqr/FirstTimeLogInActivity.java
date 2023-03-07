@@ -40,11 +40,7 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      * the database; if not, prompt the user to input again.
      */
     public void createNewUser(){
-        while(editTextUsername.toString().length() < 6 ||
-                !DB.UsernameIsNew(editTextUsername.toString())){
-            // FIXME front-end, need to let the user know the reason of failure
-            // FIXME front-end, prompt to input another username
-        }
+        // FIXME no verification of usernames
         DB.savePlayerInDB(new Player(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this)));
         finish();
     }

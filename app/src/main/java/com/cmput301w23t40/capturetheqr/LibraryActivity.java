@@ -1,6 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -84,8 +85,13 @@ public class LibraryActivity extends AppCompatActivity {
                 //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 
                 if (qrCodeDataList.size() > 0) {
-                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(),
-                            DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this)));
+                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.FirestoreCallBack() {
+                                @Override
+                                public void onCallBack(String username) {
+                                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(),username);
+                                }
+                            }
+                    );
 
                     qrCodeList.notifyDataSetChanged();
 
