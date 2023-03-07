@@ -5,16 +5,25 @@ import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 /**
  * This class defines the main UI page for the Map flow
  */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    /**
+     * The model of the players location and surroundings
+     */
+    private PlayerLocation playerLocation;
 
     /**
      * override Activity onCreate method
@@ -37,11 +46,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * Implement onMapReady callback for OnMapReadyCallback
+     * and initialize the map UI
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0,0))
-                .title("Test"));
+        CameraUpdate camPosition = CameraUpdateFactory.newLatLngZoom(playerLocation.getLocation(), 18);
+        googleMap.moveCamera(camPosition);
+        ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes(1);
+        // Add all visible QR codes to map
+        for (QRCode qr : nearbyQRs) {
+            googleMap.addMarker(new MarkerOptions()
+                    .position(qr.getLocation())
+                    .title(Integer.toString(qr.getScore())));
+        }
     }
 
     /**

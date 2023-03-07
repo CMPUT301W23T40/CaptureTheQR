@@ -13,6 +13,11 @@ public class PlayerLocation {
      */
     private LatLng location;
 
+    public PlayerLocation() {
+        // FIXME: For testing, this is set to somewhere in the middle of UofA quad
+        this.location = new LatLng(53.52704,-113.52563);
+    }
+
     /**
      * Get the location of the player
      * @return
@@ -39,6 +44,13 @@ public class PlayerLocation {
      */
     public ArrayList<QRCode> getNearbyCodes(double radius) {
         // TODO: retrieve QR codes and filter by radius
-        return new ArrayList<QRCode>();
+        LatLng location1 = new LatLng(53.52710,-113.52611);
+        LatLng location2 = new LatLng(53.52726,-113.52520);
+        QRCode test1 = new QRCode("a1b2c3d4", "Test name 1", "test vis 1", 100, location1);
+        QRCode test2 = new QRCode("e5f6g7h8", "Test name 2", "test vis 2", 1000, location2);
+        ArrayList<QRCode> codes = new ArrayList<QRCode>();
+        codes.add(test1);
+        codes.add(test2);
+        return codes;
     }
 }
