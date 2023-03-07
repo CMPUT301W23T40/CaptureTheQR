@@ -1,8 +1,10 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -11,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -18,7 +21,8 @@ import java.util.ArrayList;
 /**
  * This class defines the main UI page for the Map flow
  */
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapActivity extends AppCompatActivity
+        implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     /**
      * The model of the players location and surroundings
@@ -58,10 +62,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes(1);
         // Add all visible QR codes to map
         for (QRCode qr : nearbyQRs) {
-            googleMap.addMarker(new MarkerOptions()
-                    .position(qr.getLocation())
-                    .title(Integer.toString(qr.getScore())));
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(qr.getLocation()));
+            marker.setTitle(Integer.toString(qr.getScore()));
+            marker.setTag(qr);
         }
+        googleMap.setOnInfoWindowClickListener(this);
+    }
+
+    @Override
+    public void onInfoWindowClick(@NonNull Marker marker) {
+        QRCode code = (QRCode)marker.getTag();
+        Intent intent = new Intent(getApplicationContext(), QRDetailsActivity.class);
+        /* FIXME: Same issue as LibraryActivity where we assume codes are unique by hash,
+         * but location also must be considered */
+        intent.putExtra("qrcode", code.getHashValue());
+        startActivity(intent);
     }
 
     /**

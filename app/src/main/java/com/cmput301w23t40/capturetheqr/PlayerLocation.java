@@ -46,8 +46,10 @@ public class PlayerLocation {
         // TODO: retrieve QR codes and filter by radius
         LatLng location1 = new LatLng(53.52710,-113.52611);
         LatLng location2 = new LatLng(53.52726,-113.52520);
-        QRCode test1 = new QRCode("a1b2c3d4", "Test name 1", "test vis 1", 100, location1);
-        QRCode test2 = new QRCode("e5f6g7h8", "Test name 2", "test vis 2", 1000, location2);
+        QRCode test1 = new QRCode("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6",
+                "Test name 1", "test vis 1", 100, location1);
+        QRCode test2 = new QRCode("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6",
+                "Test name 2", "test vis 2", 1000, location2);
         ArrayList<QRCode> codes = new ArrayList<QRCode>();
         codes.add(test1);
         codes.add(test2);
