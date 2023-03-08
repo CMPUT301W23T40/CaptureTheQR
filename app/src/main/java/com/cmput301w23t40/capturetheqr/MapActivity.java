@@ -38,8 +38,10 @@ public class MapActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        /* Copied from
-         * https://developers.google.com/maps/documentation/android-sdk/map
+        /* Copied the following code snippet for getting the map fragment
+                author: Google Inc.
+                url: https://developers.google.com/maps/documentation/android-sdk/map
+                last updated: March 2, 2023
          */
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.frgmt_qrMap);
@@ -57,8 +59,11 @@ public class MapActivity extends AppCompatActivity
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        CameraUpdate camPosition = CameraUpdateFactory.newLatLngZoom(playerLocation.getLocation(), 18);
+        // Move the camera to the current user location
+        CameraUpdate camPosition = CameraUpdateFactory.newLatLng(playerLocation.getLocation());
         googleMap.moveCamera(camPosition);
+
+        // FIXME: set search radius based on visible part of map
         ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes(1);
         // Add all visible QR codes to map
         for (QRCode qr : nearbyQRs) {
@@ -69,6 +74,11 @@ public class MapActivity extends AppCompatActivity
         googleMap.setOnInfoWindowClickListener(this);
     }
 
+    /**
+     * Implement GoogleMap.OnInfoWindowClickListener interface
+     * Open the QRDetails activity for the selected QR marker info window
+     * @param marker
+     */
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
         QRCode code = (QRCode)marker.getTag();

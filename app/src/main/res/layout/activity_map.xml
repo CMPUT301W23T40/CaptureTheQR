@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!-- https://developers.google.com/maps/documentation/android-sdk/map -->
+<!-- Adapted from the following resource to add the map to the layout
+        author: Google Inc.
+        url: https://developers.google.com/maps/documentation/android-sdk/map
+        last updated: March 2, 2023
+-->
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -8,4 +11,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     map:uiZoomControls="true"
-    map:uiCompass="true" />
+    map:uiCompass="true"
+    map:cameraZoom="18" />
