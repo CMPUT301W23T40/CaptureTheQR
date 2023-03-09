@@ -178,7 +178,7 @@ public class DB {
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i){
             i+=1;
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000));
+            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, null));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
             i-=1;
         }
@@ -337,6 +337,11 @@ public class DB {
                         callbackGetUsername.onCallBack(task.getResult().getDocuments().get(0).getId());
                     }
                 });
+    }
+
+    static protected void getQRCodeInDB(String hash, String location){
+        // FIXME DB
+        //  logic: loop through all QRCodes and find object matching the hash + location
     }
 
     /** The idea of using callbacks is learnt from Alex Mamo
