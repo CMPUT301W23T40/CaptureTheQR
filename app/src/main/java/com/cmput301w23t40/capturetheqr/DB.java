@@ -17,7 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class does all the database queries.
+ * This class does all the database queries. Note that many of the query methods have callback parameters.
+ * If your function must be executed strictly after the queries, then you must put your function inside
+ * the callback functions created when you call the query methods. If the queries can be executed asynchronously
+ * then you can leave the callback blank, but be sure to write down a comment saying this blank is on purpose.
+ * Also, no matter whether you use the callback functions or not, you must create them. In other words, they
+ * cannot be null.
  */
 public class DB {
     static private FirebaseFirestore database;
