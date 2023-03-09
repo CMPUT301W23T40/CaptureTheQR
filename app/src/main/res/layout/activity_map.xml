@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<!-- Adapted from the following resource to add the map to the layout
+        author: Google Inc.
+        url: https://developers.google.com/maps/documentation/android-sdk/map
+        last updated: March 2, 2023
+-->
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/frgmt_qrMap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapActivity">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtvw_mapFillerText"
-        android:text="@string/map_page_main_txt"
-        android:textSize="35dp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/med_blue"
-        android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.075" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    map:uiZoomControls="true"
+    map:uiCompass="true"
+    map:cameraZoom="18" />

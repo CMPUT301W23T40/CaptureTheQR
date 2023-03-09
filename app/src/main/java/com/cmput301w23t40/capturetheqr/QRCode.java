@@ -1,5 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -70,14 +72,15 @@ public class QRCode {
     private final int score;
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
-
+    private LatLng location;
     private int timesScanned;
 
-    public QRCode(String hashValue, String codeName, String visualization, int score) {
+    public QRCode(String hashValue, String codeName, String visualization, int score, LatLng location) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
+        this.location = location;
     }
 
     public void comment(String username, Date date, String content){
@@ -135,6 +138,10 @@ public class QRCode {
 
     public ArrayList<Comment> getComments() {
         return comments;
+    }
+
+    public LatLng getLocation() {
+        return location;
     }
 
     public int getTimesScanned(){

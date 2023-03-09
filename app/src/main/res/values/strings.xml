@@ -7,9 +7,19 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="add_qr_page_main_txt">This is the Add QR page!</string>
     <string name="library_page_main_txt">This is the Library page!</string>
     <string name="home_page_main_txt">Hello {USERNAME}</string>
     <string name="main_page_contact_txt">{CONTACT INFO}</string>
     <string name="map_page_main_txt">This is the Map page!</string>
+    <string name="action_myqr">My QRs</string>
+    <string name="action_allqr">All QRs</string>
+    <string name="qr_details">QR Details</string>
+    <string name="add_qr_code_name">{CODE NAME}</string>
+    <string name="add_qr_scan_count">This code has been scanned {COUNT} times!</string>
+    <string name="add_qr_code_points">{POINTS} points</string>
+    <string name="add_qr_optional_comment">Add optional comment...</string>
+    <string name="add_qr_success_toast">Successfully added code!\nView it in QR Library</string>
+    <string name="add_qr_geolocation_toggle">Keep geolocation?</string>
+    <string name="add_qr_optional_pic">Add optional picture...</string>
+    <string name="add_qr_submit">Submit</string>
 </resources>

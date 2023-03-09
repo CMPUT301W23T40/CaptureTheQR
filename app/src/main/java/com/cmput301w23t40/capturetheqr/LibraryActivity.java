@@ -1,9 +1,15 @@
 package com.cmput301w23t40.capturetheqr;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,13 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
@@ -47,20 +58,20 @@ public class LibraryActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         qrCodeView.setLayoutManager(manager);
 
-        // TODO: using fake data rn (waiting for Firestore integration)
-        // TODO: right now, only qr code name is being displayed
-        qrCodeDataList = new ArrayList<>();
-        String visFake = new String("vis\nfake\nlist\n");
+        // By default only show that Player's QR Codes
+        // TODO: nothing shows initially (maybe since we aren't using DB properly yet?)
+        showPlayerQR();
 
-        QRCode qr1 = new QRCode("fakeHash", "BFG5DGW54", visFake, 10);
-        QRCode qr2 = new QRCode("fakeHash", "name2", visFake, 20);
-        qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
-        qrCodeList = new QRCodeList(this, qrCodeDataList);
+        qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
+            Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
+            // TODO: right now this assumes that QRCode is identifiable by the hashValue but
+            // it's actually unique by (hashValue, location) so we need to change this later
 
-        qrCodeView.setAdapter(qrCodeList);
-
-
-
+            // intent.putExtra("qrcode", qrCodeList.getCode(position).getHashValue());
+            // TODO: have hardcoded hashValue for now to test
+            intent.putExtra("qrcode", "696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
+            startActivity(intent);
+        });
 
 
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
@@ -84,25 +95,14 @@ public class LibraryActivity extends AppCompatActivity {
                 //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 
                 if (qrCodeDataList.size() > 0) {
-                    // FIXME not sure if this will work, can only be tested later
-                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetUsername() {
-                                @Override
-                                public void onCallBack(String username) {
-                                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(), username, new DB.Callback() {
-                                        @Override
-                                        public void onCallBack() {
-                                            // nothing on purpose
-                                        }
-                                    });
-                                }
-                            }
-                    );
+                    DB.delQRCodeInDB(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue());
 
                     qrCodeList.notifyDataSetChanged();
 
                 }
             }
         }).attachToRecyclerView(qrCodeView);
+
 
         //real time updates from Firebase
 //        collectionRefQR=DB.getCollectionReferenceQR();
@@ -129,6 +129,13 @@ public class LibraryActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.qrlibrary_actions, menu);
+        return true;
+    }
+
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
      * @param item
@@ -140,7 +147,41 @@ public class LibraryActivity extends AppCompatActivity {
             case android.R.id.home:
                 this.finish();
                 return true;
+            case R.id.action_allqr:
+                showAllQR();
+                return true;
+            case R.id.action_myqr:
+                showPlayerQR();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: for these methods actually get data from Firestore
+    // TODO: add logic to only show Player's QR (rn just hardcoded data)
+    // TODO: right now, only qr code name is being displayed
+    private void showPlayerQR() {
+        qrCodeDataList = new ArrayList<>();
+        String visFake = new String("vis\nfake\nlist");
+
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
+        qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
+        qrCodeList = new QRCodeList(this, qrCodeDataList);
+
+        qrCodeView.setAdapter(qrCodeList);
+    }
+
+    private void showAllQR() {
+        qrCodeDataList = new ArrayList<>();
+        String visFake = new String("vis\nfake\nlist");
+
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
+        QRCode qr3 = new QRCode("fakeHash", "otherPlayerQR", visFake, 50);
+        qrCodeDataList.addAll(Arrays.asList(qr1, qr2, qr3));
+        qrCodeList = new QRCodeList(this, qrCodeDataList);
+
+        qrCodeView.setAdapter(qrCodeList);
     }
 }
