@@ -344,6 +344,23 @@ public class DB {
                 });
     }
 
+    /**
+     * Given a deviceID, returns the phone number in the callback function
+     * @param deviceID deviceID
+     * @param callbackGetContact actions to be performed after the query is executed
+     */
+    static protected void getUserContact(String deviceID, CallbackGetContact callbackGetContact){
+        collectionReferencePlayer.whereEqualTo("deviceID", deviceID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d("Getting phone number from deviceID", "completed");
+                        callbackGetContact.onCallBack(task.getResult().getDocuments().get(0).getString("phoneNumber"));
+                    }
+                });
+    }
+
     static protected void getQRCodeInDB(String hash, String location){
         // FIXME DB
         //  logic: loop through all QRCodes and find object matching the hash + location
@@ -361,6 +378,9 @@ public class DB {
     }
     public interface CallbackGetUsername {
         void onCallBack(String username);
+    }
+    public interface CallbackGetContact {
+        void onCallBack(String phoneNumber);
     }
     public interface VerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerIsNew);
