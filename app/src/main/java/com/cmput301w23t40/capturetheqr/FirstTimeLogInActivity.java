@@ -1,7 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +8,8 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * If the program detects this device is new, the user needs to sign up with
@@ -35,19 +35,22 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         });
     }
 
+
+
     /**
      * Take the username and phone number the user entered and try to find the username
      * in the database. If the username is unique and has proper length, save the info in
      * the database; if not, prompt the user to input again.
      */
     public void createNewUser(){
-        while(editTextUsername.toString().length() < 6 ||
-                !DB.UsernameIsNew(editTextUsername.toString())){
-            // FIXME front-end, need to let the user know the reason of failure
-            // FIXME front-end, prompt to input another username
-        }
-        DB.saveUser(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this));
-        startActivity(new Intent(this, MainActivity.class));
+        // FIXME no verification of usernames
+        DB.savePlayerInDB(new Player(editTextUsername.getText().toString(), editTextContactInfo.getText().toString(), getDeviceID(this)), new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                // nothing on purpose
+            }
+        });
+        finish();
     }
 
 

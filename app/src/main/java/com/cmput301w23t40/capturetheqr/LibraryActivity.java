@@ -95,8 +95,18 @@ public class LibraryActivity extends AppCompatActivity {
                 //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 
                 if (qrCodeDataList.size() > 0) {
-                    DB.delQRCodeInDB(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue());
-
+                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetUsername() {
+                                @Override
+                                public void onCallBack(String username) {
+                                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(), username, new DB.Callback() {
+                                        @Override
+                                        public void onCallBack() {
+                                            // nothing on purpose
+                                        }
+                                    });
+                                }
+                            }
+                    );
                     qrCodeList.notifyDataSetChanged();
 
                 }
@@ -164,8 +174,8 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeDataList = new ArrayList<>();
         String visFake = new String("vis\nfake\nlist");
 
-        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
-        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10, null);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20, null);
         qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
         qrCodeList = new QRCodeList(this, qrCodeDataList);
 
@@ -176,9 +186,9 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeDataList = new ArrayList<>();
         String visFake = new String("vis\nfake\nlist");
 
-        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10);
-        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20);
-        QRCode qr3 = new QRCode("fakeHash", "otherPlayerQR", visFake, 50);
+        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10, null);
+        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20, null);
+        QRCode qr3 = new QRCode("fakeHash", "otherPlayerQR", visFake, 50, null);
         qrCodeDataList.addAll(Arrays.asList(qr1, qr2, qr3));
         qrCodeList = new QRCodeList(this, qrCodeDataList);
 

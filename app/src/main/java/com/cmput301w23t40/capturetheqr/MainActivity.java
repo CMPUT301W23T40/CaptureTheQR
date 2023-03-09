@@ -32,9 +32,14 @@ public class MainActivity extends AppCompatActivity {
         // exists already, show the homepage of the app
         DB.setDB(FirebaseFirestore.getInstance());
         DB.refreshTestingDataInDB();
-        if(DB.deviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this))){
-            startActivity(new Intent(this, FirstTimeLogInActivity.class));
-        }
+        DB.verifyIfDeviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackVerifyIfDeviceIDIsNew() {
+            @Override
+            public void onCallBack(Boolean deviceIDIsNew) {
+                if(deviceIDIsNew){
+                    startActivity(new Intent(getApplicationContext(), FirstTimeLogInActivity.class));
+                }
+            }
+        });
         setContentView(R.layout.activity_main);
 
         /* Adapted code from the following resource for the nav bar functionality
