@@ -1,7 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import static com.cmput301w23t40.capturetheqr.DB.registerIfNewUser;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -29,7 +27,14 @@ public class MainActivity extends AppCompatActivity {
         // exists already, show the homepage of the app
         DB.setDB(FirebaseFirestore.getInstance());
         DB.refreshTestingDataInDB();
-        registerIfNewUser(FirstTimeLogInActivity.getDeviceID(this), this);
+        DB.verifyIfDeviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackVerifyIfDeviceIDIsNew() {
+            @Override
+            public void onCallBack(Boolean deviceIDIsNew) {
+                if(deviceIDIsNew){
+                    startActivity(new Intent(getApplicationContext(), FirstTimeLogInActivity.class));
+                }
+            }
+        });
         setContentView(R.layout.activity_main);
 
         /* Adapted code from the following resource for the nav bar functionality

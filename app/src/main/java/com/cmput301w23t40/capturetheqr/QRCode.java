@@ -1,5 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -76,19 +78,39 @@ public class QRCode {
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        DB.saveQRCodeInDB(this);
     }
 
     public void comment(String username, Date date, String content){
         Comment comment = new Comment(username, date, content);
         comments.add(comment);
-        DB.saveCommentInDB(this, comment);
+        DB.saveCommentInDB(this, comment, new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                // nothing on purpose
+            }
+        });
     }
 
     public void addScanner(String username, String imageLink, Date scannedDate){
         ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
         scannersInfo.add(newScannerInfo);
-        DB.saveScannerInfoInDB(this, newScannerInfo);
+        DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.VerifyIfScannerInfoIsNew() {
+            @Override
+            public void onCallBack(Boolean scannerIsNew) {
+                if(scannerIsNew){
+                    Log.d("Verifying if scanner info is new", "YES");
+                    DB.saveScannerInfoInDB(QRCode.this, newScannerInfo, new DB.Callback() {
+                        @Override
+                        public void onCallBack() {
+                            // nothing on purpose
+                        }
+                    });
+                }else{
+                    Log.d("Verifying if scanner info is new", "NO");
+                    // prompts the user something
+                }
+            }
+        });
     }
 
     public String getHashValue() {

@@ -2,6 +2,7 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -34,6 +35,8 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         });
     }
 
+
+
     /**
      * Take the username and phone number the user entered and try to find the username
      * in the database. If the username is unique and has proper length, save the info in
@@ -41,7 +44,12 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      */
     public void createNewUser(){
         // FIXME no verification of usernames
-        DB.savePlayerInDB(new Player(editTextUsername.toString(), editTextContactInfo.toString(), getDeviceID(this)));
+        DB.savePlayerInDB(new Player(editTextUsername.getText().toString(), editTextContactInfo.getText().toString(), getDeviceID(this)), new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                // nothing on purpose
+            }
+        });
         finish();
     }
 
