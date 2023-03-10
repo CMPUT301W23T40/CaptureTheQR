@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -22,7 +21,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class MainActivity extends AppCompatActivity {
 
-
     /**
      * override Activity onCreate method
      * @param savedInstanceState
@@ -34,8 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // exists already, show the homepage of the app
         DB.setDB(FirebaseFirestore.getInstance());
         DB.refreshTestingDataInDB();
-        String deviceId = FirstTimeLogInActivity.getDeviceID(this);
-        DB.verifyIfDeviceIDIsNew(deviceId, new DB.CallbackVerifyIfDeviceIDIsNew() {
+        DB.verifyIfDeviceIDIsNew(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackVerifyIfDeviceIDIsNew() {
             @Override
             public void onCallBack(Boolean deviceIDIsNew) {
                 if(deviceIDIsNew){
@@ -44,24 +41,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setContentView(R.layout.activity_main);
-
-        // set text to player's username
-        TextView mainText = findViewById(R.id.txtvw_usernameHello);
-        TextView contactText = findViewById(R.id.txtvw_contactInfo);
-
-        DB.getUserName(deviceId, new DB.CallbackGetUsername() {
-            @Override
-            public void onCallBack(String username) {
-                mainText.setText("Hello " + username);
-            }
-        });
-
-        DB.getUserContact(deviceId, new DB.CallbackGetContact() {
-            @Override
-            public void onCallBack(String phoneNumber) {
-                contactText.setText(phoneNumber);
-            }
-        });
 
         /* Adapted code from the following resource for the nav bar functionality
         author: https://stackoverflow.com/users/13523077/abu-saeed
