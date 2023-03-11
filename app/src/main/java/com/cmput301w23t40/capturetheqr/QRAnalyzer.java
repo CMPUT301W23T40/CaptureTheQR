@@ -201,11 +201,14 @@ public class QRAnalyzer {
         while (bits.length() < 8)
             bits = "0" + bits;
 
-        // generate the name
+        // build the name, add a space between the first word and the rest
         String name = "";
 
         for (int i = 0; i < 6; i++) {
-            name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i))));
+            if (i==0)
+                name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i)))) + " ";
+            else
+                name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i))));
         }
 
         return name;

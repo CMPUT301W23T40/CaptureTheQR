@@ -26,7 +26,7 @@ public class QRAnalyzerTest {
     @Test
     void testName(){
         String s = QRAnalyzer.generateHashValue("BFG5DGW54");
-        assertEquals(QRAnalyzer.generateName(s),"coolFroLoUltraSpectralShark");
+        assertEquals(QRAnalyzer.generateName(s),"cool FroLoUltraSpectralShark");
     }
 
 }
