@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -43,14 +44,24 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      * the database; if not, prompt the user to input again.
      */
     public void createNewUser(){
-        // FIXME no verification of usernames
-        DB.savePlayerInDB(new Player(editTextUsername.getText().toString(), editTextContactInfo.getText().toString(), getDeviceID(this)), new DB.Callback() {
+        DB.addNewPlayer(new Player(editTextUsername.getText().toString(), editTextContactInfo.
+                getText().toString(),getDeviceID(this)), new DB.CallbackAddNewPlayer() {
             @Override
-            public void onCallBack() {
-                // nothing on purpose
+            //check the callback, if the player exists, perform a context switch. if not
+            //keep player on the screen showing a toast that they need to try again
+            public void onCallBack(Boolean playerExists) {
+                if (!playerExists){
+                    finish();
+                } else {
+                    Context context = getApplicationContext();
+                    CharSequence text = "User already exists! Please try a new username.";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
             }
         });
-        finish();
     }
 
 
