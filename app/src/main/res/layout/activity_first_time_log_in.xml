@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/txtvw_firstUseMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal"
         android:padding="80dp"
@@ -20,15 +20,17 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/txtvw_usernameHint"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.005" />
 
     <TextView
         android:id="@+id/txtvw_usernameHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif"
         android:text="Username"
         android:textColor="@color/med_blue"
@@ -39,22 +41,24 @@
 
     <EditText
         android:id="@+id/edtxt_username"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="42dp"
-        android:background="@android:color/transparent"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/input_white_rectangle"
         android:inputType="text"
         android:minEms="10"
+        android:paddingLeft="35dp"
         android:text=""
+        android:textColor="@color/grey"
         app:layout_constraintBottom_toTopOf="@+id/txtvw_phoneHint"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/txtvw_phoneHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="28dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif"
         android:text="Phone Number"
@@ -64,21 +68,21 @@
         app:layout_constraintBottom_toTopOf="@+id/edtxt_contactInfo"
         app:layout_constraintStart_toStartOf="parent" />
 
-
     <EditText
         android:id="@+id/edtxt_contactInfo"
-        android:layout_width="400dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="40dp"
-        android:background="@android:color/transparent"
+        android:layout_marginBottom="124dp"
+        android:background="@drawable/input_white_rectangle"
+        android:elevation="10dp"
         android:digits="0123456789"
         android:inputType="phone"
         android:minEms="10"
+        android:paddingLeft="35dp"
         android:text=""
+        android:textColor="@color/grey"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -86,9 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="160dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="32dp"
         android:text="Submit"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
