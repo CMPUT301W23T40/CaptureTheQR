@@ -344,10 +344,44 @@ public class DB {
                 });
     }
 
-    static protected void getQRCodeInDB(String hash, String location){
-        // FIXME DB
-        //  logic: loop through all QRCodes and find object matching the hash + location
+    /**
+     * This method will get all the QRCodes scanned by the user.
+     * @param username username
+     * @param callback actions to be performed after the query is executed
+     * */
+    static protected void getQRCodeInDBPlayer( String username,Callback callback){
+
+        collectionReferenceQR
+                .whereEqualTo("username",username)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            documentSnapshot.getReference().delete();
+                        }
+                        Log.d("Deleting Comments", "completed");
+                        callback.onCallBack();
+                    }});
     }
+    /**
+     * This function shows all the QR codes scanned on the QR Library page.
+     * @param callback actions to be performed after the query is executed*/
+    static protected void getQRCodeAllCodes( Callback callback){
+        collectionReferenceQR
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            documentSnapshot.getReference().delete();
+                        }
+                        Log.d("Deleting Comments", "completed");
+                        callback.onCallBack();
+                    }});
+    }
+        //name
+        //return entire QR code object
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
