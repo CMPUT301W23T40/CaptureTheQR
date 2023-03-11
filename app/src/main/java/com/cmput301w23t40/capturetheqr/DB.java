@@ -356,6 +356,7 @@ public class DB {
 
     /**
      * This function returns the visualization of the given QR code via callback
+     * If there is no matching QR code, nothing comes through via callback
      * @param hashValue the unique value of the QR to get the visualization from
      * @param CallbackGetVisualization the callback for the method (pass in DB.CallbackGet...
      */
