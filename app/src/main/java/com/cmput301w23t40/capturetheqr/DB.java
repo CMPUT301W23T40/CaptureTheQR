@@ -354,6 +354,43 @@ public class DB {
                 });
     }
 
+    /**
+     * This function returns the visualization of the given QR code via callback
+     * @param hashValue the unique value of the QR to get the visualization from
+     * @param CallbackGetVisualization the callback for the method (pass in DB.CallbackGet...
+     */
+    static protected void getVisualization(String hashValue, CallbackGetVisualization CallbackGetVisualization){
+        DocumentReference docRef = collectionReferenceQR.document(hashValue);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    //a "snapshot" of the data in the firestore db
+                    DocumentSnapshot document = task.getResult();
+
+                    //document exists, send the visual on call back
+                    if (document.exists()) {
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                Log.d("visual data", document.getData().get("qrVisual").toString());
+                                CallbackGetVisualization.onCallBack(document.getData().get("qrVisual").toString());
+                            }
+                        });
+                    }
+                    //document DNE, log it, do nothing
+                    else {
+                        Log.d("visual data", "does not exist");
+                    }
+                }
+                else {
+                    Log.d("error getting visual from db", task.getException().toString());
+                }
+            }
+        });
+    }
+
+
     static protected void getQRCodeInDB(String hash, String location){
         // FIXME DB
         //  logic: loop through all QRCodes and find object matching the hash + location
@@ -380,5 +417,8 @@ public class DB {
     }
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
+    }
+    public interface CallbackGetVisualization {
+        void onCallBack(String visualization);
     }
 }
