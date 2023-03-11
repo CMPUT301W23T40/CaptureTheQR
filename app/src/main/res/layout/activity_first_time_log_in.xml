@@ -1,30 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/txtvw_firstUseMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:padding="80dp"
+        android:text="Welcome to Capture The QR"
+        android:textColor="@color/med_blue"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_usernameHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_usernameHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="14dp"
+        android:fontFamily="sans-serif"
+        android:text="Username"
+        android:textColor="@color/med_blue"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/edtxt_username"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <EditText
         android:id="@+id/edtxt_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="42dp"
+        android:background="@android:color/transparent"
+        android:inputType="text"
+        android:minEms="10"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_phoneHint"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_phoneHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="username"
-        android:inputType="text"
-        android:minEms="10"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif"
+        android:text="Phone Number"
+        android:textColor="@color/med_blue"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/edtxt_contactInfo"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <EditText
         android:id="@+id/edtxt_contactInfo"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:text="contactInfo"
-        android:inputType="text"
-        android:minEms="10"/>
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="40dp"
+        android:background="@android:color/transparent"
+        android:digits="0123456789"
+        android:inputType="phone"
+        android:minEms="10"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:text="submit" />
+        android:layout_gravity="center"
+        android:layout_marginStart="160dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="128dp"
+        android:text="Submit"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

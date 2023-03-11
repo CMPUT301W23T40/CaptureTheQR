@@ -26,6 +26,7 @@
             tools:node="merge" />
         <activity
             android:name=".FirstTimeLogInActivity"
+            android:label="First Time Login"
             android:exported="false" />
         <activity
             android:name=".MapActivity"
