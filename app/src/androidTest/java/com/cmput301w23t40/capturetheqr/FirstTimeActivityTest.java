@@ -117,7 +117,7 @@ public class FirstTimeActivityTest {
     }
 
     /**
-     * Cleans the DB after all tests have run
+     * Cleans the DB after each test
      * @throws Exception
      */
     @After
