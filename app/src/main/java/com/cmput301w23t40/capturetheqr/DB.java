@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * This class does all the database queries. Note that many of the query methods have callback parameters.
@@ -211,12 +212,38 @@ public class DB {
      * MainActivity.onCreate()
      */
     static public void refreshTestingDataInDB() {
+        // CSC
+        final double latCSC = 53.52683477962721;
+        final double lonCSC = -113.5269479646002;
+        // U of A hospital
+        final double latHospital = 53.520888854154364;
+        final double lonHospital = -113.52287265600516;
+        // distance
+        final double distance = Math.sqrt(Math.pow(latCSC-latHospital, 2) + Math.pow(lonCSC-lonHospital, 2));
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         ArrayList<Player> players = new ArrayList<>();
-        for (int i = 0; i < 5; ++i){
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new LatLng(i, i+1)));
+        for (int i = 0; i < 10; ++i){
+            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
+        /*
+        getUsersQRCodes(players.get(0), new CallbackGetUsersQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                for(QRCode qrCode : myQRCodes){
+                    Log.d("", qrCode.toString());
+                }
+            }
+        });
+        */
+//        getAllQRCodes(new CallbackGetAllQRCodes() {
+//            @Override
+//            public void onCallBack(ArrayList<QRCode> allQRCodes) {
+//                for (QRCode qrCode : allQRCodes){
+//                    Log.d("", qrCode.toString());
+//                }
+//            }
+//        });
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
@@ -230,20 +257,20 @@ public class DB {
             saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
                 @Override
                 public void onCallBack() {
-                    for (int n = 0; n < qrCodes.size(); n++) {
-                        saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), new Timestamp(new Date()), String.valueOf("comment: " + n )), new Callback() {
-                            @Override
-                            public void onCallBack() {
-                                // nothing on purpose
-                            }
-                        });
-                        saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n ), new Timestamp(new Date())), new Callback() {
-                            @Override
-                            public void onCallBack() {
-                                // nothing on purpose
-                            }
-                        });
-                    }
+                        for (int n = 0; n < 5; n++) {
+                            saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), new Timestamp(new Date()), String.valueOf("comment: " + n )), new Callback() {
+                                @Override
+                                public void onCallBack() {
+                                    // nothing on purpose
+                                }
+                            });
+                            saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n ), new Timestamp(new Date())), new Callback() {
+                                @Override
+                                public void onCallBack() {
+                                    // nothing on purpose
+                                }
+                            });
+                        }
                 }
             });
         }
@@ -308,21 +335,12 @@ public class DB {
 //                            Log.d("codename", documentSnapshot.getString("codeName"));
 //                            Log.d("visualization", documentSnapshot.getString("visualization"));
 //                            Log.d("score", String.valueOf(documentSnapshot.getLong("score").intValue()));
-
-                            QRCode.Geolocation geolocation= documentSnapshot.get("geolocation", QRCode.Geolocation.class);
-                            LatLng latLng;
-                            if (geolocation != null){
-                                latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
-                            } else {
-                                latLng = null;
-                            }
-//                            Log.d("lat lon", String.valueOf(latLng.latitude) + " " + String.valueOf(latLng.longitude));
                             QRCode newQRCode = new QRCode(
                                     documentSnapshot.getString("hashValue"),
                                     documentSnapshot.getString("codeName"),
                                     documentSnapshot.getString("visualization"),
                                     documentSnapshot.getLong("score").intValue(),
-                                    latLng);
+                                    documentSnapshot.get("geolocation", QRCode.Geolocation.class));
                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                             for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                 scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
@@ -344,17 +362,46 @@ public class DB {
                 });
     }
 
-//    static protected void getUsersQRCodes(Player player, CallbackGetUsersQRCodes callbackGetUsersQRCodes){
-//        collectionReferenceQR.get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-//                            documentSnapshot.
-//                        }
-//                    }
-//                })
-//    }
+    static protected void getUsersQRCodes(Player player, CallbackGetUsersQRCodes callbackGetUsersQRCodes){
+        ArrayList<QRCode> qrCodes = new ArrayList<>();
+        collectionReferenceQR.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            List<Map<String, Object>> scannerInfoArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
+                            for (Map<String, Object> scannerInfoForFindingUser : scannerInfoArrayListInDB){
+                                if(scannerInfoForFindingUser.get("username").equals(player.getUsername())){
+                                    List<Map<String, Object>> commentsArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("comments");
+                                    QRCode newQRCode = new QRCode(
+                                            documentSnapshot.getString("hashValue"),
+                                            documentSnapshot.getString("codeName"),
+                                            documentSnapshot.getString("visualization"),
+                                            documentSnapshot.getLong("score").intValue(),
+                                            documentSnapshot.get("geolocation", QRCode.Geolocation.class));
+                                    ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
+                                    for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
+                                        scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
+                                                scannerInfo.get("imageLink").toString(),
+                                                (com.google.firebase.Timestamp) scannerInfo.get("scannedDate")));
+                                    }
+                                    ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
+                                    for (Map<String, Object> comment : commentsArrayListInDB){
+                                        commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
+                                                (com.google.firebase.Timestamp) comment.get("date"),
+                                                comment.get("content").toString()));
+                                    }
+                                    newQRCode.setScannersInfo(scannerInfoArrayList);
+                                    newQRCode.setComments(commentsArrayList);
+                                    qrCodes.add(newQRCode);
+                                    break;
+                                }
+                            }
+                        }
+                        callbackGetUsersQRCodes.onCallBack(qrCodes);
+                    }
+                });
+    }
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo

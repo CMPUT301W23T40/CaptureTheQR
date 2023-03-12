@@ -112,7 +112,7 @@ public class QRCode {
     public QRCode() {
     }
 
-    public QRCode(String hashValue, String codeName, String visualization, int score, LatLng geolocation) {
+    public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
@@ -177,8 +177,8 @@ public class QRCode {
         return comments;
     }
 
-    public LatLng getGeolocation() {
-        return new LatLng(this.geolocation.getLatitude(), this.geolocation.getLongitude());
+    public Geolocation getGeolocation() {
+        return geolocation;
     }
 
     public int getTimesScanned(){

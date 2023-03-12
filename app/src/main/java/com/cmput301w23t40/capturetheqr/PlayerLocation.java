@@ -44,8 +44,8 @@ public class PlayerLocation {
      */
     public ArrayList<QRCode> getNearbyCodes(double radius) {
         // TODO: retrieve QR codes and filter by radius
-        LatLng location1 = new LatLng(53.52710,-113.52611);
-        LatLng location2 = new LatLng(53.52726,-113.52520);
+        QRCode.Geolocation location1 = new QRCode.Geolocation(53.52710,-113.52611);
+        QRCode.Geolocation location2 = new QRCode.Geolocation(53.52726,-113.52520);
         QRCode test1 = new QRCode("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6",
                 "Test name 1", "test vis 1", 100, location1);
         QRCode test2 = new QRCode("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6",
