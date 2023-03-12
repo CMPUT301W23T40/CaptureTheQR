@@ -12,7 +12,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -67,7 +66,7 @@ public class MapActivity extends AppCompatActivity
         ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes(1);
         // Add all visible QR codes to map
         for (QRCode qr : nearbyQRs) {
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(qr.getLocation()));
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(qr.getGeolocation()));
             marker.setTitle(Integer.toString(qr.getScore()));
             marker.setTag(qr);
         }

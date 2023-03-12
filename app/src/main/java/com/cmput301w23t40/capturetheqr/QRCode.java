@@ -1,11 +1,11 @@
 package com.cmput301w23t40.capturetheqr;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.Timestamp;
 
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Each QR code object maintains the actual code's hash value, the generated code name, visualization,
@@ -17,12 +17,12 @@ public class QRCode {
     protected static class ScannerInfo {
         private String username;
         private String imageLink;
-        private Date scannedDate;
+        private Timestamp scannedDate;
 
         public ScannerInfo() {
         }
 
-        public ScannerInfo(String username, String imageLink, Date scannedDate) {
+        public ScannerInfo(String username, String imageLink, Timestamp scannedDate) {
             this.username = username;
             this.imageLink = imageLink;
             this.scannedDate = scannedDate;
@@ -36,7 +36,7 @@ public class QRCode {
             return imageLink;
         }
 
-        public Date getScannedDate() {
+        public Timestamp getScannedDate() {
             return scannedDate;
         }
 
@@ -48,13 +48,13 @@ public class QRCode {
 
     protected static class Comment{
         private String username;
-        private Date date;
+        private Timestamp date;
         private String content;
 
         public Comment() {
         }
 
-        public Comment(String username, Date date, String content) {
+        public Comment(String username, Timestamp date, String content) {
             this.username = username;
             this.date = date;
             this.content = content;
@@ -64,7 +64,7 @@ public class QRCode {
             return username;
         }
 
-        public Date getDate() {
+        public Timestamp getDate() {
             return date;
         }
 
@@ -74,22 +74,30 @@ public class QRCode {
     }
 
     protected static class Geolocation{
-        double Lat, Lon;
+        private double latitude, longitude;
 
         public Geolocation() {
         }
 
-        public Geolocation(double lat, double lon) {
-            Lat = lat;
-            Lon = lon;
+        public Geolocation(double latitude, double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
         }
 
-        public double getLat() {
-            return Lat;
+        public double getLatitude() {
+            return latitude;
         }
 
-        public double getLon() {
-            return Lon;
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
         }
     }
     private String hashValue;
@@ -98,21 +106,21 @@ public class QRCode {
     private int score;
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
-    private Geolocation location;
+    private Geolocation geolocation;
     private int timesScanned;
 
     public QRCode() {
     }
 
-    public QRCode(String hashValue, String codeName, String visualization, int score, LatLng location) {
+    public QRCode(String hashValue, String codeName, String visualization, int score, LatLng geolocation) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        this.location = new Geolocation(location.latitude, location.longitude);
+        this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
     }
 
-    public void comment(String username, Date date, String content){
+    public void comment(String username, Timestamp date, String content){
         Comment comment = new Comment(username, date, content);
         comments.add(comment);
         DB.saveCommentInDB(this, comment, new DB.Callback() {
@@ -123,10 +131,10 @@ public class QRCode {
         });
     }
 
-    public void addScanner(String username, String imageLink, Date scannedDate){
+    public void addScanner(String username, String imageLink, Timestamp scannedDate){
         ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
         scannersInfo.add(newScannerInfo);
-        DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.VerifyIfScannerInfoIsNew() {
+        DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
             @Override
             public void onCallBack(Boolean scannerIsNew) {
                 if(scannerIsNew){
@@ -169,8 +177,8 @@ public class QRCode {
         return comments;
     }
 
-    public LatLng getLocation() {
-        return new LatLng(this.location.getLat(), this.location.getLon());
+    public LatLng getGeolocation() {
+        return new LatLng(this.geolocation.getLatitude(), this.geolocation.getLongitude());
     }
 
     public int getTimesScanned(){
@@ -179,5 +187,27 @@ public class QRCode {
 
     public void updateTimesScanned(){
         // FIXME
+    }
+
+    @Override
+    public String toString() {
+        return "QRCode{" +
+                "hashValue='" + hashValue + '\'' +
+                ", codeName='" + codeName + '\'' +
+                ", visualization='" + visualization + '\'' +
+                ", score=" + score +
+                ", scannersInfo=" + scannersInfo +
+                ", comments=" + comments +
+                ", geolocation=" + geolocation +
+                ", timesScanned=" + timesScanned +
+                '}';
+    }
+
+    public void setScannersInfo(ArrayList<ScannerInfo> scannersInfo) {
+        this.scannersInfo = scannersInfo;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
     }
 }
