@@ -18,6 +18,7 @@ import com.google.zxing.client.android.Intents;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -174,10 +175,6 @@ public class DB {
      * @param cbplayerExists a call back to pass back to main describing if the player exists
      */
     static protected void addNewPlayer(Player player, CallbackAddNewPlayer cbplayerExists){
-        Map<String, Object> newPlayer = new HashMap<>();
-        newPlayer.put("deviceID", player.getDeviceID());
-        newPlayer.put("phoneNumber", player.getPhoneNumber());
-
         //get the reference for the usernames
         DocumentReference docRef =  collectionReferencePlayer.document(player.getUsername());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -195,7 +192,7 @@ public class DB {
                     //document DNE, add the player, send a false on the callback
                     else {
                         Log.d("user exits?", "false");
-                        docRef.set(newPlayer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        docRef.set(player).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Adding new player", "completed");
@@ -340,11 +337,6 @@ public class DB {
                         Log.d("Getting all QR Codes", "done");
                     }
                 });
-    }
-
-    static protected void getQRCodeInDB(String hash, String location){
-        // FIXME DB
-        //  logic: loop through all QRCodes and find object matching the hash + location
     }
 
     /** The idea of using callbacks is learnt from Alex Mamo
