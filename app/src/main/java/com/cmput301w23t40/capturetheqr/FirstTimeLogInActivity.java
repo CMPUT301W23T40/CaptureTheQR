@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,18 +69,17 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
             //check the callback, if the player exists, perform a context switch. if not
             //keep player on the screen showing a toast that they need to try again
             public void onCallBack(Boolean playerExists) {
-                if (!playerExists){
+                if (!playerExists)
                     finish();
-                } else {
-                    Context context = getApplicationContext();
-                    CharSequence text = "User already exists! Please try a new username.";
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                }
+                else
+                    editTextUsername.setError("Username already exists");
             }
         });
+
+        DB.getVisualization("fakeHashValue", visualization -> {
+            Log.v("visual",visualization);
+        });
+
     }
 
 
