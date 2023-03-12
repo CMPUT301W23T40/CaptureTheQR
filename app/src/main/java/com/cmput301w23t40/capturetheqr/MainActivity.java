@@ -87,11 +87,15 @@ public class MainActivity extends AppCompatActivity {
     {
         if(result.getContents() != null)
         {
-            byte[] codeContent = result.getRawBytes(); // these are the bytes of the QR code
-            startActivity(new Intent(getApplicationContext(), AddQRActivity.class));
+            QRAnalyzer analyzer = new QRAnalyzer();
+            Intent intent = new Intent(getApplicationContext(), AddQRActivity.class);
+            String hash = analyzer.generateHashValue(result.getContents()); // this is the hash of the QR code
+            Bundle bundle = new Bundle();
+            bundle.putString("hash", hash);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            //startActivity(new Intent(getApplicationContext(), AddQRActivity.class));
         }
-
     });
-
 
 }
