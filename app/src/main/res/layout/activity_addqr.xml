@@ -43,7 +43,6 @@
         android:padding="10dp"
         android:textColor="@color/black"
         android:textSize="25sp"
-        android:fontFamily="@font/courier_prime"
         android:gravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
