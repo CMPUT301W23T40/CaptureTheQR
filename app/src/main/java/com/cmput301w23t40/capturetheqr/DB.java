@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * This class does all the database queries. Note that many of the query methods have callback parameters.
@@ -279,23 +277,23 @@ public class DB {
     }
 
     /**
-     * Given a deviceID, returns the username in the callback function
+     * Given a deviceID, returns the player object in the callback function
      * @param deviceID deviceID
-     * @param callbackGetUsername actions to be performed after the query is executed
+     * @param callbackGetPlayer actions to be performed after the query is executed
      */
-    static protected void getUserName(String deviceID, CallbackGetUsername callbackGetUsername){
+    static protected void getPlayer(String deviceID, CallbackGetPlayer callbackGetPlayer){
         collectionReferencePlayer.whereEqualTo("deviceID", deviceID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.getResult().isEmpty()){
-                            Log.d("Getting username from deviceID", "deviceID " + deviceID + " does not exists");
-                            callbackGetUsername.onCallBack(null);
+                            Log.d("Getting player from deviceID", "deviceID " + deviceID + " does not exists");
+                            callbackGetPlayer.onCallBack(null);
                         } else {
-                            String username = task.getResult().getDocuments().get(0).getId();
-                            Log.d("Getting username from deviceID", "deviceID: " + deviceID + " username: " + username);
-                            callbackGetUsername.onCallBack(username);
+                            Player player = task.getResult().getDocuments().get(0).toObject(Player.class);
+                            Log.d("Getting player from deviceID", "deviceID: " + deviceID + " username: " + player.getUsername());
+                            callbackGetPlayer.onCallBack(player);
                         }
                     }
                 });
@@ -395,8 +393,8 @@ public class DB {
     public interface Callback {
         void onCallBack();
     }
-    public interface CallbackGetUsername {
-        void onCallBack(String username);
+    public interface CallbackGetPlayer {
+        void onCallBack(Player player);
     }
     public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerIsNew);
