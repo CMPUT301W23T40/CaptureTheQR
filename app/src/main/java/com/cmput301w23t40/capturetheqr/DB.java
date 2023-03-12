@@ -4,17 +4,20 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,17 +56,12 @@ public class DB {
      * @param callback actions to perform after the query is executed
      */
     static protected void saveQRCodeInDB(QRCode qrCode, Callback callback){
-        Map<String, Object> newQRCode = new HashMap<>();
-        newQRCode.put("qrName", qrCode.getCodeName());
-        newQRCode.put("qrScore", qrCode.getScore());
-        newQRCode.put("qrVisual", qrCode.getVisualization());
-
         collectionReferenceQR.document(qrCode.getHashValue())
-                .set(newQRCode)
+                .set(qrCode)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saving QRCode", "completed");
+                        Log.d("Saving QRCode", "Hash value: " + qrCode.getHashValue());
                         callback.onCallBack();
                     }
                 });
@@ -77,17 +75,12 @@ public class DB {
      * @param callback actions to perform after the query is executed
      */
     static protected void saveCommentInDB(QRCode qrCode, QRCode.Comment comment, Callback callback){
-        Map<String, Object> newComment = new HashMap<>();
-        newComment.put("content", comment.getContent());
-        newComment.put("date", comment.getDate());
         collectionReferenceQR.document(qrCode.getHashValue())
-                .collection("Comments")
-                .document(comment.getUsername())
-                .set(newComment)
+                .update("comments", FieldValue.arrayUnion(comment))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saving comment", "completed");
+                        Log.d("Saving comment", "Hash value: "+ qrCode.getHashValue() + " Commenter: " + comment.getUsername());
                         callback.onCallBack();
                     }
                 });
@@ -97,20 +90,29 @@ public class DB {
      * Verify if the scanner is new to this code
      * @param qrCode qr code object
      * @param scannerInfo scanner info object
-     * @param verifyIfScannerInfoIsNew actions to perform after the query is executed
+     * @param callbackVerifyIfScannerInfoIsNew actions to perform after the query is executed
      */
-    static protected void verifyIfScannerInfoIsNew(QRCode qrCode, QRCode.ScannerInfo scannerInfo, VerifyIfScannerInfoIsNew verifyIfScannerInfoIsNew){
+    static protected void verifyIfScannerInfoIsNew(QRCode qrCode, QRCode.ScannerInfo scannerInfo, CallbackVerifyIfScannerInfoIsNew callbackVerifyIfScannerInfoIsNew){
         collectionReferenceQR.document(qrCode.getHashValue())
-                .collection("ScannerInfo")
-                .document(scannerInfo.getUsername())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        Log.d("Verifying if scanner info is new", "completed");
-                        verifyIfScannerInfoIsNew.onCallBack(!(task.getResult().exists()));
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        List<Map<String, Object>> scannerInfoArrayList = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
+                        if (scannerInfoArrayList != null) {
+                            for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
+                                if (existingScannerInfo.get("username").equals(scannerInfo.getUsername())) {
+                                    Log.d("Verifying if scanner info is new", "hash value: " + qrCode.getHashValue() + " scanner: " + scannerInfo.getUsername() + ' ' + false);
+                                    callbackVerifyIfScannerInfoIsNew.onCallBack(false);
+                                    return;
+                                }
+                            }
+                        }
+                        Log.d("Verifying if scanner info is new", scannerInfo.getUsername() + ' ' + true);
+                        callbackVerifyIfScannerInfoIsNew.onCallBack(true);
                     }
-                });
+                    });
     }
 
     /**
@@ -120,17 +122,12 @@ public class DB {
      * @param callback actions to perform after the query is executed
      */
     static protected void saveScannerInfoInDB(QRCode qrCode, QRCode.ScannerInfo scannerInfo, Callback callback) {
-        Map<String, Object> newScannerInfo = new HashMap<>();
-        newScannerInfo.put("imageLink", scannerInfo.getImageLink());
-        newScannerInfo.put("scannedDate", scannerInfo.getScannedDate());
         collectionReferenceQR.document(qrCode.getHashValue())
-                .collection("ScannerInfo")
-                .document(scannerInfo.getUsername())
-                .set(newScannerInfo)
+                .update("scannersInfo", FieldValue.arrayUnion(scannerInfo))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saving scanner info", "completed");
+                        Log.d("Saving scanner info", "Hash value: "+ qrCode.getHashValue() + " Scanner: " + scannerInfo.getUsername());
                         callback.onCallBack();
                     }
                 });
@@ -144,13 +141,26 @@ public class DB {
      */
     static public void deleteScannerFromQRCode(String hashValue, String username, Callback callback){
         collectionReferenceQR.document(hashValue)
-                .collection("ScannerInfo")
-                .document(username)
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Deleting scanner info", "completed");
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        List<Map<String, Object>> scannerInfoArrayList = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
+                        if (scannerInfoArrayList != null) {
+                            for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
+                                if (existingScannerInfo.get("username").equals(username)) {
+                                    QRCode.ScannerInfo newScannerInfo = new QRCode.ScannerInfo(existingScannerInfo.get("username").toString(),
+                                            existingScannerInfo.get("imageLink").toString(),
+                                            (com.google.firebase.Timestamp) existingScannerInfo.get("scannedDate"));
+                                    task.getResult().getReference().update("scannersInfo", FieldValue.arrayRemove(newScannerInfo));
+                                    Log.d("Deleting scannerInfo", username + ' ' + "deleted");
+                                    callback.onCallBack();
+                                    return;
+                                }
+                            }
+                        }
+                        Log.d("Deleting scannerInfo", username + ' ' + "not even exists");
                         callback.onCallBack();
                     }
                 });
@@ -163,10 +173,6 @@ public class DB {
      * @param cbplayerExists a call back to pass back to main describing if the player exists
      */
     static protected void addNewPlayer(Player player, CallbackAddNewPlayer cbplayerExists){
-        Map<String, Object> newPlayer = new HashMap<>();
-        newPlayer.put("deviceID", player.getDeviceID());
-        newPlayer.put("phoneNumber", player.getPhoneNumber());
-
         //get the reference for the usernames
         DocumentReference docRef =  collectionReferencePlayer.document(player.getUsername());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -184,7 +190,7 @@ public class DB {
                     //document DNE, add the player, send a false on the callback
                     else {
                         Log.d("user exits?", "false");
-                        docRef.set(newPlayer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        docRef.set(player).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Log.d("Adding new player", "completed");
@@ -208,13 +214,10 @@ public class DB {
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i){
-            i+=1;
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, null));
+            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new LatLng(i, i+1)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
-            i-=1;
         }
         for (int i = 0; i < players.size(); ++i){
-
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
                 public void onCallBack(Boolean playerExists) {
@@ -222,103 +225,28 @@ public class DB {
                 }
             });
         }
-        for (int i = 0; i < qrCodes.size(); ++i){
+        for (int i = 0; i < qrCodes.size(); ++i) {
             int finalI = i;
-            delAllCommentInDB(qrCodes.get(i).getHashValue(), new Callback() {
+            saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
                 @Override
                 public void onCallBack() {
-                    delAllScannerInfoInDB(qrCodes.get(finalI).getHashValue(), new Callback() {
-                        @Override
-                        public void onCallBack() {
-                            // comments and scanner info need to be deleted before deleting the qrCode
-                            // otherwise they still exist in the db console
-                            delQRCodeInDB(qrCodes.get(finalI).getHashValue(), new Callback() {
-                                @Override
-                                public void onCallBack() {
-                                    saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
-                                        @Override
-                                        public void onCallBack() {
-                                            for (int n = 0; n < qrCodes.size(); n++){
-                                                saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), new Date(), String.valueOf("comment: " + (n + 1))), new Callback() {
-                                                    @Override
-                                                    public void onCallBack() {
-                                                        // nothing on purpose
-                                                    }
-                                                });
-                                                saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + (n + 1)), new Date()), new Callback() {
-                                                    @Override
-                                                    public void onCallBack() {
-                                                        // nothing on purpose
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
+                    for (int n = 0; n < qrCodes.size(); n++) {
+                        saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), new Timestamp(new Date()), String.valueOf("comment: " + n )), new Callback() {
+                            @Override
+                            public void onCallBack() {
+                                // nothing on purpose
+                            }
+                        });
+                        saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n ), new Timestamp(new Date())), new Callback() {
+                            @Override
+                            public void onCallBack() {
+                                // nothing on purpose
+                            }
+                        });
+                    }
                 }
             });
         }
-    }
-
-    /**
-     * Method for deleting QR codes from DB, should only be used for refreshing testing data
-     * @param hashValue hashvalue of the qrCode to be deleted
-     * @param callback actions to perform after the query is executed
-     */
-    static private void delQRCodeInDB(String hashValue, Callback callback) {
-         collectionReferenceQR.document(hashValue)
-                .delete()
-                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-                     @Override
-                     public void onComplete(@NonNull Task<Void> task) {
-                         Log.d("Deleting the whole code", "completed");
-                         callback.onCallBack();
-                     }
-                 });
-    }
-
-    /**
-     * Delete all the comments on the qr code, need to be called before deleting the qr code itself
-     * @param hashValue hash value of the qr code
-     * @param callback actions to perform after the query is executed
-     */
-    static private void delAllCommentInDB(String hashValue, Callback callback){
-        collectionReferenceQR.document(hashValue)
-                .collection("Comments")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-                            documentSnapshot.getReference().delete();
-                        }
-                        Log.d("Deleting Comments", "completed");
-                        callback.onCallBack();
-                    }});
-    }
-
-    /**
-     * Delete all the scanner info on the qr code, need to be called before deleting the qr code itself
-     * @param hashValue hash value of the qr code
-     * @param callback actions to perform after the query is executed
-     */
-    static private void delAllScannerInfoInDB(String hashValue, Callback callback){
-        collectionReferenceQR.document(hashValue)
-                .collection("ScannerInfo")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-                            documentSnapshot.getReference().delete();
-                        }
-                        Log.d("Deleting ScannerInfo", "completed");
-                        callback.onCallBack();
-                }
-                });
     }
 
     /**
@@ -332,7 +260,11 @@ public class DB {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Log.d("Verifying if deviceID is new", "completed");
+                        if (task.getResult().isEmpty()){
+                            Log.d("Verifying if deviceID is new", deviceID + " is new");
+                        } else {
+                            Log.d("Verifying if deviceID is new", deviceID + " is not new");
+                        }
                         callbackVerifyIfDeviceIDIsNew.onCallBack(task.getResult().isEmpty());
                     }});
     }
@@ -348,54 +280,81 @@ public class DB {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Log.d("Getting username from deviceID", "completed");
-                        callbackGetUsername.onCallBack(task.getResult().getDocuments().get(0).getId());
+                        if (task.getResult().isEmpty()){
+                            Log.d("Getting username from deviceID", "deviceID " + deviceID + " does not exists");
+                            callbackGetUsername.onCallBack(null);
+                        } else {
+                            String username = task.getResult().getDocuments().get(0).getId();
+                            Log.d("Getting username from deviceID", "deviceID: " + deviceID + " username: " + username);
+                            callbackGetUsername.onCallBack(username);
+                        }
                     }
                 });
     }
 
-    /**
-     * This function returns the visualization of the given QR code via callback
-     * If there is no matching QR code, nothing comes through via callback
-     * @param hashValue the unique value of the QR to get the visualization from
-     * @param CallbackGetVisualization the callback for the method (pass in DB.CallbackGet...
-     */
-    static protected void getVisualization(String hashValue, CallbackGetVisualization CallbackGetVisualization){
-        DocumentReference docRef = collectionReferenceQR.document(hashValue);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    //a "snapshot" of the data in the firestore db
-                    DocumentSnapshot document = task.getResult();
+    static protected void getAllQRCodes(CallbackGetAllQRCodes callbackGetAllQRCodes){
+        ArrayList<QRCode> qrCodes = new ArrayList<>();
+        collectionReferenceQR.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            List<Map<String, Object>> scannerInfoArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
+                            List<Map<String, Object>> commentsArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("comments");
+//                            Log.d("scannerinfo", String.valueOf(scannerInfoArrayListInDB.size()));
+//                            Log.d("comments", String.valueOf(commentsArrayListInDB.size()));
+//
+//                            Log.d("hashvalue", documentSnapshot.getString("hashValue"));
+//                            Log.d("codename", documentSnapshot.getString("codeName"));
+//                            Log.d("visualization", documentSnapshot.getString("visualization"));
+//                            Log.d("score", String.valueOf(documentSnapshot.getLong("score").intValue()));
 
-                    //document exists, send the visual on call back
-                    if (document.exists()) {
-                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                Log.d("visual data", document.getData().get("qrVisual").toString());
-                                CallbackGetVisualization.onCallBack(document.getData().get("qrVisual").toString());
+                            QRCode.Geolocation geolocation= documentSnapshot.get("geolocation", QRCode.Geolocation.class);
+                            LatLng latLng;
+                            if (geolocation != null){
+                                latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+                            } else {
+                                latLng = null;
                             }
-                        });
+//                            Log.d("lat lon", String.valueOf(latLng.latitude) + " " + String.valueOf(latLng.longitude));
+                            QRCode newQRCode = new QRCode(
+                                    documentSnapshot.getString("hashValue"),
+                                    documentSnapshot.getString("codeName"),
+                                    documentSnapshot.getString("visualization"),
+                                    documentSnapshot.getLong("score").intValue(),
+                                    latLng);
+                            ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
+                            for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
+                                scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
+                                        scannerInfo.get("imageLink").toString(),
+                                        (com.google.firebase.Timestamp) scannerInfo.get("scannedDate")));
+                            }
+                            ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
+                            for (Map<String, Object> comment : commentsArrayListInDB){
+                                commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
+                                        (com.google.firebase.Timestamp) comment.get("date"),
+                                        comment.get("content").toString()));
+                            }
+                            newQRCode.setScannersInfo(scannerInfoArrayList);
+                            newQRCode.setComments(commentsArrayList);
+                            qrCodes.add(newQRCode);
+                        }
+                        callbackGetAllQRCodes.onCallBack(qrCodes);
                     }
-                    //document DNE, log it, do nothing
-                    else {
-                        Log.d("visual data", "does not exist");
-                    }
-                }
-                else {
-                    Log.d("error getting visual from db", task.getException().toString());
-                }
-            }
-        });
+                });
     }
 
-
-    static protected void getQRCodeInDB(String hash, String location){
-        // FIXME DB
-        //  logic: loop through all QRCodes and find object matching the hash + location
-    }
+//    static protected void getUsersQRCodes(Player player, CallbackGetUsersQRCodes callbackGetUsersQRCodes){
+//        collectionReferenceQR.get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+//                            documentSnapshot.
+//                        }
+//                    }
+//                })
+//    }
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
@@ -410,7 +369,7 @@ public class DB {
     public interface CallbackGetUsername {
         void onCallBack(String username);
     }
-    public interface VerifyIfScannerInfoIsNew {
+    public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerIsNew);
     }
     public interface CallbackAddNewPlayer {
@@ -419,7 +378,10 @@ public class DB {
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
     }
-    public interface CallbackGetVisualization {
-        void onCallBack(String visualization);
+    public interface CallbackGetAllQRCodes {
+        void onCallBack(ArrayList<QRCode> allQRCodes);
+    }
+    public interface CallbackGetUsersQRCodes {
+        void onCallBack(ArrayList<QRCode> myQRCodes);
     }
 }

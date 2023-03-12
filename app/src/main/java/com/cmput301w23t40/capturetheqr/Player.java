@@ -7,15 +7,17 @@ public class Player {
     /**
      * The username of the player, used to uniquely identify them.
      */
-    private final String username;
+    private String username;
     /**
      * The phone number of the player, used for contact information
      */
     private String phoneNumber;
 
     private int highScore;
-    private final String deviceID;
+    private String deviceID;
 
+    public Player() {
+    }
 
     public Player(String username, String phoneNumber, String deviceID) {
         this.username = username;
