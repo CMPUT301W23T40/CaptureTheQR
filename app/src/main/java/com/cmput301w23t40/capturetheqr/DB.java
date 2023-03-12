@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -56,6 +57,7 @@ public class DB {
         newQRCode.put("qrName", qrCode.getCodeName());
         newQRCode.put("qrScore", qrCode.getScore());
         newQRCode.put("qrVisual", qrCode.getVisualization());
+
         collectionReferenceQR.document(qrCode.getHashValue())
                 .set(newQRCode)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -155,23 +157,47 @@ public class DB {
     }
 
     /**
-     * Create a new user record in the database, could only be called when the user is new
-     * @param player player object
-     * @param callback actions to perform after the query is executed
+     * This method adds a new player to the DB. Since it is only called when an account is being
+     * generated, error checking is also done to make sure the user does not already exist
+     * @param player the new player to add
+     * @param cbplayerExists a call back to pass back to main describing if the player exists
      */
-    static protected void savePlayerInDB(Player player, Callback callback){
+    static protected void addNewPlayer(Player player, CallbackAddNewPlayer cbplayerExists){
         Map<String, Object> newPlayer = new HashMap<>();
         newPlayer.put("deviceID", player.getDeviceID());
         newPlayer.put("phoneNumber", player.getPhoneNumber());
-        collectionReferencePlayer.document(player.getUsername())
-                .set(newPlayer)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Adding new player", "completed");
-                        callback.onCallBack();
+
+        //get the reference for the usernames
+        DocumentReference docRef =  collectionReferencePlayer.document(player.getUsername());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    //a "snapshot" of the data in the firestore db
+                    DocumentSnapshot document = task.getResult();
+
+                    //document exists, send a true back on the callback
+                    if (document.exists()) {
+                        Log.d("user exists?", "true");
+                        cbplayerExists.onCallBack(true);
                     }
-                });
+                    //document DNE, add the player, send a false on the callback
+                    else {
+                        Log.d("user exits?", "false");
+                        docRef.set(newPlayer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("Adding new player", "completed");
+                                cbplayerExists.onCallBack(false);
+                            }
+                        });
+                    }
+                //problems!!! lets log it
+                } else {
+                    Log.d("error getting user from db", task.getException().toString());
+                }
+            }
+        });
     }
 
     /**
@@ -188,9 +214,10 @@ public class DB {
             i-=1;
         }
         for (int i = 0; i < players.size(); ++i){
-            DB.savePlayerInDB(players.get(i), new Callback() {
+
+            DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
-                public void onCallBack() {
+                public void onCallBack(Boolean playerExists) {
                     // nothing on purpose
                 }
             });
@@ -311,23 +338,6 @@ public class DB {
     }
 
     /**
-     * Verify is the username is new
-     * @param username username to be verified
-     * @param callbackVerifyIfUsernameIsNew actions to perform after the query is executed
-     */
-    static public void verifyIfUsernameIsNew(String username, CallbackVerifyIfUsernameIsNew callbackVerifyIfUsernameIsNew){
-        collectionReferencePlayer.document(username)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        Log.d("Verifying if username is new", "completed");
-                        callbackVerifyIfUsernameIsNew.onCallBack(!(task.getResult().exists()));
-                    }
-                });
-    }
-
-    /**
      * Given a deviceID, returns the username in the callback function
      * @param deviceID deviceID
      * @param callbackGetUsername actions to be performed after the query is executed
@@ -343,6 +353,44 @@ public class DB {
                     }
                 });
     }
+
+    /**
+     * This function returns the visualization of the given QR code via callback
+     * If there is no matching QR code, nothing comes through via callback
+     * @param hashValue the unique value of the QR to get the visualization from
+     * @param CallbackGetVisualization the callback for the method (pass in DB.CallbackGet...
+     */
+    static protected void getVisualization(String hashValue, CallbackGetVisualization CallbackGetVisualization){
+        DocumentReference docRef = collectionReferenceQR.document(hashValue);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    //a "snapshot" of the data in the firestore db
+                    DocumentSnapshot document = task.getResult();
+
+                    //document exists, send the visual on call back
+                    if (document.exists()) {
+                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                Log.d("visual data", document.getData().get("qrVisual").toString());
+                                CallbackGetVisualization.onCallBack(document.getData().get("qrVisual").toString());
+                            }
+                        });
+                    }
+                    //document DNE, log it, do nothing
+                    else {
+                        Log.d("visual data", "does not exist");
+                    }
+                }
+                else {
+                    Log.d("error getting visual from db", task.getException().toString());
+                }
+            }
+        });
+    }
+
 
     static protected void getQRCodeInDB(String hash, String location){
         // FIXME DB
@@ -365,10 +413,13 @@ public class DB {
     public interface VerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerIsNew);
     }
-    public interface CallbackVerifyIfUsernameIsNew {
-        void onCallBack(Boolean scannerIsNew);
+    public interface CallbackAddNewPlayer {
+        void onCallBack(Boolean playerExists);
     }
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
+    }
+    public interface CallbackGetVisualization {
+        void onCallBack(String visualization);
     }
 }

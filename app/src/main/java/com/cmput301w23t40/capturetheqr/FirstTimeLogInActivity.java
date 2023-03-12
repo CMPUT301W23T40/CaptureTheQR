@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -62,14 +64,22 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      * the database; if not, prompt the user to input again.
      */
     public void createNewUser(String username, String contact){
-        // FIXME no verification of usernames
-        DB.savePlayerInDB(new Player(username, contact, getDeviceID(this)), new DB.Callback() {
+        DB.addNewPlayer(new Player(username, contact, getDeviceID(this)), new DB.CallbackAddNewPlayer() {
             @Override
-            public void onCallBack() {
-                // nothing on purpose
+            //check the callback, if the player exists, perform a context switch. if not
+            //keep player on the screen showing a toast that they need to try again
+            public void onCallBack(Boolean playerExists) {
+                if (!playerExists)
+                    finish();
+                else
+                    editTextUsername.setError("Username already exists");
             }
         });
-        finish();
+
+        DB.getVisualization("fakeHashValue", visualization -> {
+            Log.v("visual",visualization);
+        });
+
     }
 
 
