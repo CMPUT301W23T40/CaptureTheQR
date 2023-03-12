@@ -74,21 +74,21 @@ public class QRCode {
     }
 
     protected static class Geolocation{
-        Double Lat, Lon;
+        double Lat, Lon;
 
         public Geolocation() {
         }
 
-        public Geolocation(Double lat, Double lon) {
+        public Geolocation(double lat, double lon) {
             Lat = lat;
             Lon = lon;
         }
 
-        public Double getLat() {
+        public double getLat() {
             return Lat;
         }
 
-        public Double getLon() {
+        public double getLon() {
             return Lon;
         }
     }
@@ -170,7 +170,7 @@ public class QRCode {
     }
 
     public LatLng getLocation() {
-        return new LatLng(this.location.getLat(), this.getLocation().longitude);
+        return new LatLng(this.location.getLat(), this.location.getLon());
     }
 
     public int getTimesScanned(){
