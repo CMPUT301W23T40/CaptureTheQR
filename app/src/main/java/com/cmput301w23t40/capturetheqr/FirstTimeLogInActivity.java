@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,7 +32,26 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewUser();
+                // check both fields are entered, otherwise show error
+                boolean isMissing = false;
+
+                String username = editTextUsername.getText().toString();
+                String contact = editTextContactInfo.getText().toString();
+
+                if (username.isEmpty()) {
+                    editTextUsername.setError("Username is required");
+                    isMissing = true;
+                }
+
+                if (contact.isEmpty()) {
+                    editTextContactInfo.setError("Contact info is required");
+                    isMissing = true;
+                }
+
+                if (isMissing) {
+                    return;
+                }
+                createNewUser(username, contact);
             }
         });
     }
@@ -42,15 +63,18 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      * in the database. If the username is unique and has proper length, save the info in
      * the database; if not, prompt the user to input again.
      */
-    public void createNewUser(){
-        // FIXME no verification of usernames
-        DB.savePlayerInDB(new Player(editTextUsername.getText().toString(), editTextContactInfo.getText().toString(), getDeviceID(this)), new DB.Callback() {
+    public void createNewUser(String username, String contact){
+        DB.addNewPlayer(new Player(username, contact, getDeviceID(this)), new DB.CallbackAddNewPlayer() {
             @Override
-            public void onCallBack() {
-                // nothing on purpose
+            //check the callback, if the player exists, perform a context switch. if not
+            //keep player on the screen showing a toast that they need to try again
+            public void onCallBack(Boolean playerExists) {
+                if (!playerExists)
+                    finish();
+                else
+                    editTextUsername.setError("Username already exists");
             }
         });
-        finish();
     }
 
 

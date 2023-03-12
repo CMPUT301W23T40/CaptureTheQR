@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -167,20 +168,47 @@ public class DB {
     }
 
     /**
-     * Create a new user record in the database, could only be called when the user is new
-     * @param player player object
-     * @param callback actions to perform after the query is executed
+     * This method adds a new player to the DB. Since it is only called when an account is being
+     * generated, error checking is also done to make sure the user does not already exist
+     * @param player the new player to add
+     * @param cbplayerExists a call back to pass back to main describing if the player exists
      */
-    static protected void savePlayerInDB(Player player, Callback callback){
-        collectionReferencePlayer.document(player.getUsername())
-                .set(player)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Adding new player", "completed");
-                        callback.onCallBack();
+    static protected void addNewPlayer(Player player, CallbackAddNewPlayer cbplayerExists){
+        Map<String, Object> newPlayer = new HashMap<>();
+        newPlayer.put("deviceID", player.getDeviceID());
+        newPlayer.put("phoneNumber", player.getPhoneNumber());
+
+        //get the reference for the usernames
+        DocumentReference docRef =  collectionReferencePlayer.document(player.getUsername());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    //a "snapshot" of the data in the firestore db
+                    DocumentSnapshot document = task.getResult();
+
+                    //document exists, send a true back on the callback
+                    if (document.exists()) {
+                        Log.d("user exists?", "true");
+                        cbplayerExists.onCallBack(true);
                     }
-                });
+                    //document DNE, add the player, send a false on the callback
+                    else {
+                        Log.d("user exits?", "false");
+                        docRef.set(newPlayer).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("Adding new player", "completed");
+                                cbplayerExists.onCallBack(false);
+                            }
+                        });
+                    }
+                //problems!!! lets log it
+                } else {
+                    Log.d("error getting user from db", task.getException().toString());
+                }
+            }
+        });
     }
 
     /**
@@ -194,20 +222,11 @@ public class DB {
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new LatLng(i, i+1)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
-        /*
-        getAllQRCodes(new CallbackGetAllQRCodes() {
-            @Override
-            public void onCallBack(ArrayList<QRCode> allQRCodes) {
-                for (QRCode qrCode : allQRCodes){
-                    Log.d("", qrCode.toString());
-                }
-            }
-        });
-        */
         for (int i = 0; i < players.size(); ++i){
-            DB.savePlayerInDB(players.get(i), new Callback() {
+
+            DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
-                public void onCallBack() {
+                public void onCallBack(Boolean playerExists) {
                     // nothing on purpose
                 }
             });
@@ -253,26 +272,6 @@ public class DB {
                             Log.d("Verifying if deviceID is new", deviceID + " is not new");
                         }
                         callbackVerifyIfDeviceIDIsNew.onCallBack(task.getResult().isEmpty());
-                    }});
-    }
-
-    /**
-     * Verify is the username is new
-     * @param username username to be verified
-     * @param callbackVerifyIfUsernameIsNew actions to perform after the query is executed
-     */
-    static public void verifyIfUsernameIsNew(String username, CallbackVerifyIfUsernameIsNew callbackVerifyIfUsernameIsNew){
-        collectionReferencePlayer.whereEqualTo("username", username)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.getResult().isEmpty()){
-                            Log.d("Verifying if username is new", username + " is new");
-                        } else {
-                            Log.d("Verifying if username is new", username + " is not new");
-                        }
-                        callbackVerifyIfUsernameIsNew.onCallBack(task.getResult().isEmpty());
                     }});
     }
 
@@ -342,8 +341,10 @@ public class DB {
                     }
                 });
     }
-    static protected void getMyQRCodes(){
 
+    static protected void getQRCodeInDB(String hash, String location){
+        // FIXME DB
+        //  logic: loop through all QRCodes and find object matching the hash + location
     }
 
     /** The idea of using callbacks is learnt from Alex Mamo
@@ -362,8 +363,8 @@ public class DB {
     public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerIsNew);
     }
-    public interface CallbackVerifyIfUsernameIsNew {
-        void onCallBack(Boolean scannerIsNew);
+    public interface CallbackAddNewPlayer {
+        void onCallBack(Boolean playerExists);
     }
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
