@@ -20,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -93,7 +92,7 @@ public class FirstTimeActivityTest {
         DocumentReference docRef =  crPlayer.document( username);
         docRef.set(newPlayer);
 
-        // Enter and submit
+        // Enter and submit existing username
         solo.enterText((EditText) solo.getView(R.id.edtxt_username), username);
         solo.enterText((EditText) solo.getView(R.id.edtxt_contactInfo), "9999999999");
         solo.clickOnView(solo.getView(R.id.btn_submit));
@@ -117,15 +116,6 @@ public class FirstTimeActivityTest {
         solo.assertCurrentActivity("Wrong Activity", FirstTimeLogInActivity.class);
     }
 
-//    /**
-//     * Closes the activity after each test
-//     * @throws Exception
-//     */
-//    @After
-//    public void tearDown() throws Exception{
-//        solo.finishOpenedActivities();
-//    }
-
     /**
      * Cleans the DB after all tests have run
      * @throws Exception
@@ -135,7 +125,6 @@ public class FirstTimeActivityTest {
         solo.finishOpenedActivities();
 
         // delete the data this test added to DB
-
         crPlayer.document("TEST_Username")
                 .delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
