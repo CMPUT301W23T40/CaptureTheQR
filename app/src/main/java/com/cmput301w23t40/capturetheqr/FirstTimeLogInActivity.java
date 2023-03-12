@@ -75,11 +75,6 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
                     editTextUsername.setError("Username already exists");
             }
         });
-
-        DB.getVisualization("fakeHashValue", visualization -> {
-            Log.v("visual",visualization);
-        });
-
     }
 
 
