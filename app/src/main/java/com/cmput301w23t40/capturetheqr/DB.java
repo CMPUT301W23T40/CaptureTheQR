@@ -214,7 +214,7 @@ public class DB {
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i){
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new LatLng(i, i+1)));
+            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(i, i+1)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
         for (int i = 0; i < players.size(); ++i){
@@ -308,21 +308,12 @@ public class DB {
 //                            Log.d("codename", documentSnapshot.getString("codeName"));
 //                            Log.d("visualization", documentSnapshot.getString("visualization"));
 //                            Log.d("score", String.valueOf(documentSnapshot.getLong("score").intValue()));
-
-                            QRCode.Geolocation geolocation= documentSnapshot.get("geolocation", QRCode.Geolocation.class);
-                            LatLng latLng;
-                            if (geolocation != null){
-                                latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
-                            } else {
-                                latLng = null;
-                            }
-//                            Log.d("lat lon", String.valueOf(latLng.latitude) + " " + String.valueOf(latLng.longitude));
                             QRCode newQRCode = new QRCode(
                                     documentSnapshot.getString("hashValue"),
                                     documentSnapshot.getString("codeName"),
                                     documentSnapshot.getString("visualization"),
                                     documentSnapshot.getLong("score").intValue(),
-                                    latLng);
+                                    documentSnapshot.get("geolocation", QRCode.Geolocation.class));
                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                             for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                 scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
