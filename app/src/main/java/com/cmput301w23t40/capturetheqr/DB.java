@@ -226,24 +226,6 @@ public class DB {
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
-        /*
-        getUsersQRCodes(players.get(0), new CallbackGetUsersQRCodes() {
-            @Override
-            public void onCallBack(ArrayList<QRCode> myQRCodes) {
-                for(QRCode qrCode : myQRCodes){
-                    Log.d("", qrCode.toString());
-                }
-            }
-        });
-        */
-//        getAllQRCodes(new CallbackGetAllQRCodes() {
-//            @Override
-//            public void onCallBack(ArrayList<QRCode> allQRCodes) {
-//                for (QRCode qrCode : allQRCodes){
-//                    Log.d("", qrCode.toString());
-//                }
-//            }
-//        });
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
