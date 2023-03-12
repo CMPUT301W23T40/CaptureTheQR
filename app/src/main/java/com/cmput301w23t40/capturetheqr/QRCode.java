@@ -15,9 +15,12 @@ import java.util.Date;
  */
 public class QRCode {
     protected static class ScannerInfo {
-        private final String username;
+        private String username;
         private String imageLink;
-        private final Date scannedDate;
+        private Date scannedDate;
+
+        public ScannerInfo() {
+        }
 
         public ScannerInfo(String username, String imageLink, Date scannedDate) {
             this.username = username;
@@ -44,9 +47,12 @@ public class QRCode {
     }
 
     protected static class Comment{
-        private final String username;
-        private final Date date;
-        private final String content;
+        private String username;
+        private Date date;
+        private String content;
+
+        public Comment() {
+        }
 
         public Comment(String username, Date date, String content) {
             this.username = username;
@@ -66,21 +72,44 @@ public class QRCode {
             return content;
         }
     }
-    private final String hashValue;
-    private final String codeName;
-    private final String visualization;
-    private final int score;
+
+    protected static class Geolocation{
+        Double Lat, Lon;
+
+        public Geolocation() {
+        }
+
+        public Geolocation(Double lat, Double lon) {
+            Lat = lat;
+            Lon = lon;
+        }
+
+        public Double getLat() {
+            return Lat;
+        }
+
+        public Double getLon() {
+            return Lon;
+        }
+    }
+    private String hashValue;
+    private String codeName;
+    private String visualization;
+    private int score;
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
-    private LatLng location;
+    private Geolocation location;
     private int timesScanned;
+
+    public QRCode() {
+    }
 
     public QRCode(String hashValue, String codeName, String visualization, int score, LatLng location) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        this.location = location;
+        this.location = new Geolocation(location.latitude, location.longitude);
     }
 
     public void comment(String username, Date date, String content){
@@ -141,7 +170,7 @@ public class QRCode {
     }
 
     public LatLng getLocation() {
-        return location;
+        return new LatLng(this.location.getLat(), this.getLocation().longitude);
     }
 
     public int getTimesScanned(){
