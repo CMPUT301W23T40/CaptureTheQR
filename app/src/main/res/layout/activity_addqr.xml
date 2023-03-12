@@ -40,10 +40,15 @@
         android:layout_width="280dp"
         android:layout_height="250dp"
         android:layout_marginTop="14dp"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:gravity="center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_codePoints" />
+
 
     <TextView
         android:id="@+id/txtvw_scanCount"
