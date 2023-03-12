@@ -30,7 +30,26 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewUser();
+                // check both fields are entered, otherwise show error
+                boolean isMissing = false;
+
+                String username = editTextUsername.getText().toString();
+                String contact = editTextContactInfo.getText().toString();
+
+                if (username.isEmpty()) {
+                    editTextUsername.setError("Username is required");
+                    isMissing = true;
+                }
+
+                if (contact.isEmpty()) {
+                    editTextContactInfo.setError("Contact info is required");
+                    isMissing = true;
+                }
+
+                if (isMissing) {
+                    return;
+                }
+                createNewUser(username, contact);
             }
         });
     }
@@ -42,9 +61,9 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
      * in the database. If the username is unique and has proper length, save the info in
      * the database; if not, prompt the user to input again.
      */
-    public void createNewUser(){
+    public void createNewUser(String username, String contact){
         // FIXME no verification of usernames
-        DB.savePlayerInDB(new Player(editTextUsername.getText().toString(), editTextContactInfo.getText().toString(), getDeviceID(this)), new DB.Callback() {
+        DB.savePlayerInDB(new Player(username, contact, getDeviceID(this)), new DB.Callback() {
             @Override
             public void onCallBack() {
                 // nothing on purpose
