@@ -147,15 +147,22 @@ public class DB {
                         DocumentSnapshot documentSnapshot = task.getResult();
                         List<Map<String, Object>> scannerInfoArrayList = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
                         if (scannerInfoArrayList != null) {
-                            for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
-                                if (existingScannerInfo.get("username").equals(username)) {
-                                    QRCode.ScannerInfo newScannerInfo = new QRCode.ScannerInfo(existingScannerInfo.get("username").toString(),
-                                            existingScannerInfo.get("imageLink").toString(),
-                                            (com.google.firebase.Timestamp) existingScannerInfo.get("scannedDate"));
-                                    task.getResult().getReference().update("scannersInfo", FieldValue.arrayRemove(newScannerInfo));
-                                    Log.d("Deleting scannerInfo", username + ' ' + "deleted");
-                                    callback.onCallBack();
-                                    return;
+                            if(scannerInfoArrayList.size() == 1){
+                                Log.d("Deleting scannerInfo", "the whole code got deleted");
+                                documentSnapshot.getReference().delete();
+                                callback.onCallBack();
+                                return;
+                            } else {
+                                for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
+                                    if (existingScannerInfo.get("username").equals(username)) {
+                                        QRCode.ScannerInfo newScannerInfo = new QRCode.ScannerInfo(existingScannerInfo.get("username").toString(),
+                                                existingScannerInfo.get("imageLink").toString(),
+                                                (com.google.firebase.Timestamp) existingScannerInfo.get("scannedDate"));
+                                        task.getResult().getReference().update("scannersInfo", FieldValue.arrayRemove(newScannerInfo));
+                                        Log.d("Deleting scannerInfo", username + ' ' + "deleted");
+                                        callback.onCallBack();
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -224,6 +231,13 @@ public class DB {
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
+        deleteScannerFromQRCode(qrCodes.get(1).getHashValue(), players.get(0).getUsername(), new Callback() {
+            @Override
+            public void onCallBack() {
+
+            }
+        });
+        /*
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
@@ -253,7 +267,11 @@ public class DB {
                         }
                 }
             });
+
+
         }
+
+         */
     }
 
     /**
