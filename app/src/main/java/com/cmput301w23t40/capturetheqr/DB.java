@@ -163,7 +163,6 @@ public class DB {
                                         callback.onCallBack();
                                         return;
                                     }
-                                }
                             }
                         }
                         Log.d("Deleting scannerInfo", username + ' ' + "not even exists");
@@ -229,7 +228,7 @@ public class DB {
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i){
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
-            players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
+            players.add(new Player("username " + i, String.valueOf(i*1111111111), "deviceID " + i));
         }
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
@@ -245,13 +244,13 @@ public class DB {
                 @Override
                 public void onCallBack() {
                         for (int n = 0; n < 2; n++) {
-                            saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), new Timestamp(new Date()), String.valueOf("comment: " + n )), new Callback() {
+                            saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), String.valueOf("comment: " + n )), new Callback() {
                                 @Override
                                 public void onCallBack() {
                                     // nothing on purpose
                                 }
                             });
-                            saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n ), new Timestamp(new Date())), new Callback() {
+                            saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n )), new Callback() {
                                 @Override
                                 public void onCallBack() {
                                     // nothing on purpose
@@ -333,13 +332,11 @@ public class DB {
                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                             for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                 scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
-                                        scannerInfo.get("imageLink").toString(),
-                                        (com.google.firebase.Timestamp) scannerInfo.get("scannedDate")));
+                                        scannerInfo.get("imageLink").toString()));
                             }
                             ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
                             for (Map<String, Object> comment : commentsArrayListInDB){
                                 commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
-                                        (com.google.firebase.Timestamp) comment.get("date"),
                                         comment.get("content").toString()));
                             }
                             newQRCode.setScannersInfo(scannerInfoArrayList);
@@ -371,13 +368,11 @@ public class DB {
                                     ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                                     for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                         scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
-                                                scannerInfo.get("imageLink").toString(),
-                                                (com.google.firebase.Timestamp) scannerInfo.get("scannedDate")));
+                                                scannerInfo.get("imageLink").toString()));
                                     }
                                     ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
                                     for (Map<String, Object> comment : commentsArrayListInDB){
                                         commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
-                                                (com.google.firebase.Timestamp) comment.get("date"),
                                                 comment.get("content").toString()));
                                     }
                                     newQRCode.setScannersInfo(scannerInfoArrayList);
