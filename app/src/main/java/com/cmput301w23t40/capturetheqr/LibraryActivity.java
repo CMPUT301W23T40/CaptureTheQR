@@ -93,7 +93,7 @@ public class LibraryActivity extends AppCompatActivity {
 //                //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
 //
 //                if (qrCodeDataList.size() > 0) {
-//                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetUsername() {
+//                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetPlayer() {
 //                                @Override
 //                                public void onCallBack(String username) {
 //                                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(), username, new DB.Callback() {
