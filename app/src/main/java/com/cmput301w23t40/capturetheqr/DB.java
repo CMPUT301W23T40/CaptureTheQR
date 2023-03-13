@@ -147,7 +147,7 @@ public class DB {
                         DocumentSnapshot documentSnapshot = task.getResult();
                         List<Map<String, Object>> scannerInfoArrayList = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
                         if (scannerInfoArrayList != null) {
-                            if(scannerInfoArrayList.size() == 1){
+                            if (scannerInfoArrayList.size() == 1) {
                                 Log.d("Deleting scannerInfo", "the whole code got deleted");
                                 documentSnapshot.getReference().delete();
                                 callback.onCallBack();
@@ -156,17 +156,17 @@ public class DB {
                                 for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
                                     if (existingScannerInfo.get("username").equals(username)) {
                                         QRCode.ScannerInfo newScannerInfo = new QRCode.ScannerInfo(existingScannerInfo.get("username").toString(),
-                                                existingScannerInfo.get("imageLink").toString(),
-                                                (com.google.firebase.Timestamp) existingScannerInfo.get("scannedDate"));
+                                                existingScannerInfo.get("imageLink").toString());
                                         task.getResult().getReference().update("scannersInfo", FieldValue.arrayRemove(newScannerInfo));
                                         Log.d("Deleting scannerInfo", username + ' ' + "deleted");
                                         callback.onCallBack();
                                         return;
                                     }
+                                }
                             }
+                            Log.d("Deleting scannerInfo", username + ' ' + "not even exists");
+                            callback.onCallBack();
                         }
-                        Log.d("Deleting scannerInfo", username + ' ' + "not even exists");
-                        callback.onCallBack();
                     }
                 });
     }
