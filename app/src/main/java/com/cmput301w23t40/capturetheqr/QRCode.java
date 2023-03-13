@@ -181,7 +181,7 @@ public class QRCode implements Serializable{
         if (scannersInfo != null) {
             return scannersInfo.size();
         }
-        return -1;
+        return 0;
     }
 
     @Override

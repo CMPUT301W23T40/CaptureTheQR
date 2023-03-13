@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -50,6 +51,15 @@ public class AddQRActivity extends AppCompatActivity {
         bundle = getIntent().getExtras();
         hash = bundle.getString("hash"); // this is the QR code hash
         QRCode qrCode = QRAnalyzer.generateQRCodeObject(hash);
+        TextView qrCodeName, score, visualization, timesScanned;
+        qrCodeName = findViewById(R.id.txtvw_codeName);
+        score = findViewById(R.id.txtvw_codePoints);
+        visualization = findViewById(R.id.txtvw_codeDrawing);
+        timesScanned = findViewById(R.id.txtvw_scanCount);
+        qrCodeName.setText(qrCode.getCodeName());
+        score.setText(String.valueOf(qrCode.getScore()));
+        visualization.setText(qrCode.getVisualization());
+        timesScanned.setText("This code has been scanned " + String.valueOf(qrCode.getTimesScanned()) + " time(s)!");
         /* Adapted code from the following resource for the camera API
         author: https://www.youtube.com/@allcodingtutorials1857
         url: https://www.youtube.com/watch?v=59taMJThsFU
