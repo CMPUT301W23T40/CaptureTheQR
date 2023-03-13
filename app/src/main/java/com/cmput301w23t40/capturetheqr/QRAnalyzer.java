@@ -15,25 +15,17 @@ import java.util.Map;
  */
 public class QRAnalyzer {
     /**
-     * Scan a QR code. If the hash value for this code does not exist in the DB,
-     * then generate a name, a visualization, and a score for the code and save them in the DB; if
-     * the QR code already exists, add the scanner to the code's scanners list and add the code to
-     * the user's list of codes.
-     * // FIXME add code to the player's list of scanned codes
-     * @param codeContents
+     * Generate a QRCode object from a real code's hashvalue
+     * @param hashValue hashvalue of the real code
+     * @return qrcode object
      */
-    public static void scanQRCode(String codeContents){
-        String hashValue = generateHashValue(codeContents);
-        /*
-        //query if the QR code exists nearby
-        if(){
-            // if yes, add the scanner info to the code
-        }else{
-            // create a new QR code in the db, and add the scanner info
-        }
-        */
+    public static QRCode generateQRCodeObject(String hashValue){
+        return new QRCode(hashValue,
+                generateName(hashValue),
+                generateVisualization(hashValue),
+                generateScore(hashValue),
+                new QRCode.Geolocation(-1, -1));
     }
-
 
     /**
      *  Adapted/Copied code from the following resource for the SHA-256 hash in java functionality:

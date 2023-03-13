@@ -173,11 +173,15 @@ public class QRCode implements Serializable{
         return geolocation;
     }
 
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+    }
+
     public int getTimesScanned(){
         if (scannersInfo != null) {
             return scannersInfo.size();
         }
-        return -1;
+        return 0;
     }
 
     @Override
