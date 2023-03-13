@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This class displays the details of a code clicked
+ */
 public class QRDetailsActivity extends AppCompatActivity {
 
     /**
