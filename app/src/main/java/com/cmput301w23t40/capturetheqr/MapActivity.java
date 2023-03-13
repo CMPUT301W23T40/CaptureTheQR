@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +37,7 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        playerLocation = new PlayerLocation();
 
         /* Copied the following code snippet for getting the map fragment
                 author: Google Inc.
@@ -48,11 +48,9 @@ public class MapActivity extends AppCompatActivity
                 .findFragmentById(R.id.frgmt_qrMap);
         mapFragment.getMapAsync(this);
 
-        playerLocation = new PlayerLocation();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
     /**
      * Implement onMapReady callback for OnMapReadyCallback
      * and initialize the map UI
@@ -62,7 +60,10 @@ public class MapActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         // Move the camera to the current user location
-        CameraUpdate camPosition = CameraUpdateFactory.newLatLng(playerLocation.getLocation());
+        QRCode.Geolocation geolocation = playerLocation.getLocation();
+        LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+        CameraUpdate camPosition;
+        camPosition = CameraUpdateFactory.newLatLng(latLng);
         googleMap.moveCamera(camPosition);
 
         // FIXME: set search radius based on visible part of map
@@ -102,7 +103,7 @@ public class MapActivity extends AppCompatActivity
 
     /**
      * Implements PlayerLocation.CallbackNearbyCodes
-     * Called when the
+     * Called after the refreshed data has been retrieved by playerLocation
      */
     @Override
     public void onUpdateNearbyCodes() {

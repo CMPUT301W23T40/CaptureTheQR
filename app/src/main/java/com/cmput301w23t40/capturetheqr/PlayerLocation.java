@@ -14,12 +14,12 @@ public class PlayerLocation {
     /**
      * The location of the player
      */
-    private LatLng location;
+    private QRCode.Geolocation location;
     private ArrayList<QRCode> nearbyCodes;
 
     public PlayerLocation() {
         // FIXME: For testing, this is set to somewhere in the middle of UofA quad
-        this.location = new LatLng(53.52704,-113.52563);
+        this.location = new QRCode.Geolocation(53.52704,-113.52563);
         nearbyCodes = new ArrayList<>();
     }
 
@@ -27,7 +27,7 @@ public class PlayerLocation {
      * Get the location of the player
      * @return
      */
-    public LatLng getLocation() {
+    public QRCode.Geolocation getLocation() {
         return location;
     }
 
@@ -35,7 +35,7 @@ public class PlayerLocation {
      * Update the player's location
      * @param location
      */
-    public void setLocation(LatLng location) {
+    public void setLocation(QRCode.Geolocation location) {
         this.location = location;
     }
 
