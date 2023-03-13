@@ -69,8 +69,7 @@ public class AddQRActivity extends AppCompatActivity {
         buttonSubmit.setOnClickListener(v->
         {
             if(geoSwitch.isChecked()){
-                // FIXME get geolocation
-                //qrCode.setGeolocation();
+                //qrCode.setGeolocation(new QRCode.Geolocation(-1, -1));
             }
             DB.saveQRCodeInDB(qrCode, new DB.Callback() {
                 @Override
@@ -78,10 +77,20 @@ public class AddQRActivity extends AppCompatActivity {
                     DB.getPlayer(FirstTimeLogInActivity.getDeviceID(AddQRActivity.this), new DB.CallbackGetPlayer() {
                         @Override
                         public void onCallBack(Player player) {
-                            DB.saveScannerInfoInDB(qrCode, new QRCode.ScannerInfo(player.getUsername(), "fake image link", new Timestamp(new Date())), new DB.Callback() {
+                            QRCode.ScannerInfo scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
+                            DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
                                 @Override
-                                public void onCallBack() {
-                                    // nothing
+                                public void onCallBack(Boolean scannerIsNew) {
+                                    if (scannerIsNew){
+                                        DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
+                                            @Override
+                                            public void onCallBack() {
+                                                // nothing
+                                            }
+                                        });
+                                    } else {
+                                        Log.d("saving scanner info", "the user scanned this code before");
+                                    }
                                 }
                             });
                         }
