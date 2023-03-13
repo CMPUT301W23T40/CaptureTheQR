@@ -1,12 +1,14 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import android.util.Base64;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
+import com.google.common.primitives.Bytes;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -14,8 +16,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -385,6 +387,56 @@ public class DB {
                 });
     }
 
+    static protected void getImagesInDB(String username, String hash, CallbackGetImage cbGetImage){
+        //if (bitmap!=null){
+        DocumentReference docRef = collectionReferenceQR.document(hash);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+                    //document exists, now need to find correct picture
+                    if(doc.exists()){
+
+                        //get the scanner info obj from the db
+                        List<Map<String, Object>> sci = (List<Map<String, Object>>) doc.get("scannersInfo");
+
+                        //iterate through the object
+                        for (int i = 0; i < sci.size(); i++) {
+                            //check if the player is correct
+                            if(sci.get(i).get("username").equals(username))
+                                //Log.d("link is:",sci.get(i).get("imageLink").toString());
+                                //cbGetImage.onCallBack((Bitmap) sci.get(i).get("imageLink"));
+                                cbGetImage.onCallBack(sci.get(i).get("imageLink"));
+                        }
+
+                    }
+                }
+            }
+        });
+    }
+
+    static protected void saveImageInDB(String username, String hash, Bitmap bmap, Callback cb){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] data = baos.toByteArray();
+
+        String compressedImage = Base64.encodeToString(data,Base64.DEFAULT);
+
+        collectionReferenceQR.document(hash)
+                .update("scannersInfo", FieldValue.arrayUnion(compressedImage))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("Saved bitmap: ","True");
+                        cb.onCallBack();
+                    }
+                });
+    }
+
+
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -412,5 +464,9 @@ public class DB {
     }
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
+    }
+
+    public interface CallbackGetImage {
+        void onCallBack(Object o);
     }
 }
