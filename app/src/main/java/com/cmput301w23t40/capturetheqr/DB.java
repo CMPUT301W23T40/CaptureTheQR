@@ -231,13 +231,6 @@ public class DB {
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
             players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
         }
-        deleteScannerFromQRCode(qrCodes.get(1).getHashValue(), players.get(0).getUsername(), new Callback() {
-            @Override
-            public void onCallBack() {
-
-            }
-        });
-        /*
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
                 @Override
@@ -270,8 +263,6 @@ public class DB {
 
 
         }
-
-         */
     }
 
     /**

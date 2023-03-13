@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -21,9 +22,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.Timestamp;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.util.Date;
 
 /**
  * This class defines the main UI page for the Add QR Code flow
@@ -45,12 +49,14 @@ public class AddQRActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addqr);
         bundle = getIntent().getExtras();
         hash = bundle.getString("hash"); // this is the QR code hash
+        QRCode qrCode = QRAnalyzer.generateQRCodeObject(hash);
         /* Adapted code from the following resource for the camera API
         author: https://www.youtube.com/@allcodingtutorials1857
         url: https://www.youtube.com/watch?v=59taMJThsFU
         last updated: 16 October, 2023
          */
         buttonPicture = findViewById(R.id.btn_uploadPic);
+        Switch geoSwitch = findViewById(R.id.btn_geoToggle);
         buttonPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +68,28 @@ public class AddQRActivity extends AppCompatActivity {
         buttonSubmit = findViewById(R.id.btn_Submit);
         buttonSubmit.setOnClickListener(v->
         {
+            if(geoSwitch.isChecked()){
+                // FIXME get geolocation
+                //qrCode.setGeolocation();
+            }
+            DB.saveQRCodeInDB(qrCode, new DB.Callback() {
+                @Override
+                public void onCallBack() {
+                    DB.getPlayer(FirstTimeLogInActivity.getDeviceID(AddQRActivity.this), new DB.CallbackGetPlayer() {
+                        @Override
+                        public void onCallBack(Player player) {
+                            DB.saveScannerInfoInDB(qrCode, new QRCode.ScannerInfo(player.getUsername(), "fake image link", new Timestamp(new Date())), new DB.Callback() {
+                                @Override
+                                public void onCallBack() {
+                                    // nothing
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast,Toast.LENGTH_LONG).show();
         });

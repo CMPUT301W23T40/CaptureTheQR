@@ -181,6 +181,10 @@ public class QRCode {
         return geolocation;
     }
 
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+    }
+
     public int getTimesScanned(){
         return timesScanned;
     }
