@@ -13,17 +13,19 @@ import java.util.ArrayList;
  * the pictures, the dates of scan, and a list of Comment objects, which maintains the commenters' names,
  * the dates of the comments, and the comment contents.
  */
-public class QRCode implements Serializable {
+public class QRCode implements Serializable{
     protected static class ScannerInfo implements Serializable{
         private String username;
         private String imageLink;
+        private Timestamp scannedDate;
 
         public ScannerInfo() {
         }
 
-        public ScannerInfo(String username, String imageLink) {
+        public ScannerInfo(String username, String imageLink, Timestamp scannedDate) {
             this.username = username;
             this.imageLink = imageLink;
+            this.scannedDate = scannedDate;
         }
 
         public String getUsername() {
@@ -34,6 +36,9 @@ public class QRCode implements Serializable {
             return imageLink;
         }
 
+        public Timestamp getScannedDate() {
+            return scannedDate;
+        }
 
         // optional feature
         public void deleteImage() {
@@ -41,15 +46,17 @@ public class QRCode implements Serializable {
         }
     }
 
-    protected static class Comment implements Serializable {
+    protected static class Comment implements Serializable{
         private String username;
+        private Timestamp date;
         private String content;
 
         public Comment() {
         }
 
-        public Comment(String username, String content) {
+        public Comment(String username, Timestamp date, String content) {
             this.username = username;
+            this.date = date;
             this.content = content;
         }
 
@@ -57,13 +64,16 @@ public class QRCode implements Serializable {
             return username;
         }
 
+        public Timestamp getDate() {
+            return date;
+        }
 
         public String getContent() {
             return content;
         }
     }
 
-    protected static class Geolocation implements Serializable {
+    protected static class Geolocation implements Serializable{
         private double latitude, longitude;
 
         public Geolocation() {
@@ -103,6 +113,8 @@ public class QRCode implements Serializable {
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
 
+    public QRCode() {
+    }
 
     public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation) {
         this.hashValue = hashValue;
@@ -112,8 +124,8 @@ public class QRCode implements Serializable {
         this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
     }
 
-    public void comment(String username, String content){
-        Comment comment = new Comment(username, content);
+    public void comment(String username, Timestamp date, String content){
+        Comment comment = new Comment(username, date, content);
         comments.add(comment);
         DB.saveCommentInDB(this, comment, new DB.Callback() {
             @Override
@@ -124,7 +136,7 @@ public class QRCode implements Serializable {
     }
 
     public void addScanner(String username, String imageLink, Timestamp scannedDate){
-        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink);
+        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
         scannersInfo.add(newScannerInfo);
         DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
             @Override
