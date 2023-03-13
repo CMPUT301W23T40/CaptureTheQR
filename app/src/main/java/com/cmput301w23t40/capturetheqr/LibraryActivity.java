@@ -78,8 +78,7 @@ public class LibraryActivity extends AppCompatActivity {
                                 @Override
                                 public void onCallBack() {
                                     // remove locally / from UI as well
-                                    qrCodeDataList.remove(pos);
-                                    qrCodeList.notifyItemRemoved(pos);
+                                    showPlayerQR();
                                 }
                             });
                         }

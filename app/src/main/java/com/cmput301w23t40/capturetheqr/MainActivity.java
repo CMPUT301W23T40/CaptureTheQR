@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // query the device ID in the database, if it does not exist, show the signin page; if it
         // exists already, show the homepage of the app
         DB.setDB(FirebaseFirestore.getInstance());
-//        DB.refreshTestingDataInDB();
+        DB.refreshTestingDataInDB();
         DB.verifyIfDeviceIDIsNew(deviceId, new DB.CallbackVerifyIfDeviceIDIsNew() {
             @Override
             public void onCallBack(Boolean deviceIDIsNew) {
