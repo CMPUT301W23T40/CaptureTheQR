@@ -119,6 +119,9 @@ public class LibraryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Display all the QRCodes of this user
+     */
     private void showPlayerQR() {
         onUserView = Boolean.TRUE;
         DB.getPlayer(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackGetPlayer(){
@@ -136,6 +139,9 @@ public class LibraryActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Display all the QRCodes of all players
+     */
     private void showAllQR() {
         onUserView = Boolean.FALSE;
         DB.getAllQRCodes(new DB.CallbackGetAllQRCodes() {
