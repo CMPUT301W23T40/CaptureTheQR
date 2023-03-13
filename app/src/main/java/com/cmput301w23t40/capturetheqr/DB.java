@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import android.util.Base64;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.primitives.Bytes;
 import com.google.firebase.firestore.CollectionReference;
@@ -388,7 +389,6 @@ public class DB {
     }
 
     static protected void getImagesInDB(String username, String hash, CallbackGetImage cbGetImage){
-        //if (bitmap!=null){
         DocumentReference docRef = collectionReferenceQR.document(hash);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -405,8 +405,6 @@ public class DB {
                         for (int i = 0; i < sci.size(); i++) {
                             //check if the player is correct
                             if(sci.get(i).get("username").equals(username))
-                                //Log.d("link is:",sci.get(i).get("imageLink").toString());
-                                //cbGetImage.onCallBack((Bitmap) sci.get(i).get("imageLink"));
                                 cbGetImage.onCallBack(sci.get(i).get("imageLink"));
                         }
 
@@ -424,12 +422,14 @@ public class DB {
 
         String compressedImage = Base64.encodeToString(data,Base64.DEFAULT);
 
+        DocumentReference docRef = collectionReferenceQR.document(hash);
+
         collectionReferenceQR.document(hash)
                 .update("scannersInfo", FieldValue.arrayUnion(compressedImage))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saved bitmap: ","True");
+                        Log.d("Image saved: ","True" );
                         cb.onCallBack();
                     }
                 });
