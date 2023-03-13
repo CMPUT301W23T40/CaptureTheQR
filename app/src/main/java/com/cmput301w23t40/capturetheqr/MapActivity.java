@@ -81,7 +81,7 @@ public class MapActivity extends AppCompatActivity
      */
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
-        QRCode code = (QRCode)marker.getTag();
+        QRCode code = (QRCode) marker.getTag();
         Intent intent = new Intent(getApplicationContext(), QRDetailsActivity.class);
         intent.putExtra("qrcode", code);
         startActivity(intent);

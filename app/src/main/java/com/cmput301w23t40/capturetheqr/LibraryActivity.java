@@ -47,7 +47,7 @@ public class LibraryActivity extends AppCompatActivity {
 
         qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
             Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
-            intent.putExtra("qrcode", qrCodeList.getCode(position));
+            intent.putExtra("qrcode", (QRCode) qrCodeList.getCode(position));
             startActivity(intent);
         });
 
@@ -77,17 +77,16 @@ public class LibraryActivity extends AppCompatActivity {
                             DB.deleteScannerFromQRCode(qrCodeDataList.get(pos).getHashValue(), player.getUsername(), new DB.Callback() {
                                 @Override
                                 public void onCallBack() {
-                                    showPlayerQR();
                                     // remove locally / from UI as well
-//                                    qrCodeDataList.remove(pos);
-//                                    qrCodeList.notifyItemRemoved(pos);
+                                    qrCodeDataList.remove(pos);
+                                    qrCodeList.notifyItemRemoved(pos);
                                 }
                             });
                         }
                     });
                 } else {
                     Toast.makeText(getApplicationContext(), "Cannot delete from this view. Please click 'MY QRS' to delete",Toast.LENGTH_LONG).show();
-                    // showAllQR();
+                     showAllQR();
                 }
             }
         }).attachToRecyclerView(qrCodeView);

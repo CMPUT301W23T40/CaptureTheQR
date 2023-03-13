@@ -222,7 +222,7 @@ public class DB {
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 10; ++i){
             qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
-            players.add(new Player("username " + i, String.valueOf(i*111) + "-" + String.valueOf(i*111) + "-" +String.valueOf(i*1111), "deviceID " + i));
+            players.add(new Player("username " + i, String.valueOf(i*1111111111), "deviceID " + i));
         }
         for (int i = 0; i < players.size(); ++i){
             DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
