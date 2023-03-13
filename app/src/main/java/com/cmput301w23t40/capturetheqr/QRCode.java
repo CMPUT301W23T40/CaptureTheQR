@@ -14,18 +14,16 @@ import java.util.ArrayList;
  * the dates of the comments, and the comment contents.
  */
 public class QRCode implements Serializable {
-    protected static class ScannerInfo {
+    protected static class ScannerInfo implements Serializable{
         private String username;
         private String imageLink;
-        private Timestamp scannedDate;
 
         public ScannerInfo() {
         }
 
-        public ScannerInfo(String username, String imageLink, Timestamp scannedDate) {
+        public ScannerInfo(String username, String imageLink) {
             this.username = username;
             this.imageLink = imageLink;
-            this.scannedDate = scannedDate;
         }
 
         public String getUsername() {
@@ -36,9 +34,6 @@ public class QRCode implements Serializable {
             return imageLink;
         }
 
-        public Timestamp getScannedDate() {
-            return scannedDate;
-        }
 
         // optional feature
         public void deleteImage() {
@@ -46,17 +41,15 @@ public class QRCode implements Serializable {
         }
     }
 
-    protected static class Comment{
+    protected static class Comment implements Serializable {
         private String username;
-        private Timestamp date;
         private String content;
 
         public Comment() {
         }
 
-        public Comment(String username, Timestamp date, String content) {
+        public Comment(String username, String content) {
             this.username = username;
-            this.date = date;
             this.content = content;
         }
 
@@ -64,9 +57,6 @@ public class QRCode implements Serializable {
             return username;
         }
 
-        public Timestamp getDate() {
-            return date;
-        }
 
         public String getContent() {
             return content;
@@ -122,8 +112,8 @@ public class QRCode implements Serializable {
         this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
     }
 
-    public void comment(String username, Timestamp date, String content){
-        Comment comment = new Comment(username, date, content);
+    public void comment(String username, String content){
+        Comment comment = new Comment(username, content);
         comments.add(comment);
         DB.saveCommentInDB(this, comment, new DB.Callback() {
             @Override
@@ -134,7 +124,7 @@ public class QRCode implements Serializable {
     }
 
     public void addScanner(String username, String imageLink, Timestamp scannedDate){
-        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
+        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink);
         scannersInfo.add(newScannerInfo);
         DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
             @Override
