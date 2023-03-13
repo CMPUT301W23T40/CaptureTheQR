@@ -17,15 +17,13 @@ public class QRCode implements Serializable{
     protected static class ScannerInfo implements Serializable{
         private String username;
         private String imageLink;
-        private Timestamp scannedDate;
 
         public ScannerInfo() {
         }
 
-        public ScannerInfo(String username, String imageLink, Timestamp scannedDate) {
+        public ScannerInfo(String username, String imageLink) {
             this.username = username;
             this.imageLink = imageLink;
-            this.scannedDate = scannedDate;
         }
 
         public String getUsername() {
@@ -36,10 +34,6 @@ public class QRCode implements Serializable{
             return imageLink;
         }
 
-        public Timestamp getScannedDate() {
-            return scannedDate;
-        }
-
         // optional feature
         public void deleteImage() {
             this.imageLink = null;
@@ -48,24 +42,18 @@ public class QRCode implements Serializable{
 
     protected static class Comment implements Serializable{
         private String username;
-        private Timestamp date;
         private String content;
 
         public Comment() {
         }
 
-        public Comment(String username, Timestamp date, String content) {
+        public Comment(String username, String content) {
             this.username = username;
-            this.date = date;
             this.content = content;
         }
 
         public String getUsername() {
             return username;
-        }
-
-        public Timestamp getDate() {
-            return date;
         }
 
         public String getContent() {
@@ -124,8 +112,8 @@ public class QRCode implements Serializable{
         this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
     }
 
-    public void comment(String username, Timestamp date, String content){
-        Comment comment = new Comment(username, date, content);
+    public void comment(String username, String content){
+        Comment comment = new Comment(username, content);
         comments.add(comment);
         DB.saveCommentInDB(this, comment, new DB.Callback() {
             @Override
@@ -135,8 +123,8 @@ public class QRCode implements Serializable{
         });
     }
 
-    public void addScanner(String username, String imageLink, Timestamp scannedDate){
-        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink, scannedDate);
+    public void addScanner(String username, String imageLink){
+        ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink);
         scannersInfo.add(newScannerInfo);
         DB.verifyIfScannerInfoIsNew(QRCode.this, newScannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
             @Override
@@ -185,11 +173,15 @@ public class QRCode implements Serializable{
         return geolocation;
     }
 
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+    }
+
     public int getTimesScanned(){
         if (scannersInfo != null) {
             return scannersInfo.size();
         }
-        return -1;
+        return 0;
     }
 
     @Override
