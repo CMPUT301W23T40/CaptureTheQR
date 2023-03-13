@@ -2,6 +2,7 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -47,11 +48,16 @@ public class MainActivity extends AppCompatActivity {
         DB.getPlayer(deviceId, new DB.CallbackGetPlayer() {
             @Override
             public void onCallBack(Player player) {
-                TextView helloText = findViewById(R.id.txtvw_usernameHello);
-                TextView contactText = findViewById(R.id.txtvw_contactInfo);
+                if(player!=null){
+                    TextView helloText = findViewById(R.id.txtvw_usernameHello);
+                    TextView contactText = findViewById(R.id.txtvw_contactInfo);
 
-                helloText.setText("Hello " + player.getUsername());
-                contactText.setText(player.getPhoneNumber());
+                    helloText.setText("Hello " + player.getUsername());
+                    contactText.setText(player.getPhoneNumber());
+                } else {
+                    Log.d("user is null", "");
+                }
+
             }
         });
 
