@@ -1,46 +1,29 @@
 package com.cmput301w23t40.capturetheqr;
 
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.type.LatLng;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
  */
 public class LibraryActivity extends AppCompatActivity {
-    static final String TAG ="Database update";
-    RecyclerView qrCodeView;
-    ArrayList<QRCode> qrCodeDataList = new ArrayList<>();
-    QRCodeList qrCodeList = new QRCodeList(this, qrCodeDataList);
+    private final String TAG ="Database update";
+    private RecyclerView qrCodeView;
+    private ArrayList<QRCode> qrCodeDataList = new ArrayList<>();
+    private QRCodeList qrCodeList = new QRCodeList(this, qrCodeDataList);
+    private Boolean onUserView = Boolean.TRUE;
+
 
     /**
      * override Activity onCreate method
@@ -60,8 +43,7 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeView.setLayoutManager(manager);
 
         // By default only show that Player's QR Codes
-        // TODO: nothing shows initially (maybe since we aren't using DB properly yet?)
-        showAllQR();
+        showPlayerQR();
 
         qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
             Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
@@ -72,6 +54,7 @@ public class LibraryActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         /* The ItemTouchHelper swipe-to-delete functionality below was copied (and altered) from:
             author: https://auth.geeksforgeeks.org/user/chaitanyamunje
             url: https://www.geeksforgeeks.org/swipe-to-delete-and-undo-in-android-recyclerview/
@@ -79,62 +62,39 @@ public class LibraryActivity extends AppCompatActivity {
             altered: removed Snackbar functionality that allows for undoing the deletion and changed the onMove so that it calls onSwiped (entry is
                      deleted even when the user only partially swipes the item)
         */
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView cityList, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                onSwiped(viewHolder, 1);
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                // TODO: delete via Firestore (so changes are persistent)
-//
-//                //qrCodeDataList.remove(viewHolder.getBindingAdapterPosition());
-//
-//                if (qrCodeDataList.size() > 0) {
-//                    DB.getUserName(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetPlayer() {
-//                                @Override
-//                                public void onCallBack(String username) {
-//                                    DB.deleteScannerFromQRCode(qrCodeDataList.get(viewHolder.getBindingAdapterPosition()).getHashValue(), username, new DB.Callback() {
-//                                        @Override
-//                                        public void onCallBack() {
-//                                            // nothing on purpose
-//                                        }
-//                                    });
-//                                }
-//                            }
-//                    );
-//                    qrCodeList.notifyDataSetChanged();
-//
-//                }
-//            }
-//        }).attachToRecyclerView(qrCodeView);
-//
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView cityList, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                if (onUserView)
+                    onSwiped(viewHolder, 1);
+                return false;
+            }
 
-        //real time updates from Firebase
-//        collectionRefQR=DB.getCollectionReferenceQR();
-//        DB.getCollectionReferenceQR().addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-//            FirebaseFirestoreException error) {
-//                // Clear the old list
-//                // qrCodeDataList.clear();
-//                for(QueryDocumentSnapshot doc: queryDocumentSnapshots)
-//                {
-//                    Log.d(TAG, String.valueOf(doc.getData()));
-//
-//                    //below commented code is for reference, will be removed in a future PR
-//
-//                    //String qrcode = doc.getId();
-//                    //String qrid = (String) doc.getData().get("codeName");
-//                    //qrCodeDataList.add(new QRCode(qrcode, qrid,visFake, 10));
-//                }
-//                qrCodeList.notifyDataSetChanged(); // Notifying the adapter to render any new data fetched from the cloud
-//
-//            }
-//        });
-
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (onUserView && qrCodeDataList.size() > 0) {
+                    System.out.println("HERE");
+                    Integer pos = viewHolder.getBindingAdapterPosition();
+                    DB.getPlayer(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetPlayer() {
+                        @Override
+                        public void onCallBack(Player player) {
+                            DB.deleteScannerFromQRCode(qrCodeDataList.get(pos).getHashValue(), player.getUsername(), new DB.Callback() {
+                                @Override
+                                public void onCallBack() {
+                                    showPlayerQR();
+                                    // remove locally / from UI as well
+//                                    qrCodeDataList.remove(pos);
+//                                    qrCodeList.notifyItemRemoved(pos);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "Cannot delete from this view. Please click 'MY QRS' to delete",Toast.LENGTH_LONG).show();
+                    // showAllQR();
+                }
+            }
+        }).attachToRecyclerView(qrCodeView);
     }
 
 
@@ -165,22 +125,26 @@ public class LibraryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: for these methods actually get data from Firestore
-    // TODO: add logic to only show Player's QR (rn just hardcoded data)
-    // TODO: right now, only qr code name is being displayed
     private void showPlayerQR() {
-//        qrCodeDataList = new ArrayList<>();
-//        String visFake = new String("vis\nfake\nlist");
-//
-//        QRCode qr1 = new QRCode("fakeHash", "myQR1", visFake, 10, );
-//        QRCode qr2 = new QRCode("fakeHash", "myQR2", visFake, 20, null);
-//        qrCodeDataList.addAll(Arrays.asList(qr1, qr2));
-//        qrCodeList = new QRCodeList(this, qrCodeDataList);
-//
-//        qrCodeView.setAdapter(qrCodeList);
+        onUserView = Boolean.TRUE;
+        DB.getPlayer(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackGetPlayer(){
+            @Override
+            public void onCallBack(Player player) {
+                System.out.println(player.getDeviceID() + player.getUsername());
+                DB.getUsersQRCodes(player, new DB.CallbackGetUsersQRCodes() {
+                    @Override
+                    public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                        qrCodeDataList = myQRCodes;
+                        qrCodeList = new QRCodeList(getApplicationContext(), qrCodeDataList);
+                        qrCodeView.setAdapter(qrCodeList);
+                    }
+                });
+            }
+        });
     }
 
     private void showAllQR() {
+        onUserView = Boolean.FALSE;
         DB.getAllQRCodes(new DB.CallbackGetAllQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> allQRCodes) {

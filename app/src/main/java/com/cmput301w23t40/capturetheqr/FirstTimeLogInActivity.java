@@ -98,7 +98,7 @@ public class FirstTimeLogInActivity extends AppCompatActivity {
         last updated: Jan 8, 2020
         licence: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/deed.en
         */
-        return Settings.Secure.getString(
-                context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        return "deviceID 1";
+       // return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }
