@@ -1,10 +1,10 @@
 package com.cmput301w23t40.capturetheqr;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * the pictures, the dates of scan, and a list of Comment objects, which maintains the commenters' names,
  * the dates of the comments, and the comment contents.
  */
-public class QRCode {
+public class QRCode implements Serializable {
     protected static class ScannerInfo {
         private String username;
         private String imageLink;
@@ -73,7 +73,7 @@ public class QRCode {
         }
     }
 
-    protected static class Geolocation{
+    protected static class Geolocation implements Serializable {
         private double latitude, longitude;
 
         public Geolocation() {
@@ -99,6 +99,11 @@ public class QRCode {
         public void setLongitude(double longitude) {
             this.longitude = longitude;
         }
+
+        @Override
+        public String toString(){
+            return this.latitude + ", " + this.longitude;
+        }
     }
     private String hashValue;
     private String codeName;
@@ -107,10 +112,7 @@ public class QRCode {
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
-    private int timesScanned;
 
-    public QRCode() {
-    }
 
     public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation) {
         this.hashValue = hashValue;
@@ -182,11 +184,10 @@ public class QRCode {
     }
 
     public int getTimesScanned(){
-        return timesScanned;
-    }
-
-    public void updateTimesScanned(){
-        // FIXME
+        if (scannersInfo != null) {
+            return scannersInfo.size();
+        }
+        return -1;
     }
 
     @Override
@@ -199,7 +200,6 @@ public class QRCode {
                 ", scannersInfo=" + scannersInfo +
                 ", comments=" + comments +
                 ", geolocation=" + geolocation +
-                ", timesScanned=" + timesScanned +
                 '}';
     }
 

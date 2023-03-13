@@ -47,10 +47,7 @@ public class LibraryActivity extends AppCompatActivity {
 
         qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
             Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
-            // TODO: right now this assumes that QRCode is identifiable by the hashValue but
-            // it's actually unique by (hashValue, location) so we need to change this later
-
-            intent.putExtra("qrcode", qrCodeList.getCode(position).getHashValue());
+            intent.putExtra("qrcode", qrCodeList.getCode(position));
             startActivity(intent);
         });
 
@@ -73,7 +70,6 @@ public class LibraryActivity extends AppCompatActivity {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (onUserView && qrCodeDataList.size() > 0) {
-                    System.out.println("HERE");
                     Integer pos = viewHolder.getBindingAdapterPosition();
                     DB.getPlayer(FirstTimeLogInActivity.getDeviceID(LibraryActivity.this), new DB.CallbackGetPlayer() {
                         @Override
@@ -130,7 +126,6 @@ public class LibraryActivity extends AppCompatActivity {
         DB.getPlayer(FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackGetPlayer(){
             @Override
             public void onCallBack(Player player) {
-                System.out.println(player.getDeviceID() + player.getUsername());
                 DB.getUsersQRCodes(player, new DB.CallbackGetUsersQRCodes() {
                     @Override
                     public void onCallBack(ArrayList<QRCode> myQRCodes) {

@@ -83,9 +83,7 @@ public class MapActivity extends AppCompatActivity
     public void onInfoWindowClick(@NonNull Marker marker) {
         QRCode code = (QRCode)marker.getTag();
         Intent intent = new Intent(getApplicationContext(), QRDetailsActivity.class);
-        /* FIXME: Same issue as LibraryActivity where we assume codes are unique by hash,
-         * but location also must be considered */
-        intent.putExtra("qrcode", code.getHashValue());
+        intent.putExtra("qrcode", code);
         startActivity(intent);
     }
 
