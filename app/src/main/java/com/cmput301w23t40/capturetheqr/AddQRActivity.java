@@ -107,9 +107,7 @@ public class AddQRActivity extends AppCompatActivity {
                     });
                 }
             });
-
-
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
             Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast,Toast.LENGTH_LONG).show();
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
