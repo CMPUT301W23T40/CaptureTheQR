@@ -6,7 +6,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,12 +21,13 @@ import java.util.ArrayList;
  * This class defines the main UI page for the Map flow
  */
 public class MapActivity extends AppCompatActivity
-        implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+        implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, PlayerLocation.CallbackNearbyCodes {
 
     /**
      * The model of the players location and surroundings
      */
     private PlayerLocation playerLocation;
+    private GoogleMap googleMap;
 
     /**
      * override Activity onCreate method
@@ -37,6 +37,7 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        playerLocation = new PlayerLocation();
 
         /* Copied the following code snippet for getting the map fragment
                 author: Google Inc.
@@ -47,11 +48,9 @@ public class MapActivity extends AppCompatActivity
                 .findFragmentById(R.id.frgmt_qrMap);
         mapFragment.getMapAsync(this);
 
-        playerLocation = new PlayerLocation();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
     /**
      * Implement onMapReady callback for OnMapReadyCallback
      * and initialize the map UI
@@ -59,18 +58,16 @@ public class MapActivity extends AppCompatActivity
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         // Move the camera to the current user location
-        CameraUpdate camPosition = CameraUpdateFactory.newLatLng(playerLocation.getLocation());
+        QRCode.Geolocation geolocation = playerLocation.getLocation();
+        LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+        CameraUpdate camPosition;
+        camPosition = CameraUpdateFactory.newLatLng(latLng);
         googleMap.moveCamera(camPosition);
 
         // FIXME: set search radius based on visible part of map
-        ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes(1);
-        // Add all visible QR codes to map
-        for (QRCode qr : nearbyQRs) {
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(qr.getGeolocation().getLatitude(), qr.getGeolocation().getLongitude())));
-            marker.setTitle(Integer.toString(qr.getScore()));
-            marker.setTag(qr);
-        }
+        playerLocation.refreshNearbyQRs(1, this);
         googleMap.setOnInfoWindowClickListener(this);
     }
 
@@ -100,5 +97,23 @@ public class MapActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Implements PlayerLocation.CallbackNearbyCodes
+     * Called after the refreshed data has been retrieved by playerLocation
+     */
+    @Override
+    public void onUpdateNearbyCodes() {
+        ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes();
+        // Add all visible QR codes to map
+        for (QRCode qr : nearbyQRs) {
+            // The Maps API uses LatLng objects to the geolocation must be converted
+            QRCode.Geolocation coords = qr.getGeolocation();
+            LatLng position = new LatLng(coords.getLatitude(), coords.getLongitude());
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(position));
+            marker.setTitle(Integer.toString(qr.getScore()));
+            marker.setTag(qr);
+        }
     }
 }
