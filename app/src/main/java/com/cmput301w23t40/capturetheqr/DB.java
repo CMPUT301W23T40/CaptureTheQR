@@ -391,7 +391,15 @@ public class DB {
                 });
     }
 
-    static protected void getImagesInDB(String username, String hash, CallbackGetImage cbGetImage){
+    /**
+     * This function will get get the user's image of the specified QR from the db
+     * @param username  the name of the user
+     * @param hash  the hash value of the qr (ie. the id of the document in the DB)
+     * @param cbGetImage    a callback to get the image
+     */
+    static protected void getImageFromDB(String username, String hash, CallbackGetImage cbGetImage){
+
+        //get the qrcode
         DocumentReference docRef = collectionReferenceQR.document(hash);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -405,18 +413,27 @@ public class DB {
                         List<Map<String, Object>> sci = (List<Map<String, Object>>) doc.get("scannersInfo");
 
                         //iterate through the object
-                        for (int i = 0; i < sci.size(); i++) {
-                            //check if the player is correct
+                        for (int i = 0; i < sci.size(); i++)
+                            //find the correct player
                             if(sci.get(i).get("username").equals(username))
+                                //return the image
                                 cbGetImage.onCallBack(sci.get(i).get("imageLink"));
-                        }
 
                     }
-                }
+                //problems!!! lets log it
+                } else
+                    Log.d("Error getting qr from db", task.getException().toString());
             }
         });
     }
 
+    /**
+     * This function will save an image (in the form of a bitmap) to a users account
+     * @param username  the user to save the image to
+     * @param hash  the hash value of the qr (ie. the id of the document in the DB)
+     * @param bmap  the bitmap of the image
+     * @param cb    a basic callback showing completion
+     */
     static protected void saveImageInDB(String username, String hash, Bitmap bmap, Callback cb){
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -433,16 +450,15 @@ public class DB {
 
         DocumentReference docRef = collectionReferenceQR.document(hash);
 
-        docRef
-                .update("scannersInfo", FieldValue.arrayUnion(dataToInsert))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saving new image", "Saved");
-                        cb.onCallBack();
-                    }
-                });
-
+        docRef.update("scannersInfo", FieldValue.arrayUnion(dataToInsert))
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d("Saving new image", "Saved");
+                    cb.onCallBack();
+                }
+            }
+        );
     }
 
 
