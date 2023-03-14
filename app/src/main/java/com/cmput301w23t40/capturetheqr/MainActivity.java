@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         });
         setContentView(R.layout.activity_main);
 
+
         // Set TextViews
         DB.getPlayer(deviceId, new DB.CallbackGetPlayer() {
             @Override
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Log.d("user is null", "");
                 }
-
             }
         });
 
@@ -79,6 +79,30 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
                 }
                 return true;
+            }
+        });
+    }
+
+    /**
+     * override Activity onResume method
+     *
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Set TextViews
+        DB.getPlayer( FirstTimeLogInActivity.getDeviceID(this), new DB.CallbackGetPlayer() {
+            @Override
+            public void onCallBack(Player player) {
+                if(player!=null){
+                    TextView helloText = findViewById(R.id.txtvw_usernameHello);
+                    TextView contactText = findViewById(R.id.txtvw_contactInfo);
+
+                    helloText.setText("Hello " + player.getUsername());
+                    contactText.setText(player.getPhoneNumber());
+                } else {
+                    Log.d("user is null", "");
+                }
             }
         });
     }

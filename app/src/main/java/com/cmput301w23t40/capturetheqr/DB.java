@@ -61,15 +61,26 @@ public class DB {
      * @param callback actions to perform after the query is executed
      */
     static protected void saveQRCodeInDB(QRCode qrCode, Callback callback){
-        collectionReferenceQR.document(qrCode.getHashValue())
-                .set(qrCode)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        DocumentReference documentReference = collectionReferenceQR.document(qrCode.getHashValue());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Saving QRCode", "Hash value: " + qrCode.getHashValue());
-                        callback.onCallBack();
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.getResult().exists()){
+                            Log.d("Saving a qrCode", "Hash value: " + qrCode.getHashValue() + "already exists");
+                        } else {
+                            documentReference
+                                    .set(qrCode)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.d("Saving QRCode", "Hash value: " + qrCode.getHashValue() + "added");
+                                            callback.onCallBack();
+                                        }
+                                    });
+                        }
                     }
                 });
+
     }
 
     /**
@@ -311,6 +322,10 @@ public class DB {
                 });
     }
 
+    /**
+     * Get all the qrcodes that have been scanned by all users
+     * @param callbackGetAllQRCodes actions to perform after the query is done
+     */
     static protected void getAllQRCodes(CallbackGetAllQRCodes callbackGetAllQRCodes){
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         collectionReferenceQR.get()
@@ -334,14 +349,18 @@ public class DB {
                                     documentSnapshot.getLong("score").intValue(),
                                     documentSnapshot.get("geolocation", QRCode.Geolocation.class));
                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
-                            for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
-                                scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
-                                        scannerInfo.get("imageLink").toString()));
+                            if (scannerInfoArrayListInDB != null){
+                                for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
+                                    scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
+                                            scannerInfo.get("imageLink").toString()));
+                                }
                             }
                             ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
-                            for (Map<String, Object> comment : commentsArrayListInDB){
-                                commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
-                                        comment.get("content").toString()));
+                            if(commentsArrayListInDB != null){
+                                for (Map<String, Object> comment : commentsArrayListInDB){
+                                    commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
+                                            comment.get("content").toString()));
+                                }
                             }
                             newQRCode.setScannersInfo(scannerInfoArrayList);
                             newQRCode.setComments(commentsArrayList);
@@ -351,7 +370,10 @@ public class DB {
                     }
                 });
     }
-
+    /**
+     * Get all the qrcodes that have been scanned by this user
+     * @param callbackGetUsersQRCodes actions to perform after the query is done
+     */
     static protected void getUsersQRCodes(Player player, CallbackGetUsersQRCodes callbackGetUsersQRCodes){
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         collectionReferenceQR.get()
@@ -375,9 +397,11 @@ public class DB {
                                                 scannerInfo.get("imageLink").toString()));
                                     }
                                     ArrayList<QRCode.Comment> commentsArrayList = new ArrayList<>();
-                                    for (Map<String, Object> comment : commentsArrayListInDB){
-                                        commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
-                                                comment.get("content").toString()));
+                                    if(commentsArrayListInDB != null){
+                                        for (Map<String, Object> comment : commentsArrayListInDB){
+                                            commentsArrayList.add(new QRCode.Comment(comment.get("username").toString(),
+                                                    comment.get("content").toString()));
+                                        }
                                     }
                                     newQRCode.setScannersInfo(scannerInfoArrayList);
                                     newQRCode.setComments(commentsArrayList);

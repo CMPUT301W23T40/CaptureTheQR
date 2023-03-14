@@ -112,6 +112,11 @@ public class QRCode implements Serializable{
         this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
     }
 
+    /**
+     * Comment on this code, and save the comment in DB
+     * @param username username of the commenter
+     * @param content content of this comment
+     */
     public void comment(String username, String content){
         Comment comment = new Comment(username, content);
         comments.add(comment);
@@ -123,6 +128,11 @@ public class QRCode implements Serializable{
         });
     }
 
+    /**
+     * Add a scanner to this code
+     * @param username username of the scanner
+     * @param imageLink imageLink
+     */
     public void addScanner(String username, String imageLink){
         ScannerInfo newScannerInfo = new ScannerInfo(username, imageLink);
         scannersInfo.add(newScannerInfo);
@@ -173,11 +183,15 @@ public class QRCode implements Serializable{
         return geolocation;
     }
 
+    public void setGeolocation(Geolocation geolocation) {
+        this.geolocation = geolocation;
+    }
+
     public int getTimesScanned(){
         if (scannersInfo != null) {
             return scannersInfo.size();
         }
-        return -1;
+        return 0;
     }
 
     @Override
