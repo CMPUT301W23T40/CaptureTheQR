@@ -13,12 +13,15 @@ import com.google.common.primitives.Bytes;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -422,17 +425,24 @@ public class DB {
 
         String compressedImage = Base64.encodeToString(data,Base64.DEFAULT);
 
+        Map<String, Object> dataToInsert = new HashMap<>();
+
+        dataToInsert.put("imageLink",compressedImage);
+        dataToInsert.put("username",username);
+
+
         DocumentReference docRef = collectionReferenceQR.document(hash);
 
-        collectionReferenceQR.document(hash)
-                .update("scannersInfo", FieldValue.arrayUnion(compressedImage))
+        docRef
+                .update("scannersInfo", FieldValue.arrayUnion(dataToInsert))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Image saved: ","True" );
+                        Log.d("Saving new image", "Saved");
                         cb.onCallBack();
                     }
                 });
+
     }
 
 
