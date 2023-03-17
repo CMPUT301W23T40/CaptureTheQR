@@ -17,4 +17,5 @@
     <string name="add_qr_geolocation_toggle">Keep geolocation?</string>
     <string name="add_qr_optional_pic">Add optional picture...</string>
     <string name="add_qr_submit">Submit</string>
+    <string name="scoreboard">Scoreboard</string>
 </resources>

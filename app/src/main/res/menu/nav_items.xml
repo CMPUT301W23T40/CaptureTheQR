@@ -11,6 +11,11 @@
         android:title="@string/add_qr" />
 
     <item
+        android:id="@+id/navigation_score"
+        android:icon="@drawable/nav_score_24"
+        android:title="@string/scoreboard" />
+
+    <item
         android:id="@+id/navigation_qrLibrary"
         android:icon="@drawable/nav_library_24"
         android:title="@string/qr_library" />
