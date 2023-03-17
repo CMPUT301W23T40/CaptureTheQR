@@ -63,6 +63,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".OtherPlayerActivity"
+            android:label="@string/player"
+            android:parentActivityName=".ScoreboardActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ScoreboardActivity" />
+        </activity>
+        <activity
             android:name=".QRDetailsActivity"
             android:label="@string/qr_details"
             android:parentActivityName=".LibraryActivity">

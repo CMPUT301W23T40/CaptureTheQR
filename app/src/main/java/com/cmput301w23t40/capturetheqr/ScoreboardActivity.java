@@ -1,7 +1,10 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -17,7 +20,6 @@ public class ScoreboardActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayList<Player> playerList;
     private ArrayAdapter<Player> playerAdapter;
-    private Player playerSelected = null;
 
 
     /**
@@ -31,6 +33,7 @@ public class ScoreboardActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // TODO: use query (currently have fake data)
         String[] username = {"Rachel1", "User10", "Test Username", "Fake player", "HIII"};
         playerList = new ArrayList<Player>();
 
@@ -41,6 +44,17 @@ public class ScoreboardActivity extends AppCompatActivity {
         listView = findViewById(R.id.ltvw_ranks);
         playerAdapter = new ScoreboardList(this, playerList);
         listView.setAdapter(playerAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (listView.getItemAtPosition(i) instanceof Player) {
+                    Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
+                    intent.putExtra("player", (Player) listView.getItemAtPosition(i));
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
