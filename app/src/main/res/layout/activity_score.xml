@@ -6,18 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ScoreboardActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="32dp"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/med_blue"
-        android:textSize="35dp"
-        android:textStyle="bold"
-        android:text="This is the Scoreboard Activity!"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="28dp"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:fontFamily="sans-serif"-->
+<!--        android:textColor="@color/med_blue"-->
+<!--        android:textSize="35dp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:text="This is the Scoreboard Activity!"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <ListView
+        android:id="@+id/ltvw_ranks"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#663BACA5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

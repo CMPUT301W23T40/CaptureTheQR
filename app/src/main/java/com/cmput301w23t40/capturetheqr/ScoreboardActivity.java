@@ -1,16 +1,11 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -18,6 +13,12 @@ import java.util.ArrayList;
  * This class defines the UI page for the QR Code Library
  */
 public class ScoreboardActivity extends AppCompatActivity {
+
+    private ListView listView;
+    private ArrayList<Player> playerList;
+    private ArrayAdapter<Player> playerAdapter;
+    private Player playerSelected = null;
+
 
     /**
      * override Activity onCreate method
@@ -29,6 +30,17 @@ public class ScoreboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String[] username = {"Rachel1", "User10", "Test Username", "Fake player", "HIII"};
+        playerList = new ArrayList<Player>();
+
+        for (int i=0; i<username.length; i++) {
+            playerList.add(new Player(username[i], "10000", "FAKE DEVICE"));
+        }
+
+        listView = findViewById(R.id.ltvw_ranks);
+        playerAdapter = new ScoreboardList(this, playerList);
+        listView.setAdapter(playerAdapter);
     }
 
     /**
