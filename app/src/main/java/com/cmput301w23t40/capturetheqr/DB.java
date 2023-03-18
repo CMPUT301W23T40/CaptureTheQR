@@ -338,12 +338,16 @@ public class DB {
 //                            Log.d("codename", documentSnapshot.getString("codeName"));
 //                            Log.d("visualization", documentSnapshot.getString("visualization"));
 //                            Log.d("score", String.valueOf(documentSnapshot.getLong("score").intValue()));
+                                QRCode.Geolocation geolocation = null;
+                                if(documentSnapshot.get("geolocation", QRCode.Geolocation.class) != null){
+                                    geolocation = documentSnapshot.get("geolocation", QRCode.Geolocation.class);
+                                }
                                 QRCode newQRCode = new QRCode(
                                         documentSnapshot.getString("hashValue"),
                                         documentSnapshot.getString("codeName"),
                                         documentSnapshot.getString("visualization"),
                                         documentSnapshot.getLong("score").intValue(),
-                                        documentSnapshot.get("geolocation", QRCode.Geolocation.class));
+                                        geolocation);
                                 ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                                 if (scannerInfoArrayListInDB != null) {
                                     for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB) {
@@ -388,12 +392,16 @@ public class DB {
                                 } else {
                                     for (Map<String, Object> scannerInfoForFindingUser : scannerInfoArrayListInDB){
                                         if(scannerInfoForFindingUser.get("username").equals(player.getUsername())){
+                                            QRCode.Geolocation geolocation = null;
+                                            if(documentSnapshot.get("geolocation", QRCode.Geolocation.class) != null){
+                                                geolocation = documentSnapshot.get("geolocation", QRCode.Geolocation.class);
+                                            }
                                             QRCode newQRCode = new QRCode(
                                                     documentSnapshot.getString("hashValue"),
                                                     documentSnapshot.getString("codeName"),
                                                     documentSnapshot.getString("visualization"),
                                                     documentSnapshot.getLong("score").intValue(),
-                                                    documentSnapshot.get("geolocation", QRCode.Geolocation.class));
+                                                    geolocation);
                                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                                             for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                                 scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
