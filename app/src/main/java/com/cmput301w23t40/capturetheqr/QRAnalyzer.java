@@ -24,7 +24,7 @@ public class QRAnalyzer {
                 generateName(hashValue),
                 generateVisualization(hashValue),
                 generateScore(hashValue),
-                new QRCode.Geolocation(-1, -1),
+                null,
                 0);
     }
 

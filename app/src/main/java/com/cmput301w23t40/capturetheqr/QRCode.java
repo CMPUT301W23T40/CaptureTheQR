@@ -110,7 +110,7 @@ public class QRCode implements Serializable{
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
+        this.geolocation = geolocation;
         this.timesScanned = timesScanned;
     }
 
