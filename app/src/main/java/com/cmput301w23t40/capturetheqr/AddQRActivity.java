@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ public class AddQRActivity extends AppCompatActivity {
         score.setText(String.valueOf(qrCode.getScore()));
         visualization.setText(qrCode.getVisualization());
         timesScanned.setText("This code has been scanned " + String.valueOf(qrCode.getTimesScanned()) + " time(s)!");
+        EditText commentEditText = findViewById(R.id.edtxt_comment);
         /* Adapted code from the following resource for the camera API
         author: https://www.youtube.com/@allcodingtutorials1857
         url: https://www.youtube.com/watch?v=59taMJThsFU
@@ -95,7 +97,15 @@ public class AddQRActivity extends AppCompatActivity {
                                         DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
                                             @Override
                                             public void onCallBack() {
-                                                // nothing
+                                                if (commentEditText.getText().toString().length() != 0){
+                                                    QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
+                                                    DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
+                                                        @Override
+                                                        public void onCallBack() {
+                                                            // nothing
+                                                        }
+                                                    });
+                                                }
                                             }
                                         });
                                     } else {
