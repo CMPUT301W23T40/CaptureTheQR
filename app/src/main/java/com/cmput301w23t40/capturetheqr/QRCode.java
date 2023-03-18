@@ -100,16 +100,18 @@ public class QRCode implements Serializable{
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
+    private int timesScanned;
 
     public QRCode() {
     }
 
-    public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation) {
+    public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation, int timesScanned) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
         this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
+        this.timesScanned = timesScanned;
     }
 
     /**
@@ -188,10 +190,7 @@ public class QRCode implements Serializable{
     }
 
     public int getTimesScanned(){
-        if (scannersInfo != null) {
-            return scannersInfo.size();
-        }
-        return 0;
+        return timesScanned;
     }
 
     @Override

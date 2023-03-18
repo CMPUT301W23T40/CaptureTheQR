@@ -136,6 +136,8 @@ public class DB {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("Saving scanner info", "Hash value: "+ qrCode.getHashValue() + " Scanner: " + scannerInfo.getUsername());
+                        collectionReferenceQR.document(qrCode.getHashValue())
+                                .update("timesScanned", FieldValue.increment(1));
                         callback.onCallBack();
                     }
                 });
@@ -168,6 +170,8 @@ public class DB {
                                                 existingScannerInfo.get("imageLink").toString());
                                         task.getResult().getReference().update("scannersInfo", FieldValue.arrayRemove(newScannerInfo));
                                         Log.d("Deleting scannerInfo", username + ' ' + "deleted");
+                                        collectionReferenceQR.document(hashValue)
+                                                .update("timesScanned", FieldValue.increment(-1));
                                         callback.onCallBack();
                                         return;
                                     }
@@ -236,7 +240,7 @@ public class DB {
         ArrayList<QRCode> qrCodes = new ArrayList<>();
         ArrayList<Player> players = new ArrayList<>();
         for (int i = 0; i < 5; ++i){
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i)));
+            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i), 0));
             players.add(new Player("username " + i, String.valueOf(i+1111111111-1), "deviceID " + i));
         }
         for (int i = 0; i < players.size(); ++i){
@@ -347,7 +351,8 @@ public class DB {
                                         documentSnapshot.getString("codeName"),
                                         documentSnapshot.getString("visualization"),
                                         documentSnapshot.getLong("score").intValue(),
-                                        geolocation);
+                                        geolocation,
+                                        documentSnapshot.getLong("timesScanned").intValue());
                                 ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                                 if (scannerInfoArrayListInDB != null) {
                                     for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB) {
@@ -401,7 +406,8 @@ public class DB {
                                                     documentSnapshot.getString("codeName"),
                                                     documentSnapshot.getString("visualization"),
                                                     documentSnapshot.getLong("score").intValue(),
-                                                    geolocation);
+                                                    geolocation,
+                                                    documentSnapshot.getLong("timesScanned").intValue());
                                             ArrayList<QRCode.ScannerInfo> scannerInfoArrayList = new ArrayList<>();
                                             for (Map<String, Object> scannerInfo : scannerInfoArrayListInDB){
                                                 scannerInfoArrayList.add(new QRCode.ScannerInfo(scannerInfo.get("username").toString(),
@@ -424,6 +430,29 @@ public class DB {
                                 }
                             }
                             callbackGetUsersQRCodes.onCallBack(qrCodes);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Return the times scanned of the this code, if the return value is null, then this
+     * code has never been scanned
+     * @param qrCode qrCode object to be queried
+     * @param callbackGetTimesScanned actions to perform after the query is done
+     */
+    static protected void getTimesScanned(QRCode qrCode, CallbackGetTimesScanned callbackGetTimesScanned){
+        collectionReferenceQR.document(qrCode.getHashValue())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.getResult().exists()){
+                            Log.d("Getting timesScanned of this code", String.valueOf(task.getResult().getLong("timesScanned").intValue()));
+                            callbackGetTimesScanned.onCallBack(task.getResult().getLong("timesScanned").intValue());
+                        } else {
+                            Log.d("Getting timesScanned of this code", "Code does not exist");
+                            callbackGetTimesScanned.onCallBack(null);
                         }
                     }
                 });
@@ -456,5 +485,8 @@ public class DB {
     }
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
+    }
+    public interface CallbackGetTimesScanned {
+        void onCallBack(Integer timesScanned);
     }
 }
