@@ -1,5 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
                     scanCode();
                 } else if (id == R.id.navigation_qrLibrary){
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                } else if (id == R.id.navigation_score){
+                    startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
                 }
                 return true;
             }

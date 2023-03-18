@@ -1,9 +1,11 @@
 package com.cmput301w23t40.capturetheqr;
 
+import java.io.Serializable;
+
 /**
  * This class represents a player of the game
  */
-public class Player {
+public class Player implements Serializable {
     /**
      * The username of the player, used to uniquely identify them.
      */
