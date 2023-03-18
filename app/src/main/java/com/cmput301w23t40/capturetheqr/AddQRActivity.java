@@ -90,16 +90,20 @@ public class AddQRActivity extends AppCompatActivity {
                             QRCode.ScannerInfo scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
                             DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
                                 @Override
-                                public void onCallBack(Boolean scannerIsNew) {
-                                    if (scannerIsNew){
+                                public void onCallBack(Boolean scannerInfoIsNew) {
+                                    if (scannerInfoIsNew){
                                         DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
                                             @Override
                                             public void onCallBack() {
                                                 // nothing
                                             }
                                         });
+                                        Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
+                                        finish();
                                     } else {
                                         Log.d("saving scanner info", "the user scanned this code before");
+                                        Toast.makeText(getApplicationContext(), R.string.add_qr_failure_toast, Toast.LENGTH_SHORT).show();
+                                        finish();
                                     }
                                 }
                             });
@@ -107,8 +111,6 @@ public class AddQRActivity extends AppCompatActivity {
                     });
                 }
             });
-            finish();
-            Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast,Toast.LENGTH_LONG).show();
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

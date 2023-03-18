@@ -59,6 +59,7 @@ public class DB {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.getResult().exists()){
                             Log.d("Saving a qrCode", "Hash value: " + qrCode.getHashValue() + "already exists");
+                            callback.onCallBack();
                         } else {
                             documentReference
                                     .set(qrCode)
@@ -72,7 +73,6 @@ public class DB {
                         }
                     }
                 });
-
     }
 
     /**
@@ -443,7 +443,7 @@ public class DB {
         void onCallBack(Player player);
     }
     public interface CallbackVerifyIfScannerInfoIsNew {
-        void onCallBack(Boolean scannerIsNew);
+        void onCallBack(Boolean scannerInfoIsNew);
     }
     public interface CallbackAddNewPlayer {
         void onCallBack(Boolean playerExists);
