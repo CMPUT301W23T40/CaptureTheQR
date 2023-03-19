@@ -1,5 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
+import static java.lang.Integer.MAX_VALUE;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -457,6 +460,38 @@ public class DB {
                     }
                 });
     }
+    /**
+     * The method gets the highest and lowest score for the players QR Codes
+     * @param player
+     * */
+    static protected void getScore(Player player,CallbackScore callbackScore){
+        List<Integer> scoreList = new ArrayList<Integer>();
+        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                int highScore = 0;
+                int lowestScore = MAX_VALUE;
+                for(QRCode qrCode:myQRCodes){
+                    if(qrCode!=null) {
+                        //Log.d("score", String.valueOf(qrCode.getScore()));
+//                        Integer scoretoAdd = qrCode.getScore();
+
+                    if(qrCode.getScore()>highScore){
+                        highScore = qrCode.getScore();
+                    }
+                    if(qrCode.getScore()<lowestScore){
+                        lowestScore = qrCode.getScore();
+                    }
+
+
+                        callbackScore.onCallBack(highScore,lowestScore);
+                    }
+                }
+            }
+        });
+
+    }
+
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
@@ -486,7 +521,12 @@ public class DB {
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
     }
+
+    public interface CallbackScore {
+        void onCallBack(Integer highScore, Integer lowestScore);
+
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
+
     }
 }
