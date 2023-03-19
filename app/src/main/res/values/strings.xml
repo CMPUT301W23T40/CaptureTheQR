@@ -14,9 +14,11 @@
     <string name="add_qr_code_points">{POINTS} points</string>
     <string name="add_qr_optional_comment">Add optional comment...</string>
     <string name="add_qr_success_toast">Successfully added code!\nView it in QR Library</string>
+    <string name="add_qr_failure_toast">This code was scanned before!</string>
     <string name="add_qr_geolocation_toggle">Keep geolocation?</string>
     <string name="add_qr_optional_pic">Add optional picture...</string>
     <string name="add_qr_submit">Submit</string>
     <string name="scoreboard">Scoreboard</string>
     <string name="player">Player Profile</string>
+    <string name="first_scanner">Congrats, you are the first scanner of this code!</string>
 </resources>
