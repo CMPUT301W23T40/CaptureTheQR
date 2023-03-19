@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -458,6 +459,72 @@ public class DB {
                 });
     }
 
+    static protected void getHighestScoringCodesOfUsers(CallbackGetHighestScoringCodes callbackGetHighestScoringCodes){
+        HashMap<String, QRCode> highestScoringCodeOfUser = new HashMap<>();
+        getAllQRCodes(new CallbackGetAllQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> allQRCodes) {
+                for (QRCode qrCode : allQRCodes){
+                    if(qrCode.getScannersInfo() != null){
+                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                            if(!highestScoringCodeOfUser.containsKey(scannerInfo.getUsername())){
+                                highestScoringCodeOfUser.put(scannerInfo.getUsername(), qrCode);
+                            } else {
+                                if(qrCode.getScore() > highestScoringCodeOfUser.get(scannerInfo.getUsername()).getScore()){
+                                    highestScoringCodeOfUser.replace(scannerInfo.getUsername(), qrCode);
+                                }
+                            }
+                        }
+                    }
+                }
+                callbackGetHighestScoringCodes.onCallBack(highestScoringCodeOfUser);
+            }
+        });
+    }
+    static protected void getNumbersOfCodesOfUsers(CallbackGetNumbersOfCodesOfUsers callbackGetNumbersOfCodesOfUsers){
+        HashMap<String, Integer> numbersOfCodesOfUsers = new HashMap<>();
+        getAllQRCodes(new CallbackGetAllQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> allQRCodes) {
+                for (QRCode qrCode : allQRCodes){
+                    if (qrCode.getScannersInfo() != null){
+                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                            if (!numbersOfCodesOfUsers.containsKey(scannerInfo.getUsername())){
+                                numbersOfCodesOfUsers.put(scannerInfo.getUsername(), 1);
+                            } else {
+                                numbersOfCodesOfUsers.replace(scannerInfo.getUsername(), 1 + numbersOfCodesOfUsers.get(scannerInfo.getUsername()));
+                            }
+                        }
+                    }
+                }
+                callbackGetNumbersOfCodesOfUsers.onCallBack(numbersOfCodesOfUsers);
+            }
+        });
+    }
+    static protected void getScoreSumsOfUsers(CallbackGetScoreSumsOfUsers callbackGetScoreSumsOfUsers){
+        HashMap<String, Integer> scoreSumsOfUsers = new HashMap<>();
+        getAllQRCodes(new CallbackGetAllQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> allQRCodes) {
+                for (QRCode qrCode : allQRCodes){
+                    if (qrCode.getScannersInfo() != null){
+                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                            if (!scoreSumsOfUsers.containsKey(scannerInfo.getUsername())){
+                                scoreSumsOfUsers.put(scannerInfo.getUsername(), qrCode.getScore());
+                            } else {
+                                scoreSumsOfUsers.replace(scannerInfo.getUsername(), qrCode.getScore() + scoreSumsOfUsers.get(scannerInfo.getUsername()));
+                            }
+                        }
+                    }
+                }
+                callbackGetScoreSumsOfUsers.onCallBack(scoreSumsOfUsers);
+            }
+        });
+    }
+    static protected void getHighestScoringCodesNearby(){
+
+    }
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -488,5 +555,14 @@ public class DB {
     }
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
+    }
+    public interface CallbackGetHighestScoringCodes {
+        void onCallBack(HashMap<String, QRCode> codeOfUser);
+    }
+    public interface CallbackGetNumbersOfCodesOfUsers {
+        void onCallBack(HashMap<String, Integer> numberOfCodesOfUser);
+    }
+    public interface CallbackGetScoreSumsOfUsers {
+        void onCallBack(HashMap<String, Integer> scoreSumOfUser);
     }
 }
