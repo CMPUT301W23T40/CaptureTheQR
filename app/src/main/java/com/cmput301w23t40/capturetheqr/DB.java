@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -477,7 +478,14 @@ public class DB {
                         }
                     }
                 }
-                callbackGetHighestScoringCodes.onCallBack(highestScoringCodeOfUser);
+                ArrayList<Map.Entry<String, QRCode>> entries = new ArrayList<>(highestScoringCodeOfUser.entrySet());
+                entries.sort(new Comparator<Map.Entry<String, QRCode>>() {
+                    @Override
+                    public int compare(Map.Entry<String, QRCode> o1, Map.Entry<String, QRCode> o2) {
+                        return o1.getValue().getScore() - o2.getValue().getScore();
+                    }
+                });
+                callbackGetHighestScoringCodes.onCallBack(entries);
             }
         });
     }
@@ -557,7 +565,7 @@ public class DB {
         void onCallBack(Integer timesScanned);
     }
     public interface CallbackGetHighestScoringCodes {
-        void onCallBack(HashMap<String, QRCode> codeOfUser);
+        void onCallBack(ArrayList<Map.Entry<String, QRCode>> codeOfUser);
     }
     public interface CallbackGetNumbersOfCodesOfUsers {
         void onCallBack(HashMap<String, Integer> numberOfCodesOfUser);
