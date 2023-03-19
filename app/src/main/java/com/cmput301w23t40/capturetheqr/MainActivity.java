@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     DB.getHighestScore(player, new DB.CallbackScore() {
                         @Override
                         public void onCallBack(Integer score) {
-                            highestScore.setText("Highest Score "+ score);
+                            highestScore.setText("Highest Score: "+ score);
                         }
                     });
                     helloText.setText("Hello " + player.getUsername());

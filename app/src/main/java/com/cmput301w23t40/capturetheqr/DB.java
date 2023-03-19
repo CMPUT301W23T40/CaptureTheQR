@@ -408,14 +408,15 @@ public class DB {
                 });
     }
     static protected void getHighestScore(Player player,CallbackScore callbackScore){
-        List<Integer> scoreList = null;
+        List<Integer> scoreList = new ArrayList<Integer>();
         getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> myQRCodes) {
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
                         Log.d("score", String.valueOf(qrCode.getScore()));
-                        scoreList.add(qrCode.getScore());
+                        Integer scoretoAdd = qrCode.getScore();
+                        scoreList.add(scoretoAdd);
 
                         Collections.sort(scoreList,Collections.reverseOrder());
                         Integer score = scoreList.get(0);
