@@ -524,6 +524,7 @@ public class DB {
 
     public interface CallbackScore {
         void onCallBack(Integer highScore, Integer lowestScore);
+    }
 
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
