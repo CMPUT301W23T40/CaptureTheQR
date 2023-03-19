@@ -100,7 +100,13 @@ public class MainActivity extends AppCompatActivity {
                 if(player!=null){
                     TextView helloText = findViewById(R.id.txtvw_usernameHello);
                     TextView contactText = findViewById(R.id.txtvw_contactInfo);
-
+                    TextView highestScore = findViewById(R.id.txtvw_highestscore);
+                    DB.getHighestScore(player, new DB.CallbackScore() {
+                        @Override
+                        public void onCallBack(Integer score) {
+                            highestScore.setText("Highest Score "+ score);
+                        }
+                    });
                     helloText.setText("Hello " + player.getUsername());
                     contactText.setText(player.getPhoneNumber());
                 } else {

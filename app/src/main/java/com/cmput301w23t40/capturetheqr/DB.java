@@ -14,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -406,6 +407,25 @@ public class DB {
                     }
                 });
     }
+    static protected void getHighestScore(Player player,CallbackScore callbackScore){
+        List<Integer> scoreList = null;
+        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                for(QRCode qrCode:myQRCodes){
+                    if(qrCode!=null) {
+                        Log.d("score", String.valueOf(qrCode.getScore()));
+                        scoreList.add(qrCode.getScore());
+
+                        Collections.sort(scoreList,Collections.reverseOrder());
+                        Integer score = scoreList.get(0);
+                        callbackScore.onCallBack(score);
+                    }
+                }
+            }
+        });
+
+    }
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
@@ -434,5 +454,8 @@ public class DB {
     }
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
+    }
+    public interface CallbackScore {
+        void onCallBack(Integer score);
     }
 }
