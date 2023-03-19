@@ -409,6 +409,10 @@ public class DB {
                     }
                 });
     }
+    /**
+     * The method gets the highest and lowest score for the players QR Codes
+     * @param player
+     * */
     static protected void getScore(Player player,CallbackScore callbackScore){
         List<Integer> scoreList = new ArrayList<Integer>();
         getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
@@ -437,27 +441,6 @@ public class DB {
 
     }
 
-
-//    static protected void getLowestScore(Player player,CallbackScore callbackScore){
-//        List<Integer> scoreList = new ArrayList<Integer>();
-//        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
-//            @Override
-//            public void onCallBack(ArrayList<QRCode> myQRCodes) {
-//                for(QRCode qrCode:myQRCodes){
-//                    if(qrCode!=null) {
-//                        //Log.d("score", String.valueOf(qrCode.getScore()));
-//                        Integer scoretoAdd = qrCode.getScore();
-//                        scoreList.add(scoretoAdd);
-//
-//                        Collections.sort(scoreList,Collections.reverseOrder());
-//                        Integer score = scoreList.get(scoreList.size()-1);
-//                        callbackScore.onCallBack(score);
-//                    }
-//                }
-//            }
-//        });
-//
-//    }
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
