@@ -46,7 +46,11 @@ public class QRDetailsActivity extends AppCompatActivity {
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
         scoreText.setText(String.valueOf(code.getScore()));
-        locationText.setText(code.getGeolocation().toString());
+        if(code.getGeolocation() != null){
+            locationText.setText(code.getGeolocation().toString());
+        } else {
+            locationText.setText("No geolocation recorded for this code");
+        }
         scanCountText.setText("This code has been scanned " + String.valueOf(code.getTimesScanned()) + " time(s).");
 
 
