@@ -1,5 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
+import static java.lang.Integer.MAX_VALUE;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -407,20 +409,27 @@ public class DB {
                     }
                 });
     }
-    static protected void getHighestScore(Player player,CallbackScore callbackScore){
+    static protected void getScore(Player player,CallbackScore callbackScore){
         List<Integer> scoreList = new ArrayList<Integer>();
         getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                int highScore = 0;
+                int lowestScore = MAX_VALUE;
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
                         //Log.d("score", String.valueOf(qrCode.getScore()));
-                        Integer scoretoAdd = qrCode.getScore();
-                        scoreList.add(scoretoAdd);
+//                        Integer scoretoAdd = qrCode.getScore();
 
-                        Collections.sort(scoreList,Collections.reverseOrder());
-                        Integer score = scoreList.get(0);
-                        callbackScore.onCallBack(score);
+                    if(qrCode.getScore()>highScore){
+                        highScore = qrCode.getScore();
+                    }
+                    if(qrCode.getScore()<lowestScore){
+                        lowestScore = qrCode.getScore();
+                    }
+
+
+                        callbackScore.onCallBack(highScore,lowestScore);
                     }
                 }
             }
@@ -429,26 +438,26 @@ public class DB {
     }
 
 
-    static protected void getLowestScore(Player player,CallbackScore callbackScore){
-        List<Integer> scoreList = new ArrayList<Integer>();
-        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
-            @Override
-            public void onCallBack(ArrayList<QRCode> myQRCodes) {
-                for(QRCode qrCode:myQRCodes){
-                    if(qrCode!=null) {
-                        //Log.d("score", String.valueOf(qrCode.getScore()));
-                        Integer scoretoAdd = qrCode.getScore();
-                        scoreList.add(scoretoAdd);
-
-                        Collections.sort(scoreList,Collections.reverseOrder());
-                        Integer score = scoreList.get(scoreList.size()-1);
-                        callbackScore.onCallBack(score);
-                    }
-                }
-            }
-        });
-
-    }
+//    static protected void getLowestScore(Player player,CallbackScore callbackScore){
+//        List<Integer> scoreList = new ArrayList<Integer>();
+//        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
+//            @Override
+//            public void onCallBack(ArrayList<QRCode> myQRCodes) {
+//                for(QRCode qrCode:myQRCodes){
+//                    if(qrCode!=null) {
+//                        //Log.d("score", String.valueOf(qrCode.getScore()));
+//                        Integer scoretoAdd = qrCode.getScore();
+//                        scoreList.add(scoretoAdd);
+//
+//                        Collections.sort(scoreList,Collections.reverseOrder());
+//                        Integer score = scoreList.get(scoreList.size()-1);
+//                        callbackScore.onCallBack(score);
+//                    }
+//                }
+//            }
+//        });
+//
+//    }
 
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
@@ -479,6 +488,6 @@ public class DB {
         void onCallBack(ArrayList<QRCode> myQRCodes);
     }
     public interface CallbackScore {
-        void onCallBack(Integer score);
+        void onCallBack(Integer highScore, Integer lowestScore);
     }
 }
