@@ -414,12 +414,34 @@ public class DB {
             public void onCallBack(ArrayList<QRCode> myQRCodes) {
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
-                        Log.d("score", String.valueOf(qrCode.getScore()));
+                        //Log.d("score", String.valueOf(qrCode.getScore()));
                         Integer scoretoAdd = qrCode.getScore();
                         scoreList.add(scoretoAdd);
 
                         Collections.sort(scoreList,Collections.reverseOrder());
                         Integer score = scoreList.get(0);
+                        callbackScore.onCallBack(score);
+                    }
+                }
+            }
+        });
+
+    }
+
+
+    static protected void getLowestScore(Player player,CallbackScore callbackScore){
+        List<Integer> scoreList = new ArrayList<Integer>();
+        getUsersQRCodes(player, new CallbackGetUsersQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> myQRCodes) {
+                for(QRCode qrCode:myQRCodes){
+                    if(qrCode!=null) {
+                        //Log.d("score", String.valueOf(qrCode.getScore()));
+                        Integer scoretoAdd = qrCode.getScore();
+                        scoreList.add(scoretoAdd);
+
+                        Collections.sort(scoreList,Collections.reverseOrder());
+                        Integer score = scoreList.get(scoreList.size()-1);
                         callbackScore.onCallBack(score);
                     }
                 }

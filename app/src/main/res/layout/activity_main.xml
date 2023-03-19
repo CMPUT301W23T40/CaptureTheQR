@@ -71,4 +71,20 @@
         app:layout_constraintTop_toBottomOf="@+id/txtvw_contactInfo"
         app:layout_constraintVertical_bias="0.144" />
 
+    <TextView
+        android:id="@+id/txtvw_lowestscore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text=""
+        android:textColor="@color/med_blue"
+        android:textSize="35dp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_contactInfo"
+        app:layout_constraintVertical_bias="0.315" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
