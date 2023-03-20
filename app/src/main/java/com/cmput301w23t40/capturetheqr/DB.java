@@ -517,6 +517,7 @@ public class DB {
      * Get the highest code score of each user
      * @param callbackPlayerIntPair actions to perform after the query is done
      */
+    /*
     static protected void getHighestScoresOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
@@ -563,6 +564,7 @@ public class DB {
             }
         });
     }
+     */
 
     /**
      * Get the number of codes of each user
