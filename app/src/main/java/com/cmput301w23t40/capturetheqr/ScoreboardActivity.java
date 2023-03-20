@@ -34,7 +34,7 @@ public class ScoreboardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // TODO: use query (currently have fake data)
-        String[] username = {"Rachel1", "User10", "Test Username", "Fake player", "HIII"};
+        String[] username = {"username 0", "User10", "Test Username", "Fake player", "HIII"};
         playerList = new ArrayList<Player>();
 
         for (int i=0; i<username.length; i++) {
