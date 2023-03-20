@@ -461,6 +461,11 @@ public class DB {
                 });
     }
 
+    /**
+     * Get all the users inside the DB, store them in a hashmap,
+     * in which the key is the username, and the value is the Player object
+     * @param callbackGetAllUsers actions to perform after the query is done
+     */
     static protected void getAllUsers(CallbackGetAllUsers callbackGetAllUsers){
         collectionReferencePlayer.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -475,6 +480,10 @@ public class DB {
                 });
     }
 
+    /**
+     * Get the highest code score of each user
+     * @param callbackPlayerIntPair actions to perform after the query is done
+     */
     static protected void getHighestScoresOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
@@ -505,6 +514,7 @@ public class DB {
                         }
                         for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
                             if(!playersWithCodes.contains(playerEntry.getKey())){
+                                // also consider the players that have not scanned any codes
                                 playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
                             }
                         }
@@ -521,6 +531,10 @@ public class DB {
         });
     }
 
+    /**
+     * Get the number of codes of each user
+     * @param callbackPlayerIntPair actions to perform after the query is done
+     */
     static protected void getNumbersOfCodesOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
@@ -549,6 +563,7 @@ public class DB {
                         }
                         for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
                             if(!playersWithCodes.contains(playerEntry.getKey())){
+                                // also consider the players that have not scanned any codes
                                 playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
                             }
                         }
@@ -564,6 +579,11 @@ public class DB {
             }
         });
     }
+
+    /**
+     * Get the score sum of each user
+     * @param callbackPlayerIntPair actions to perform after the query is done
+     */
     static protected void getScoreSumsOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
@@ -592,6 +612,7 @@ public class DB {
                         }
                         for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
                             if(!playersWithCodes.contains(playerEntry.getKey())){
+                                // also consider the players that have not scanned any codes
                                 playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
                             }
                         }
@@ -607,6 +628,8 @@ public class DB {
             }
         });
     }
+
+    //FIXME, to be implemented after fixing geolocation
     static protected void getHighestScoringCodesNearby(){
 
     }
@@ -645,13 +668,11 @@ public class DB {
     public interface CallbackGetAllUsers {
         void onCallBack(HashMap<String, Player> playerHashMap);
     }
+    /**
+     * Return an user integer pair, the integer could be highest score,
+     * number of codes, score sum
+     */
     public interface CallbackPlayerIntPair {
         void onCallBack(ArrayList<PlayerIntPair> playerIntPairs);
-    }
-    public interface CallbackGetNumbersOfCodesOfUsers {
-        void onCallBack(HashMap<String, Integer> numberOfCodesOfUser);
-    }
-    public interface CallbackGetScoreSumsOfUsers {
-        void onCallBack(HashMap<String, Integer> scoreSumOfUser);
     }
 }

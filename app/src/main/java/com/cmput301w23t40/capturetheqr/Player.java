@@ -51,7 +51,7 @@ public class Player implements Serializable {
     }
 
     // code adapted from CORE JAVA Volume I-Fundamentals, 11th Edition section 5.2.3
-    // FIXME citation
+    // Author: Cay Horstmann
     @Override
     public boolean equals(@Nullable Object obj) {
         // if the references refer to the same object
