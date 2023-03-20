@@ -1,6 +1,9 @@
 package com.cmput301w23t40.capturetheqr;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class represents a player of the game
@@ -45,5 +48,21 @@ public class Player implements Serializable {
 
     public void updateHighScore(){
         // TODO
+    }
+
+    // code adapted from CORE JAVA Volume I-Fundamentals, 11th Edition section 5.2.3
+    // FIXME citation
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        // if the references refer to the same object
+        if(this == obj) return true;
+        // if the parameter is a null reference
+        if(obj == null) return false;
+        // if the parameter is not a Player
+        if(this.getClass() != obj.getClass()) return false;
+        // cast the parameter to a Player object
+        Player other = (Player) obj;
+        // compare the equality of the strings
+        return Objects.equals(this.getUsername(), other.getUsername());
     }
 }

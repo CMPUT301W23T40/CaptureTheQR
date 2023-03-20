@@ -16,6 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -460,72 +461,149 @@ public class DB {
                 });
     }
 
-    static protected void getHighestScoringCodesOfUsers(CallbackGetHighestScoringCodes callbackGetHighestScoringCodes){
-        HashMap<String, QRCode> highestScoringCodeOfUser = new HashMap<>();
+    static protected void getAllUsers(CallbackGetAllUsers callbackGetAllUsers){
+        collectionReferencePlayer.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        HashMap<String, Player> playerHashMap = new HashMap<>();
+                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            playerHashMap.put(documentSnapshot.getId(), documentSnapshot.toObject(Player.class));
+                        }
+                        callbackGetAllUsers.onCallBack(playerHashMap);
+                    }
+                });
+    }
+
+    static protected void getHighestScoresOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> allQRCodes) {
-                for (QRCode qrCode : allQRCodes){
-                    if(qrCode.getScannersInfo() != null){
-                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
-                            if(!highestScoringCodeOfUser.containsKey(scannerInfo.getUsername())){
-                                highestScoringCodeOfUser.put(scannerInfo.getUsername(), qrCode);
-                            } else {
-                                if(qrCode.getScore() > highestScoringCodeOfUser.get(scannerInfo.getUsername()).getScore()){
-                                    highestScoringCodeOfUser.replace(scannerInfo.getUsername(), qrCode);
+                getAllUsers(new CallbackGetAllUsers() {
+                    @Override
+                    public void onCallBack(HashMap<String, Player> playerHashMap) {
+                        HashMap<Player, Integer> highestScoringCodeOfUser = new HashMap<>();
+                        HashSet<String> playersWithCodes = new HashSet<>();
+                        for (QRCode qrCode : allQRCodes){
+                            if(qrCode.getScannersInfo() != null){
+                                for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                                    Player player = playerHashMap.get(scannerInfo.getUsername());
+                                    if(!highestScoringCodeOfUser.containsKey(player)){
+                                        highestScoringCodeOfUser.put(player, qrCode.getScore());
+                                        playersWithCodes.add(player.getUsername());
+                                    } else {
+                                        if(qrCode.getScore() > highestScoringCodeOfUser.get(player)){
+                                            highestScoringCodeOfUser.replace(player, qrCode.getScore());
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-                ArrayList<Map.Entry<String, QRCode>> entries = new ArrayList<>(highestScoringCodeOfUser.entrySet());
-                entries.sort(new Comparator<Map.Entry<String, QRCode>>() {
-                    @Override
-                    public int compare(Map.Entry<String, QRCode> o1, Map.Entry<String, QRCode> o2) {
-                        return o1.getValue().getScore() - o2.getValue().getScore();
+                        ArrayList<PlayerIntPair> playerIntPairs = new ArrayList<>();
+                        for(Map.Entry<Player, Integer> playerCodeScorePair: highestScoringCodeOfUser.entrySet()){
+                            playerIntPairs.add(new PlayerIntPair(playerCodeScorePair.getKey(), playerCodeScorePair.getValue()));
+                        }
+                        for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
+                            if(!playersWithCodes.contains(playerEntry.getKey())){
+                                playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
+                            }
+                        }
+                        playerIntPairs.sort(new Comparator<PlayerIntPair>() {
+                            @Override
+                            public int compare(PlayerIntPair o1, PlayerIntPair o2) {
+                                return o2.getInteger() - o1.getInteger();
+                            }
+                        });
+                        callbackPlayerIntPair.onCallBack(playerIntPairs);
                     }
                 });
-                callbackGetHighestScoringCodes.onCallBack(entries);
             }
         });
     }
-    static protected void getNumbersOfCodesOfUsers(CallbackGetNumbersOfCodesOfUsers callbackGetNumbersOfCodesOfUsers){
-        HashMap<String, Integer> numbersOfCodesOfUsers = new HashMap<>();
+
+    static protected void getNumbersOfCodesOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> allQRCodes) {
-                for (QRCode qrCode : allQRCodes){
-                    if (qrCode.getScannersInfo() != null){
-                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
-                            if (!numbersOfCodesOfUsers.containsKey(scannerInfo.getUsername())){
-                                numbersOfCodesOfUsers.put(scannerInfo.getUsername(), 1);
-                            } else {
-                                numbersOfCodesOfUsers.replace(scannerInfo.getUsername(), 1 + numbersOfCodesOfUsers.get(scannerInfo.getUsername()));
+                getAllUsers(new CallbackGetAllUsers() {
+                    @Override
+                    public void onCallBack(HashMap<String, Player> playerHashMap) {
+                        HashMap<Player, Integer> numbersOfCodesOfUsers = new HashMap<>();
+                        HashSet<String> playersWithCodes = new HashSet<>();
+                        for (QRCode qrCode : allQRCodes){
+                            if(qrCode.getScannersInfo() != null){
+                                for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                                    Player player = playerHashMap.get(scannerInfo.getUsername());
+                                    if(!numbersOfCodesOfUsers.containsKey(player)){
+                                        numbersOfCodesOfUsers.put(player, 1);
+                                        playersWithCodes.add(player.getUsername());
+                                    } else {
+                                        numbersOfCodesOfUsers.replace(player, 1 + numbersOfCodesOfUsers.get(player));
+                                    }
+                                }
                             }
                         }
+                        ArrayList<PlayerIntPair> playerIntPairs = new ArrayList<>();
+                        for(Map.Entry<Player, Integer> playerNumberOfCodesPair: numbersOfCodesOfUsers.entrySet()){
+                            playerIntPairs.add(new PlayerIntPair(playerNumberOfCodesPair.getKey(), playerNumberOfCodesPair.getValue()));
+                        }
+                        for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
+                            if(!playersWithCodes.contains(playerEntry.getKey())){
+                                playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
+                            }
+                        }
+                        playerIntPairs.sort(new Comparator<PlayerIntPair>() {
+                            @Override
+                            public int compare(PlayerIntPair o1, PlayerIntPair o2) {
+                                return o2.getInteger() - o1.getInteger();
+                            }
+                        });
+                        callbackPlayerIntPair.onCallBack(playerIntPairs);
                     }
-                }
-                callbackGetNumbersOfCodesOfUsers.onCallBack(numbersOfCodesOfUsers);
+                });
             }
         });
     }
-    static protected void getScoreSumsOfUsers(CallbackGetScoreSumsOfUsers callbackGetScoreSumsOfUsers){
-        HashMap<String, Integer> scoreSumsOfUsers = new HashMap<>();
+    static protected void getScoreSumsOfUsers(CallbackPlayerIntPair callbackPlayerIntPair){
         getAllQRCodes(new CallbackGetAllQRCodes() {
             @Override
             public void onCallBack(ArrayList<QRCode> allQRCodes) {
-                for (QRCode qrCode : allQRCodes){
-                    if (qrCode.getScannersInfo() != null){
-                        for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
-                            if (!scoreSumsOfUsers.containsKey(scannerInfo.getUsername())){
-                                scoreSumsOfUsers.put(scannerInfo.getUsername(), qrCode.getScore());
-                            } else {
-                                scoreSumsOfUsers.replace(scannerInfo.getUsername(), qrCode.getScore() + scoreSumsOfUsers.get(scannerInfo.getUsername()));
+                getAllUsers(new CallbackGetAllUsers() {
+                    @Override
+                    public void onCallBack(HashMap<String, Player> playerHashMap) {
+                        HashMap<Player, Integer> scoreSumsOfUsers = new HashMap<>();
+                        HashSet<String> playersWithCodes = new HashSet<>();
+                        for (QRCode qrCode : allQRCodes){
+                            if(qrCode.getScannersInfo() != null){
+                                for (QRCode.ScannerInfo scannerInfo : qrCode.getScannersInfo()){
+                                    Player player = playerHashMap.get(scannerInfo.getUsername());
+                                    if(!scoreSumsOfUsers.containsKey(player)){
+                                        scoreSumsOfUsers.put(player, qrCode.getScore());
+                                        playersWithCodes.add(player.getUsername());
+                                    } else {
+                                        scoreSumsOfUsers.replace(player, qrCode.getScore() + scoreSumsOfUsers.get(player));
+                                    }
+                                }
                             }
                         }
+                        ArrayList<PlayerIntPair> playerIntPairs = new ArrayList<>();
+                        for(Map.Entry<Player, Integer> playerScoreSumPair: scoreSumsOfUsers.entrySet()){
+                            playerIntPairs.add(new PlayerIntPair(playerScoreSumPair.getKey(), playerScoreSumPair.getValue()));
+                        }
+                        for(Map.Entry<String, Player> playerEntry : playerHashMap.entrySet()){
+                            if(!playersWithCodes.contains(playerEntry.getKey())){
+                                playerIntPairs.add(new PlayerIntPair(playerEntry.getValue(), 0));
+                            }
+                        }
+                        playerIntPairs.sort(new Comparator<PlayerIntPair>() {
+                            @Override
+                            public int compare(PlayerIntPair o1, PlayerIntPair o2) {
+                                return o2.getInteger() - o1.getInteger();
+                            }
+                        });
+                        callbackPlayerIntPair.onCallBack(playerIntPairs);
                     }
-                }
-                callbackGetScoreSumsOfUsers.onCallBack(scoreSumsOfUsers);
+                });
             }
         });
     }
@@ -564,8 +642,11 @@ public class DB {
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
     }
-    public interface CallbackGetHighestScoringCodes {
-        void onCallBack(ArrayList<Map.Entry<String, QRCode>> codeOfUser);
+    public interface CallbackGetAllUsers {
+        void onCallBack(HashMap<String, Player> playerHashMap);
+    }
+    public interface CallbackPlayerIntPair {
+        void onCallBack(ArrayList<PlayerIntPair> playerIntPairs);
     }
     public interface CallbackGetNumbersOfCodesOfUsers {
         void onCallBack(HashMap<String, Integer> numberOfCodesOfUser);
