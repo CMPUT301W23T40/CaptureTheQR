@@ -15,7 +15,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -496,6 +498,23 @@ public class DB {
     }
 
 
+    /**
+     * The method gets ordering of QR codes from highest to lowest on the scoreboard
+     * */
+
+    static protected void orderBasedOnScore(CallbackOrderQRCodes callbackOrder){
+        List<QRCode> scoreList = new ArrayList<QRCode>();
+        getAllQRCodes(new CallbackGetAllQRCodes() {
+            @Override
+            public void onCallBack(ArrayList<QRCode> allQRCodes) {
+                Collections.sort(allQRCodes, QRCode.SCORE_COMPARATOR);
+
+                callbackOrder.onCallBack(allQRCodes);
+            }
+        });
+
+    }
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -506,21 +525,27 @@ public class DB {
     public interface Callback {
         void onCallBack();
     }
+    
     public interface CallbackGetPlayer {
         void onCallBack(Player player);
     }
+    
     public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerInfoIsNew);
     }
+    
     public interface CallbackAddNewPlayer {
         void onCallBack(Boolean playerExists);
     }
+    
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
     }
+    
     public interface CallbackGetAllQRCodes {
         void onCallBack(ArrayList<QRCode> allQRCodes);
     }
+    
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
     }
@@ -531,6 +556,10 @@ public class DB {
 
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
-
     }
-}
+
+    public interface CallbackOrderQRCodes {
+        void onCallBack(ArrayList<QRCode> orderedQRCodes);
+    }
+ }
+
