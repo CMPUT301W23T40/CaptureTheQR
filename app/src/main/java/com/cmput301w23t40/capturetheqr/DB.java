@@ -143,6 +143,10 @@ public class DB {
                         Log.d("Saving scanner info", "Hash value: "+ qrCode.getHashValue() + " Scanner: " + scannerInfo.getUsername());
                         collectionReferenceQR.document(qrCode.getHashValue())
                                 .update("timesScanned", FieldValue.increment(1));
+                        collectionReferencePlayer.document(scannerInfo.getUsername())
+                                        .update("numberOfCodes", FieldValue.increment(1));
+                        collectionReferencePlayer.document(scannerInfo.getUsername())
+                                .update("scoreSum", FieldValue.increment(qrCode.getScore()));
                         callback.onCallBack();
                     }
                 });
@@ -166,8 +170,6 @@ public class DB {
                             if(scannerInfoArrayList.size() == 1){
                                 Log.d("Deleting scannerInfo", "the whole code got deleted");
                                 documentSnapshot.getReference().delete();
-                                callback.onCallBack();
-                                return;
                             } else {
                                 for (Map<String, Object> existingScannerInfo : scannerInfoArrayList) {
                                     if (existingScannerInfo.get("username").equals(username)) {
@@ -177,13 +179,14 @@ public class DB {
                                         Log.d("Deleting scannerInfo", username + ' ' + "deleted");
                                         collectionReferenceQR.document(hashValue)
                                                 .update("timesScanned", FieldValue.increment(-1));
-                                        callback.onCallBack();
-                                        return;
                                     }
                                 }
                             }
                         }
-                        Log.d("Deleting scannerInfo", username + ' ' + "not even exists");
+                        collectionReferencePlayer.document(username)
+                                .update("numberOfCodes", FieldValue.increment(-1));
+                        collectionReferencePlayer.document(username)
+                                .update("scoreSum", FieldValue.increment(-QRAnalyzer.generateScore(hashValue)));
                         callback.onCallBack();
                     }
                 });
