@@ -54,9 +54,15 @@ public class AddQRActivity extends AppCompatActivity {
         new ActivityResultContracts.RequestMultiplePermissions(), result -> {
             /* result is a map with the permission name as the key and the value being a
             boolean indicating whether the permission was granted */
-            // User granted location permissions
-            if (result.get("android.permission.ACCESS_COARSE_LOCATION") &&
-                    result.get("android.permission.ACCESS_COARSE_LOCATION")) {
+            boolean accessCoarseLocation = result.get("android.permission.ACCESS_COARSE_LOCATION");
+            boolean accessFineLocation = result.get("android.permission.ACCESS_FINE_LOCATION");
+            // Fine location access also grants coarse location access. Work with at least coarse location permissions
+            if (!accessCoarseLocation) {
+                // Location permissions denied
+                Toast.makeText(getApplicationContext(), R.string.location_perm_failure_toast, Toast.LENGTH_SHORT).show();
+                geoSwitch.setChecked(false);
+            } else {
+                // User granted at least coarse location access
                 locationHelper = new PlayerLocation(AddQRActivity.this);
             }
         });
