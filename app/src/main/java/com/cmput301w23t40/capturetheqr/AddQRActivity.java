@@ -39,7 +39,12 @@ public class AddQRActivity extends AppCompatActivity {
     private String hash;
     private Button buttonSubmit;
     private Button buttonPicture;
+    private Switch geoSwitch;
+    private EditText commentEditText;
     private static final int CAMERA_REQUEST = 1888;
+    private QRCode qrCode;
+    private Player player;
+    private QRCode.ScannerInfo scannerInfo;
 
     /**
      * override Activity onCreate method
@@ -51,12 +56,14 @@ public class AddQRActivity extends AppCompatActivity {
         setContentView(R.layout.activity_addqr);
         bundle = getIntent().getExtras();
         hash = bundle.getString("hash"); // this is the QR code hash
-        QRCode qrCode = QRAnalyzer.generateQRCodeObject(hash);
+        qrCode = QRAnalyzer.generateQRCodeObject(hash);
         TextView qrCodeName, score, visualization, scanCount;
         qrCodeName = findViewById(R.id.txtvw_codeName);
         score = findViewById(R.id.txtvw_codePoints);
         visualization = findViewById(R.id.txtvw_codeDrawing);
         scanCount = findViewById(R.id.txtvw_scanCount);
+        geoSwitch = findViewById(R.id.btn_geoToggle);
+        commentEditText = findViewById(R.id.edtxt_comment);
         qrCodeName.setText(qrCode.getCodeName());
         score.setText(String.valueOf(qrCode.getScore()));
         visualization.setText(qrCode.getVisualization());
@@ -70,7 +77,6 @@ public class AddQRActivity extends AppCompatActivity {
                 }
             }
         });
-        EditText commentEditText = findViewById(R.id.edtxt_comment);
 
         /* Adapted code from the following resource for the camera API
         author: https://www.youtube.com/@allcodingtutorials1857
@@ -78,7 +84,6 @@ public class AddQRActivity extends AppCompatActivity {
         last updated: 16 October, 2023
          */
         buttonPicture = findViewById(R.id.btn_uploadPic);
-        Switch geoSwitch = findViewById(R.id.btn_geoToggle);
         buttonPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,51 +93,78 @@ public class AddQRActivity extends AppCompatActivity {
         });
 
         buttonSubmit = findViewById(R.id.btn_Submit);
-        buttonSubmit.setOnClickListener(v->
-        {
-            if(geoSwitch.isChecked()){
-                //qrCode.setGeolocation(new QRCode.Geolocation(-1, -1));
-            }
-            DB.saveQRCodeInDB(qrCode, new DB.Callback() {
-                @Override
-                public void onCallBack() {
-                    DB.getPlayer(FirstTimeLogInActivity.getDeviceID(AddQRActivity.this), new DB.CallbackGetPlayer() {
-                        @Override
-                        public void onCallBack(Player player) {
-                            QRCode.ScannerInfo scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
-                            DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
-                                @Override
-                                public void onCallBack(Boolean scannerInfoIsNew) {
-                                    if (scannerInfoIsNew){
-                                        DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
-                                            @Override
-                                            public void onCallBack() {
-                                                if (commentEditText.getText().toString().length() != 0){
-                                                    QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
-                                                    DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
-                                                        @Override
-                                                        public void onCallBack() {
-                                                            // nothing
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                                        Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
-                                        finish();
-                                    } else {
-                                        Log.d("saving scanner info", "the user scanned this code before");
-                                        Toast.makeText(getApplicationContext(), R.string.add_qr_failure_toast, Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+        buttonSubmit.setOnClickListener(v -> {
+            submitQRCode();
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void submitQRCode() {
+        if(geoSwitch.isChecked()){
+            // TODO: get location
+            saveCodeInDB();
+        } else {
+            saveCodeInDB();
+        }
+    }
+
+    private void saveCodeInDB() {
+        DB.saveQRCodeInDB(this.qrCode, new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                saveScannerInfo();
+            }
+        });
+    }
+
+    private void saveScannerInfo() {
+        DB.getPlayer(FirstTimeLogInActivity.getDeviceID(AddQRActivity.this), new DB.CallbackGetPlayer() {
+            @Override
+            public void onCallBack(Player player) {
+                AddQRActivity.this.player = player;
+                scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
+                verifyNewScanner();
+            }
+        });
+    }
+
+    private void verifyNewScanner() {
+        DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
+            @Override
+            public void onCallBack(Boolean scannerInfoIsNew) {
+                if (scannerInfoIsNew) {
+                    saveScannerInfoInDB();
+                } else {
+                    Log.d("saving scanner info", "the user scanned this code before");
+                    Toast.makeText(getApplicationContext(), R.string.add_qr_failure_toast, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void saveScannerInfoInDB(){
+        DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                saveComment();
+            }
+        });
+    }
+
+    private void saveComment() {
+        if (commentEditText.getText().toString().length() != 0){
+            QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
+            DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
+                @Override
+                public void onCallBack() {
+                    // nothing
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     /**
