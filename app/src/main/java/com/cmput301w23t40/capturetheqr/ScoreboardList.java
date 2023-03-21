@@ -34,9 +34,9 @@ public class ScoreboardList extends ArrayAdapter<Player> {
         TextView rankText = view.findViewById(R.id.txtvw_rank);
         TextView playerText = view.findViewById(R.id.txtvw_player);
         TextView scoreText = view.findViewById(R.id.txtvw_score);
-        rankText.setText("1");
+        rankText.setText(String.valueOf(player.getRank()));
         playerText.setText(player.getUsername());
-        scoreText.setText("100000");
+        scoreText.setText(String.valueOf(player.getHighScore()));
         return view;
     }
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Each QR code object maintains the actual code's hash value, the generated code name, visualization,
@@ -157,6 +158,7 @@ public class QRCode implements Serializable{
         });
     }
 
+
     public String getHashValue() {
         return hashValue;
     }
@@ -213,4 +215,6 @@ public class QRCode implements Serializable{
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
+    public static final Comparator<QRCode> SCORE_COMPARATOR = Comparator
+            .comparing(QRCode::getScore);
 }
