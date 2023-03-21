@@ -1,7 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
 import static java.lang.Integer.MAX_VALUE;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -473,6 +472,8 @@ public class DB {
             public void onCallBack(ArrayList<QRCode> myQRCodes) {
                 int highScore = 0;
                 int lowestScore = MAX_VALUE;
+                QRCode maxCode = null;
+                QRCode minCode = null;
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
                         //Log.d("score", String.valueOf(qrCode.getScore()));
@@ -480,13 +481,15 @@ public class DB {
 
                     if(qrCode.getScore()>highScore){
                         highScore = qrCode.getScore();
+                        maxCode = qrCode;
                     }
                     if(qrCode.getScore()<lowestScore){
                         lowestScore = qrCode.getScore();
+                        minCode = qrCode;
                     }
 
 
-                        callbackScore.onCallBack(highScore,lowestScore);
+                        callbackScore.onCallBack(maxCode, minCode);
                     }
                 }
             }
@@ -522,36 +525,41 @@ public class DB {
     public interface Callback {
         void onCallBack();
     }
+    
     public interface CallbackGetPlayer {
         void onCallBack(Player player);
     }
+    
     public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerInfoIsNew);
     }
+    
     public interface CallbackAddNewPlayer {
         void onCallBack(Boolean playerExists);
     }
+    
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
     }
+    
     public interface CallbackGetAllQRCodes {
         void onCallBack(ArrayList<QRCode> allQRCodes);
     }
+    
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
     }
 
     public interface CallbackScore {
-        void onCallBack(Integer highScore, Integer lowestScore);
+        void onCallBack(QRCode max, QRCode min);
     }
 
-        public interface CallbackGetTimesScanned {
-            void onCallBack(Integer timesScanned);
-
-        }
-
-        public interface CallbackOrderQRCodes {
-            void onCallBack(ArrayList<QRCode> orderedQRCodes);
-        }
+    public interface CallbackGetTimesScanned {
+        void onCallBack(Integer timesScanned);
     }
+
+    public interface CallbackOrderQRCodes {
+        void onCallBack(ArrayList<QRCode> orderedQRCodes);
+    }
+ }
 

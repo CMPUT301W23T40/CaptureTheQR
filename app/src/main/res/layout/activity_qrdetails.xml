@@ -2,12 +2,13 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_horizontal"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txtvw_qrdetvis"
+        android:id="@+id/txtvw_qrDetVis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/courier_prime"
@@ -18,7 +19,7 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/txtvw_qrdetname"
+        android:id="@+id/txtvw_qrDetName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -28,7 +29,7 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/txtvw_qrdetscore"
+        android:id="@+id/txtvw_qrDetScore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -39,7 +40,7 @@
         android:textSize="40sp" />
 
     <TextView
-        android:id="@+id/txtvw_qrdetlocation"
+        android:id="@+id/txtvw_qrDetLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -49,7 +50,7 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/txtvw_qrdetcount"
+        android:id="@+id/txtvw_qrDetCount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -57,6 +58,19 @@
         android:text=""
         android:textColor="@color/black"
         android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/txtvw_qrDetComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1A3B98C0"
+        android:lineSpacingExtra="5sp"
+        android:layout_margin="15dp"
+        android:padding="10dp"
+        android:text=""
+        android:visibility="invisible"
+        android:textColor="@color/black"
+        android:textSize="25sp"/>
 
 </LinearLayout>
 
