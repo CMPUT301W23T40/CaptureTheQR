@@ -5,6 +5,7 @@ import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -23,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.Timestamp;
 import com.google.zxing.client.android.Intents;
@@ -42,9 +45,21 @@ public class AddQRActivity extends AppCompatActivity {
     private Switch geoSwitch;
     private EditText commentEditText;
     private static final int CAMERA_REQUEST = 1888;
+    private PlayerLocation locationHelper;
     private QRCode qrCode;
     private Player player;
     private QRCode.ScannerInfo scannerInfo;
+    /* Object for requesting Android Location permissions */
+    private ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
+        new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            /* result is a map with the permission name as the key and the value being a
+            boolean indicating whether the permission was granted */
+            // User granted location permissions
+            if (result.get("android.permission.ACCESS_COARSE_LOCATION") &&
+                    result.get("android.permission.ACCESS_COARSE_LOCATION")) {
+                locationHelper = new PlayerLocation(AddQRActivity.this);
+            }
+        });
 
     /**
      * override Activity onCreate method
@@ -91,6 +106,12 @@ public class AddQRActivity extends AppCompatActivity {
                 startActivityForResult(cameraIntent, REQUEST_CODE);
             }
         });
+        geoSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateLocation();
+            }
+        });
 
         buttonSubmit = findViewById(R.id.btn_Submit);
         buttonSubmit.setOnClickListener(v -> {
@@ -101,8 +122,15 @@ public class AddQRActivity extends AppCompatActivity {
 
     private void submitQRCode() {
         if(geoSwitch.isChecked()){
-            // TODO: get location
-            saveCodeInDB();
+            locationHelper.updateLocation(new PlayerLocation.CallbackLocation() {
+                @Override
+                public void onUpdateLocation() {
+                    QRCode.Geolocation geolocation = locationHelper.getLocation();
+                    qrCode.setGeolocation(geolocation);
+                    System.out.println(geolocation);
+                    saveCodeInDB();
+                }
+            });
         } else {
             saveCodeInDB();
         }
@@ -164,6 +192,25 @@ public class AddQRActivity extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
             finish();
+        }
+    }
+
+    private void updateLocation() {
+        // Check for location permissions
+        int accessCoarseLocation = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int accessFineLocation = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        // We already have location permissions, so continue with the action
+        if (accessCoarseLocation == PackageManager.PERMISSION_GRANTED &&
+                accessFineLocation == PackageManager.PERMISSION_GRANTED) {
+            locationHelper = new PlayerLocation(this);
+        } else {
+            // Request location permissions
+            locationPermissionLauncher.launch(new String[] {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            });
         }
     }
 
