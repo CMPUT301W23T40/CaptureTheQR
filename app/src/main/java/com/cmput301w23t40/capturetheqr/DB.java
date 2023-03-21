@@ -505,7 +505,7 @@ public class DB {
             @Override
             public void onCallBack(ArrayList<QRCode> allQRCodes) {
                 Collections.sort(allQRCodes, QRCode.SCORE_COMPARATOR);
-
+                Collections.reverse(allQRCodes);
                 callbackOrder.onCallBack(allQRCodes);
             }
         });
