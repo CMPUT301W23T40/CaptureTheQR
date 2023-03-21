@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -74,6 +75,27 @@ public class ScoreboardActivity extends AppCompatActivity {
                         }
                     }
                 });
+                /** The idea of how to implement scrolling for a list is learnt from Aashay Pawar
+                 * Author: Aashay Pawar
+                 * url: https://www.geeksforgeeks.org/how-to-detect-scroll-up-and-down-gestures-in-a-listview-in-android/
+                 * edited: Feb 26, 2023
+                 * license: CC BY-SA 3.0
+                 */
+                listView.setOnScrollListener(
+                        new AbsListView.OnScrollListener() {
+                            // Storing first element from the previous scroll
+                            private int lastItem = 0;
+                            @Override
+                            public void onScrollStateChanged(AbsListView view, int scroll) {
+                            }
+                            @Override
+                            public void onScroll(AbsListView view, int firstItem, int itemsVisible, int total) {
+                                // Updating the first visible item
+                                lastItem = firstItem;
+                            }
+                        }
+                );
+
             }
         });
 
@@ -93,4 +115,5 @@ public class ScoreboardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
