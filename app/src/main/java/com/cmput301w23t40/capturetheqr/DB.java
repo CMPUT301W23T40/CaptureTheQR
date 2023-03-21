@@ -499,6 +499,8 @@ public class DB {
      * The method gets ordering of QR codes from highest to lowest on the scoreboard
      * */
 
+
+
     static protected void orderBasedOnScore(CallbackOrderQRCodes callbackOrder){
         List<QRCode> scoreList = new ArrayList<QRCode>();
         getAllQRCodes(new CallbackGetAllQRCodes() {
