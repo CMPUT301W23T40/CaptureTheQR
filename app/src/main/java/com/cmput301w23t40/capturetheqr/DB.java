@@ -526,7 +526,7 @@ public class DB {
         );
     }
     
-     /* Return the times scanned of the this code, if the return value is null, then this
+     /** Return the times scanned of the this code, if the return value is null, then this
      * code has never been scanned
      * @param qrCode qrCode object to be queried
      * @param callbackGetTimesScanned actions to perform after the query is done
@@ -547,6 +547,7 @@ public class DB {
                     }
                 });
     }
+
     /**
      * The method gets the highest and lowest score for the players QR Codes
      * @param player
@@ -587,9 +588,6 @@ public class DB {
     /**
      * The method gets ordering of QR codes from highest to lowest on the scoreboard
      * */
-
-
-
     static protected void orderBasedOnScore(CallbackOrderQRCodes callbackOrder){
         List<QRCode> scoreList = new ArrayList<QRCode>();
         getAllQRCodes(new CallbackGetAllQRCodes() {
@@ -627,7 +625,6 @@ public class DB {
      * edited: Mar 3, 2018 at 15:48
      * license: CC BY-SA 3.0
      */
-
     public interface Callback {
         void onCallBack();
     }
@@ -667,10 +664,11 @@ public class DB {
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
     }
+
     public interface CallbackDeleteAllCodes {
         void onCallBack();
     }
-}
+
     public interface CallbackOrderQRCodes {
         void onCallBack(ArrayList<QRCode> orderedQRCodes);
     }
