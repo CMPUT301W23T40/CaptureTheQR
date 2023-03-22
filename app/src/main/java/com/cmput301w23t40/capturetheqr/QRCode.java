@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Each QR code object maintains the actual code's hash value, the generated code name, visualization,
@@ -100,16 +101,18 @@ public class QRCode implements Serializable{
     private ArrayList<ScannerInfo> scannersInfo;
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
+    private int timesScanned;
 
     public QRCode() {
     }
 
-    public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation) {
+    public QRCode(String hashValue, String codeName, String visualization, int score, Geolocation geolocation, int timesScanned) {
         this.hashValue = hashValue;
         this.codeName = codeName;
         this.visualization = visualization;
         this.score = score;
-        this.geolocation = new Geolocation(geolocation.latitude, geolocation.longitude);
+        this.geolocation = geolocation;
+        this.timesScanned = timesScanned;
     }
 
     /**
@@ -155,6 +158,7 @@ public class QRCode implements Serializable{
         });
     }
 
+
     public String getHashValue() {
         return hashValue;
     }
@@ -188,10 +192,7 @@ public class QRCode implements Serializable{
     }
 
     public int getTimesScanned(){
-        if (scannersInfo != null) {
-            return scannersInfo.size();
-        }
-        return 0;
+        return timesScanned;
     }
 
     @Override
@@ -214,4 +215,6 @@ public class QRCode implements Serializable{
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
+    public static final Comparator<QRCode> SCORE_COMPARATOR = Comparator
+            .comparing(QRCode::getScore);
 }

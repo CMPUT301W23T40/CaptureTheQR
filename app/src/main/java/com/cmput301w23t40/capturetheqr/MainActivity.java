@@ -1,5 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
                     scanCode();
                 } else if (id == R.id.navigation_qrLibrary){
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
+                } else if (id == R.id.navigation_score){
+                    startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
                 }
                 return true;
             }
@@ -100,6 +103,29 @@ public class MainActivity extends AppCompatActivity {
 
                     helloText.setText("Hello " + player.getUsername());
                     contactText.setText(player.getPhoneNumber());
+
+                    // Set stats
+
+                    TextView highScoreTxt = findViewById(R.id.txtvw_highestScore);
+                    TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
+                    TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
+                    TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
+                    TextView estRankTxt = findViewById(R.id.txtvw_estimateRank);
+
+                    DB.getScore(player, new DB.CallbackScore() {
+                        @Override
+                        public void onCallBack(QRCode maxQR, QRCode minQR) {
+                            highScoreCodeTxt.setText(maxQR.getCodeName());
+                            highScoreTxt.setText(String.valueOf(maxQR.getScore()));
+                            lowScoreCodeTxt.setText(maxQR.getCodeName());
+                            lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+                        }
+                    });
+
+                    // TODO: get actual place from scoreboard
+                    estRankTxt.setText("10th");
+
+
                 } else {
                     Log.d("user is null", "");
                 }

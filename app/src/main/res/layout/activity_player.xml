@@ -36,16 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_usernameHello" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/nav_items" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="98dp"
@@ -61,7 +51,7 @@
         android:layout_height="wrap_content"
         android:background="#333B98C0"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -200,8 +190,6 @@
                 android:layout_weight="0.2"/>
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 

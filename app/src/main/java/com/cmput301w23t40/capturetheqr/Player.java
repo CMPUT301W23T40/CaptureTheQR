@@ -1,9 +1,11 @@
 package com.cmput301w23t40.capturetheqr;
 
+import java.io.Serializable;
+
 /**
  * This class represents a player of the game
  */
-public class Player {
+public class Player implements Serializable {
     /**
      * The username of the player, used to uniquely identify them.
      */
@@ -14,6 +16,7 @@ public class Player {
     private String phoneNumber;
 
     private int highScore;
+    private int rank;
     private String deviceID;
 
     public Player() {
@@ -41,7 +44,17 @@ public class Player {
         return deviceID;
     }
 
-    public void updateHighScore(){
-        // TODO
+    public void setHighScore(int highScore){
+        this.highScore = highScore;
+    }
+    public void setRank(int rank){
+        this.rank= rank;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+    public int getRank() {
+        return rank;
     }
 }

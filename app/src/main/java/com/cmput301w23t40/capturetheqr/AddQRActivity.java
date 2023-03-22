@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,15 +52,26 @@ public class AddQRActivity extends AppCompatActivity {
         bundle = getIntent().getExtras();
         hash = bundle.getString("hash"); // this is the QR code hash
         QRCode qrCode = QRAnalyzer.generateQRCodeObject(hash);
-        TextView qrCodeName, score, visualization, timesScanned;
+        TextView qrCodeName, score, visualization, scanCount;
         qrCodeName = findViewById(R.id.txtvw_codeName);
         score = findViewById(R.id.txtvw_codePoints);
         visualization = findViewById(R.id.txtvw_codeDrawing);
-        timesScanned = findViewById(R.id.txtvw_scanCount);
+        scanCount = findViewById(R.id.txtvw_scanCount);
         qrCodeName.setText(qrCode.getCodeName());
         score.setText(String.valueOf(qrCode.getScore()));
         visualization.setText(qrCode.getVisualization());
-        timesScanned.setText("This code has been scanned " + String.valueOf(qrCode.getTimesScanned()) + " time(s)!");
+        DB.getTimesScanned(qrCode, new DB.CallbackGetTimesScanned() {
+            @Override
+            public void onCallBack(Integer timesScanned) {
+                if(timesScanned != null){
+                    scanCount.setText("This code has been scanned " + timesScanned + " time(s)!");
+                } else {
+                    scanCount.setText(R.string.first_scanner);
+                }
+            }
+        });
+        EditText commentEditText = findViewById(R.id.edtxt_comment);
+
         /* Adapted code from the following resource for the camera API
         author: https://www.youtube.com/@allcodingtutorials1857
         url: https://www.youtube.com/watch?v=59taMJThsFU
@@ -90,16 +102,28 @@ public class AddQRActivity extends AppCompatActivity {
                             QRCode.ScannerInfo scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
                             DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
                                 @Override
-                                public void onCallBack(Boolean scannerIsNew) {
-                                    if (scannerIsNew){
+                                public void onCallBack(Boolean scannerInfoIsNew) {
+                                    if (scannerInfoIsNew){
                                         DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
                                             @Override
                                             public void onCallBack() {
-                                                // nothing
+                                                if (commentEditText.getText().toString().length() != 0){
+                                                    QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
+                                                    DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
+                                                        @Override
+                                                        public void onCallBack() {
+                                                            // nothing
+                                                        }
+                                                    });
+                                                }
                                             }
                                         });
+                                        Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
+                                        finish();
                                     } else {
                                         Log.d("saving scanner info", "the user scanned this code before");
+                                        Toast.makeText(getApplicationContext(), R.string.add_qr_failure_toast, Toast.LENGTH_SHORT).show();
+                                        finish();
                                     }
                                 }
                             });
@@ -107,8 +131,6 @@ public class AddQRActivity extends AppCompatActivity {
                     });
                 }
             });
-            finish();
-            Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast,Toast.LENGTH_LONG).show();
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
