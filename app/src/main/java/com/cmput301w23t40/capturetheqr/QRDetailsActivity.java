@@ -6,10 +6,15 @@ import static com.cmput301w23t40.capturetheqr.QRAnalyzer.generateVisualization;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * This class displays the details of a code clicked
@@ -29,19 +34,13 @@ public class QRDetailsActivity extends AppCompatActivity {
 
         // set View contents
         QRCode code = (QRCode) getIntent().getSerializableExtra("qrcode");
-//        Intent intent = getIntent();
-//        String hash = intent.getExtras().getString("qrcode");
-//        String vis = generateVisualization(hash);
-//        String name = generateName(hash);
-//        String score = String.valueOf(generateScore(hash));
 
-//        String location = intent.getExtras().getString("location");
-
-        TextView visText = findViewById(R.id.txtvw_qrdetvis);
-        TextView nameText = findViewById(R.id.txtvw_qrdetname);
-        TextView scoreText = findViewById(R.id.txtvw_qrdetscore);
-        TextView locationText = findViewById(R.id.txtvw_qrdetlocation);
-        TextView scanCountText = findViewById(R.id.txtvw_qrdetcount);
+        TextView visText = findViewById(R.id.txtvw_qrDetVis);
+        TextView nameText = findViewById(R.id.txtvw_qrDetName);
+        TextView scoreText = findViewById(R.id.txtvw_qrDetScore);
+        TextView locationText = findViewById(R.id.txtvw_qrDetLocation);
+        TextView scanCountText = findViewById(R.id.txtvw_qrDetCount);
+        TextView commentsText = findViewById(R.id.txtvw_qrDetComments);
 
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
@@ -53,8 +52,26 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
         scanCountText.setText("This code has been scanned " + String.valueOf(code.getTimesScanned()) + " time(s).");
 
+        String commentString = "";
+        ArrayList<QRCode.Comment> comments = code.getComments();
 
-        // TODO: handle comments for final checkpoint!!!
+        for (QRCode.Comment com: comments) {
+            if (!commentString.equals("")) {
+                commentString += "<br>";
+            }
+            commentString += "<b>" + com.getUsername() + ": " + "</b> " + com.getContent();
+        }
+
+        if (!commentString.equals("")) {
+            System.out.println(commentString);
+            commentsText.setText(Html.fromHtml(commentString));
+            commentsText.setVisibility(TextView.VISIBLE);
+        }
+
+
+        // TODO: display images for final checkpoint!!!
+        // What about if 2 users can the same QR Code at same location and both
+        // take an image - do we only keep the first one or display all???
     }
 
     /**
