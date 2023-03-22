@@ -241,62 +241,6 @@ public class DB {
     }
 
     /**
-     * This method is for refreshing all the testing data in the DB, should be called at the start of
-     * MainActivity.onCreate()
-     */
-    static public void refreshTestingDataInDB() {
-        // CSC
-        final double latCSC = 53.52683477962721;
-        final double lonCSC = -113.5269479646002;
-        // U of A hospital
-        final double latHospital = 53.520888854154364;
-        final double lonHospital = -113.52287265600516;
-        // distance
-        final double distance = Math.sqrt(Math.pow(latCSC-latHospital, 2) + Math.pow(lonCSC-lonHospital, 2));
-        ArrayList<QRCode> qrCodes = new ArrayList<>();
-        ArrayList<Player> players = new ArrayList<>();
-        for (int i = 0; i < 5; ++i){
-            qrCodes.add(new QRCode("hashValue " + i, "codeName " + i, "visualization " + i, i*10000, new QRCode.Geolocation(latCSC + distance * Math.cos(i+1) * i, lonCSC + distance * Math.sin(i+1) * i), 0));
-            players.add(new Player("username " + i, String.valueOf(i+1111111111-1), "deviceID " + i));
-        }
-        for (int i = 0; i < players.size(); ++i){
-            DB.addNewPlayer(players.get(i), new CallbackAddNewPlayer() {
-                @Override
-                public void onCallBack(Boolean playerExists) {
-                    // nothing on purpose
-                }
-            });
-        }
-        for (int i = 0; i < qrCodes.size(); ++i) {
-            int finalI = i;
-            deleteAllCodes(new CallbackDeleteAllCodes() {
-                @Override
-                public void onCallBack() {
-                    saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
-                        @Override
-                        public void onCallBack() {
-                            for (int n = 0; n < 2; n++) {
-                                saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), String.valueOf("comment: " + n )), new Callback() {
-                                    @Override
-                                    public void onCallBack() {
-                                        // nothing on purpose
-                                    }
-                                });
-                                saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n )), new Callback() {
-                                    @Override
-                                    public void onCallBack() {
-                                        // nothing on purpose
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-    /**
      * Verify if deviceID is new
      * @param deviceID deviceID of the device that is being used
      * @param callbackVerifyIfDeviceIDIsNew actions to perform after the query is executed
