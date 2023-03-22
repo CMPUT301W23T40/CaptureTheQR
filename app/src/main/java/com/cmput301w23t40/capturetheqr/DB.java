@@ -1,20 +1,29 @@
 package com.cmput301w23t40.capturetheqr;
 
+
+import android.graphics.Bitmap;
 import static java.lang.Integer.MAX_VALUE;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import android.util.Base64;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.primitives.Bytes;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -440,6 +449,75 @@ public class DB {
     }
 
     /**
+     * This function will get get the user's image of the specified QR from the db
+     * @param username  the name of the user
+     * @param hash  the hash value of the qr (ie. the id of the document in the DB)
+     * @param cbGetImage    a callback to get the image
+     */
+    static protected void getImageFromDB(String username, String hash, CallbackGetImage cbGetImage){
+
+        //get the qrcode
+        DocumentReference docRef = collectionReferenceQR.document(hash);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+                    //document exists, now need to find correct picture
+                    if(doc.exists()){
+
+                        //get the scanner info obj from the db
+                        List<Map<String, Object>> sci = (List<Map<String, Object>>) doc.get("scannersInfo");
+
+                        //iterate through the object
+                        for (int i = 0; i < sci.size(); i++)
+                            //find the correct player
+                            if(sci.get(i).get("username").equals(username))
+                                //return the image
+                                cbGetImage.onCallBack(sci.get(i).get("imageLink"));
+
+                    }
+                //problems!!! lets log it
+                } else
+                    Log.d("Error getting qr from db", task.getException().toString());
+            }
+        });
+    }
+
+    /**
+     * This function will save an image (in the form of a bitmap) to a users account
+     * @param username  the user to save the image to
+     * @param hash  the hash value of the qr (ie. the id of the document in the DB)
+     * @param bmap  the bitmap of the image
+     * @param cb    a basic callback showing completion
+     */
+    static protected void saveImageInDB(String username, String hash, Bitmap bmap, Callback cb){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] data = baos.toByteArray();
+
+        String compressedImage = Base64.encodeToString(data,Base64.DEFAULT);
+
+        Map<String, Object> dataToInsert = new HashMap<>();
+
+        dataToInsert.put("imageLink",compressedImage);
+        dataToInsert.put("username",username);
+
+
+        DocumentReference docRef = collectionReferenceQR.document(hash);
+
+        docRef.update("scannersInfo", FieldValue.arrayUnion(dataToInsert))
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d("Saving new image", "Saved");
+                    cb.onCallBack();
+                }
+            }
+        );
+    }
+    
      * Return the times scanned of the this code, if the return value is null, then this
      * code has never been scanned
      * @param qrCode qrCode object to be queried
@@ -550,6 +628,10 @@ public class DB {
     
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
+    }
+
+    public interface CallbackGetImage {
+        void onCallBack(Object o);
     }
 
     public interface CallbackScore {
