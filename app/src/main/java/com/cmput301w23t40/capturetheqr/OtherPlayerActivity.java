@@ -38,7 +38,7 @@ public class OtherPlayerActivity extends AppCompatActivity {
             public void onCallBack(QRCode maxQR, QRCode minQR) {
                 highScoreCodeTxt.setText(maxQR.getCodeName());
                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
-                lowScoreCodeTxt.setText(maxQR.getCodeName());
+                lowScoreCodeTxt.setText(minQR.getCodeName());
                 lowScoreTxt.setText(String.valueOf(minQR.getScore()));
             }
         });
