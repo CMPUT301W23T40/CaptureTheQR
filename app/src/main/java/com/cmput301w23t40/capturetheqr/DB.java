@@ -269,23 +269,28 @@ public class DB {
         }
         for (int i = 0; i < qrCodes.size(); ++i) {
             int finalI = i;
-            saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
+            deleteAllCodes(new CallbackDeleteAllCodes() {
                 @Override
                 public void onCallBack() {
-                        for (int n = 0; n < 2; n++) {
-                            saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), String.valueOf("comment: " + n )), new Callback() {
-                                @Override
-                                public void onCallBack() {
-                                    // nothing on purpose
-                                }
-                            });
-                            saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n )), new Callback() {
-                                @Override
-                                public void onCallBack() {
-                                    // nothing on purpose
-                                }
-                            });
+                    saveQRCodeInDB(qrCodes.get(finalI), new Callback() {
+                        @Override
+                        public void onCallBack() {
+                            for (int n = 0; n < 2; n++) {
+                                saveCommentInDB(qrCodes.get(finalI), new QRCode.Comment(players.get(n).getUsername(), String.valueOf("comment: " + n )), new Callback() {
+                                    @Override
+                                    public void onCallBack() {
+                                        // nothing on purpose
+                                    }
+                                });
+                                saveScannerInfoInDB(qrCodes.get(finalI), new QRCode.ScannerInfo(players.get(n).getUsername(), String.valueOf("ImageLink " + n )), new Callback() {
+                                    @Override
+                                    public void onCallBack() {
+                                        // nothing on purpose
+                                    }
+                                });
+                            }
                         }
+                    });
                 }
             });
         }
@@ -598,6 +603,24 @@ public class DB {
 
     }
 
+    /**
+     * Delete all the codes in the DB, should only be called for testing
+     * @param callbackDeleteAllCodes actions to perform after the query is done
+     */
+    private static void deleteAllCodes(CallbackDeleteAllCodes callbackDeleteAllCodes){
+        collectionReferenceQR.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                            documentSnapshot.getReference().delete();
+                        }
+                        callbackDeleteAllCodes.onCallBack();
+                        Log.d("Deleting all codes", "deleted");
+                    }
+                });
+    }
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -644,9 +667,11 @@ public class DB {
     public interface CallbackGetTimesScanned {
         void onCallBack(Integer timesScanned);
     }
-
+    public interface CallbackDeleteAllCodes {
+        void onCallBack();
+    }
+}
     public interface CallbackOrderQRCodes {
         void onCallBack(ArrayList<QRCode> orderedQRCodes);
     }
  }
-
