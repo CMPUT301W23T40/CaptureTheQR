@@ -521,7 +521,7 @@ public class DB {
         );
     }
     
-     * Return the times scanned of the this code, if the return value is null, then this
+     /* Return the times scanned of the this code, if the return value is null, then this
      * code has never been scanned
      * @param qrCode qrCode object to be queried
      * @param callbackGetTimesScanned actions to perform after the query is done
