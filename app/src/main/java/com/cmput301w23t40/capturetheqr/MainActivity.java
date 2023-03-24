@@ -21,7 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This class defines the UI home page and starts the app
  */
 public class MainActivity extends AppCompatActivity {
-
+    Player currPlayer;
     /**
      * override Activity onCreate method
      * @param savedInstanceState
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         DB.getPlayer(deviceId, new DB.CallbackGetPlayer() {
             @Override
             public void onCallBack(Player player) {
+                currPlayer = player;
                 if(player!=null){
                     TextView helloText = findViewById(R.id.txtvw_usernameHello);
                     TextView contactText = findViewById(R.id.txtvw_contactInfo);
@@ -78,7 +79,10 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.navigation_qrLibrary){
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
                 } else if (id == R.id.navigation_score){
-                    startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
+                    //startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
+                    Intent intent = new Intent(getApplicationContext(), ScoreboardActivity.class);
+                    intent.putExtra("player", currPlayer);
+                    startActivity(intent);
                 }
                 return true;
             }

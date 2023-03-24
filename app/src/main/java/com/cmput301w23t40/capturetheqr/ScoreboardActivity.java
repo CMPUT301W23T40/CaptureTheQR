@@ -3,13 +3,18 @@ package com.cmput301w23t40.capturetheqr;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -63,13 +68,16 @@ public class ScoreboardActivity extends AppCompatActivity {
                 listView = findViewById(R.id.ltvw_ranks);
                 playerAdapter = new ScoreboardList(getApplicationContext(), playerList);
                 listView.setAdapter(playerAdapter);
-
+                Player myplayer = (Player) getIntent().getSerializableExtra("player");
+                TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
+                myRankScoreText.setText("My Rank is : "+String.valueOf(myplayer.getRank()));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (listView.getItemAtPosition(i) instanceof Player) {
                             Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
                             intent.putExtra("player", (Player) listView.getItemAtPosition(i));
+                            
                             startActivity(intent);
                         }
                     }
@@ -99,7 +107,15 @@ public class ScoreboardActivity extends AppCompatActivity {
         });
 
     }
-
+//    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+//        View view = convertView;
+//        if (view == null) {
+//            view = LayoutInflater.from(context).inflate(R.layout.scoreboard_content, parent, false);
+//
+//        }
+//        TextView scoreText = view.findViewById(R.id.txtvw_score);
+//        rankText.setText(String.valueOf(player.getRank()));
+//    }
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
      * @param item
