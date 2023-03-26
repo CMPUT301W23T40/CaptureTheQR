@@ -31,20 +31,18 @@ public class OtherPlayerActivity extends AppCompatActivity {
         TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
         TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
         TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
-        TextView estRankTxt = findViewById(R.id.txtvw_estimateRank);
 
         DB.getScore(player, new DB.CallbackScore() {
             @Override
             public void onCallBack(QRCode maxQR, QRCode minQR) {
-                highScoreCodeTxt.setText(maxQR.getCodeName());
-                highScoreTxt.setText(String.valueOf(maxQR.getScore()));
-                lowScoreCodeTxt.setText(minQR.getCodeName());
-                lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+                if(maxQR != null) {
+                    highScoreCodeTxt.setText(maxQR.getCodeName());
+                    highScoreTxt.setText(String.valueOf(maxQR.getScore()));
+                    lowScoreCodeTxt.setText(minQR.getCodeName());
+                    lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+                }
             }
         });
-
-        // TODO: get actual place from scoreboard
-        estRankTxt.setText("10th");
     }
 
     /**
