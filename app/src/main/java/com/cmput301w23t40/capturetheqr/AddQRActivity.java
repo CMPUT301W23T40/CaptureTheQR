@@ -181,24 +181,30 @@ public class AddQRActivity extends AppCompatActivity {
         DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
             @Override
             public void onCallBack() {
-                saveComment();
+                // Only save comment if user entered one
+                if (commentEditText.getText().toString().length() != 0){
+                    saveComment();
+                } else {
+                    finishAddQR();
+                }
             }
         });
     }
 
     private void saveComment() {
-        if (commentEditText.getText().toString().length() != 0){
-            QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
-            DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
-                @Override
-                public void onCallBack() {
-                    // nothing
-                }
-            });
-        } else {
+        QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
+        DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
+            @Override
+            public void onCallBack() {
+                finishAddQR();
+            }
+        });
+    }
+
+    private void finishAddQR() {
+            // Display a success message and return to home
             Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
             finish();
-        }
     }
 
     private void updateLocation() {
