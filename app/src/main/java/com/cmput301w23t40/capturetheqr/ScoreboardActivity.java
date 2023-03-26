@@ -36,21 +36,19 @@ public class ScoreboardActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // TODO: use query (currently have fake data)
-        String[] username = {"username 0", "User10", "Test Username", "Fake player", "HIII"};
         playerList = new ArrayList<Player>();
         DB.orderBasedOnScore(new DB.CallbackOrderQRCodes() {
             ArrayList<String> usernameList= new ArrayList<String>();
-            ArrayList<Integer> scorelist= new ArrayList<Integer>();
-            ArrayList<Integer> rankList = new ArrayList<Integer>();
             @Override
             public void onCallBack(ArrayList<QRCode> orderedQRCodes) {
                 int rank = 1;
                 for (QRCode qrCode: orderedQRCodes) {
-
+                    Boolean addedPlayer = Boolean.FALSE;
                     ArrayList<QRCode.ScannerInfo> SCInfo = qrCode.getScannersInfo();
                     for(QRCode.ScannerInfo player : SCInfo){
                         if(!usernameList.contains(player.getUsername())) {
+                            addedPlayer = Boolean.TRUE;
+
                             usernameList.add(player.getUsername());
                             Player currPlayer = new Player(player.getUsername(), "10000","FAKEDEVICE");
                             currPlayer.setRank(rank);
@@ -59,7 +57,8 @@ public class ScoreboardActivity extends AppCompatActivity {
                         }
 
                     }
-                    rank++;
+                    if (addedPlayer)
+                        rank++;
                 }
                 listView = findViewById(R.id.ltvw_ranks);
                 playerAdapter = new ScoreboardList(getApplicationContext(), playerList);

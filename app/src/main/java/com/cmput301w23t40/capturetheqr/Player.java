@@ -18,6 +18,8 @@ public class Player implements Serializable {
     private int highScore;
     private int rank;
     private String deviceID;
+    private int numberOfCodes;
+    private int scoreSum;
 
     public Player() {
     }
@@ -56,5 +58,12 @@ public class Player implements Serializable {
     }
     public int getRank() {
         return rank;
+    }
+
+    public int getNumberOfCodes() {
+        return numberOfCodes;
+    }
+    public int getScoreSum() {
+        return scoreSum;
     }
 }

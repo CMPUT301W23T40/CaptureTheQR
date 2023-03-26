@@ -57,10 +57,12 @@
         app:srcCompat="@drawable/profile_icon_24" />
 
     <LinearLayout
+        android:id="@+id/statistics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#333B98C0"
         android:orientation="vertical"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
