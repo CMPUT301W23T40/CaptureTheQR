@@ -1,6 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -110,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                     contactText.setText(player.getPhoneNumber());
 
                     // Set stats
-
+                    TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+                    TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
                     TextView highScoreTxt = findViewById(R.id.txtvw_highestScore);
                     TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
                     TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onCallBack(QRCode maxQR, QRCode minQR) {
                             if(maxQR != null){
                                 statistics.setVisibility(View.VISIBLE);
+                                scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
+                                numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                                 highScoreCodeTxt.setText(maxQR.getCodeName());
                                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                                 lowScoreCodeTxt.setText(minQR.getCodeName());
