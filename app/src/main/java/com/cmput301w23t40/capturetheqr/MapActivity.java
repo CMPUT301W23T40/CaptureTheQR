@@ -37,7 +37,7 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        playerLocation = new PlayerLocation();
+        playerLocation = new PlayerLocation(this);
 
         /* Copied the following code snippet for getting the map fragment
                 author: Google Inc.
