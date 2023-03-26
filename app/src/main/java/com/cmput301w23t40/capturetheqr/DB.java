@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
@@ -284,6 +285,31 @@ public class DB {
     }
 
     /**
+     * Given a username, returns the player object in the callback function
+     * Right now, this will only do exact match
+     * @param username username to search for
+     * @param callbackGetPlayer actions to be performed after the query is executed
+     */
+    static protected void searchForPlayer(String username, CallbackGetPlayer callbackGetPlayer){
+        collectionReferencePlayer.whereEqualTo("username", username)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.getResult().isEmpty()){
+                            Log.d("Search for player", "username: " + username + " does not exists");
+                            callbackGetPlayer.onCallBack(null);
+                        } else {
+                            Player player = task.getResult().getDocuments().get(0).toObject(Player.class);
+                            Log.d("Search for player", "username: " + username + " found");
+                            callbackGetPlayer.onCallBack(player);
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
      * Get all the qrcodes that have been scanned by all users
      * @param callbackGetAllQRCodes actions to perform after the query is done
      */
@@ -526,7 +552,6 @@ public class DB {
         });
 
     }
-
 
     /**
      * The method gets ordering of QR codes from highest to lowest on the scoreboard
