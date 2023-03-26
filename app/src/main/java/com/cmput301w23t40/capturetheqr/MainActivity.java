@@ -130,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-                    // TODO: get actual place from scoreboard
-                    estRankTxt.setText("10th");
 
 
                 } else {

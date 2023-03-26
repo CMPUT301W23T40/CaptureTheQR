@@ -70,7 +70,12 @@ public class ScoreboardActivity extends AppCompatActivity {
                 listView.setAdapter(playerAdapter);
                 Player myplayer = (Player) getIntent().getSerializableExtra("player");
                 TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
-                myRankScoreText.setText("My Rank is : "+String.valueOf(myplayer.getRank()));
+                if(myplayer.getRank()!=0) {
+                    myRankScoreText.setText("My Rank is : " + String.valueOf(myplayer.getRank()));
+                }
+                else{
+                    myRankScoreText.setText("No rank. Please scan QR Code!");
+                }
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
