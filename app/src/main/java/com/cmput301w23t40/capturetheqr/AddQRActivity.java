@@ -49,6 +49,7 @@ public class AddQRActivity extends AppCompatActivity {
     private QRCode qrCode;
     private Player player;
     private QRCode.ScannerInfo scannerInfo;
+    Bitmap photo;
     /* Object for requesting Android Location permissions */
     private ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
         new ActivityResultContracts.RequestMultiplePermissions(), result -> {
@@ -156,7 +157,7 @@ public class AddQRActivity extends AppCompatActivity {
             @Override
             public void onCallBack(Player player) {
                 AddQRActivity.this.player = player;
-                scannerInfo = new QRCode.ScannerInfo(player.getUsername(), "fake image link");
+                scannerInfo = new QRCode.ScannerInfo(player.getUsername(), null);
                 verifyNewScanner();
             }
         });
@@ -178,7 +179,7 @@ public class AddQRActivity extends AppCompatActivity {
     }
 
     private void saveScannerInfoInDB(){
-        DB.saveScannerInfoInDB(qrCode, scannerInfo, new DB.Callback() {
+        DB.saveScannerInfoInDB(qrCode, scannerInfo, photo, new DB.Callback() {
             @Override
             public void onCallBack() {
                 // Only save comment if user entered one
@@ -245,7 +246,7 @@ public class AddQRActivity extends AppCompatActivity {
         last updated: 16 October, 2023
          */
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data"); // this is the bitmap of optional photo
+            photo = (Bitmap) data.getExtras().get("data"); // this is the bitmap of optional photo
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
