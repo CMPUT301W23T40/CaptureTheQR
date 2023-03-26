@@ -37,6 +37,8 @@ public class ScoreboardList extends ArrayAdapter<Player> {
         rankText.setText(String.valueOf(player.getRank()));
         playerText.setText(player.getUsername());
         scoreText.setText(String.valueOf(player.getHighScore()));
+
+
         return view;
     }
 }
