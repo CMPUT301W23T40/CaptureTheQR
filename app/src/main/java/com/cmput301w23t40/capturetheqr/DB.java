@@ -295,7 +295,7 @@ public class DB {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.getResult().isEmpty()){
                             Log.d("Getting all QR Codes", "No codes exist in the DB at at all");
-                            callbackGetAllQRCodes.onCallBack(null);
+                            callbackGetAllQRCodes.onCallBack(qrCodes);
                         } else {
                             for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
                                 List<Map<String, Object>> scannerInfoArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
@@ -352,8 +352,7 @@ public class DB {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.getResult().isEmpty()){
-
-                            callbackGetUsersQRCodes.onCallBack(null);
+                            callbackGetUsersQRCodes.onCallBack(qrCodes);
                         } else {
                             for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
                                 List<Map<String, Object>> scannerInfoArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");

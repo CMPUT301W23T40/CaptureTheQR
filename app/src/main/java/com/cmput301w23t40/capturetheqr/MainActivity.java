@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -114,14 +116,17 @@ public class MainActivity extends AppCompatActivity {
                     TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
                     TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
                     TextView estRankTxt = findViewById(R.id.txtvw_estimateRank);
-
+                    LinearLayout statistics = findViewById(R.id.statistics);
                     DB.getScore(player, new DB.CallbackScore() {
                         @Override
                         public void onCallBack(QRCode maxQR, QRCode minQR) {
-                            highScoreCodeTxt.setText(maxQR.getCodeName());
-                            highScoreTxt.setText(String.valueOf(maxQR.getScore()));
-                            lowScoreCodeTxt.setText(minQR.getCodeName());
-                            lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+                            if(maxQR != null){
+                                statistics.setVisibility(View.VISIBLE);
+                                highScoreCodeTxt.setText(maxQR.getCodeName());
+                                highScoreTxt.setText(String.valueOf(maxQR.getScore()));
+                                lowScoreCodeTxt.setText(minQR.getCodeName());
+                                lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+                            }
                         }
                     });
 
@@ -134,6 +139,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LinearLayout statistics = findViewById(R.id.statistics);
+        statistics.setVisibility(View.INVISIBLE);
     }
 
     /**
