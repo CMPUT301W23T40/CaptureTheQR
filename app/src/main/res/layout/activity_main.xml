@@ -27,19 +27,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.588" />
 
-    <!--    <LinearLayout-->
-<!--        android:id="@+id/stats"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="4dp"-->
-<!--        android:layout_marginBottom="128dp"-->
-<!--        android:orientation="vertical"-->
-<!--        android:paddingBottom="10dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/statistics"-->
-<!--        app:layout_constraintStart_toStartOf="parent">-->
-
-    <!--    </LinearLayout>-->
-
     <TextView
         android:id="@+id/txtvw_contactInfo"
         android:layout_width="wrap_content"
