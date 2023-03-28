@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ public class ScoreboardActivity extends AppCompatActivity {
     private ListView listView;
     private ArrayList<Player> playerList;
     private ArrayAdapter<Player> playerAdapter;
+    private int my_rank;
 
 
     /**
@@ -42,47 +45,57 @@ public class ScoreboardActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         playerList = new ArrayList<Player>();
-        DB.orderBasedOnScore(new DB.CallbackOrderQRCodes() {
-            ArrayList<String> usernameList= new ArrayList<String>();
-            @Override
-            public void onCallBack(ArrayList<QRCode> orderedQRCodes) {
-                int rank = 1;
-                for (QRCode qrCode: orderedQRCodes) {
-                    Boolean addedPlayer = Boolean.FALSE;
-                    ArrayList<QRCode.ScannerInfo> SCInfo = qrCode.getScannersInfo();
-                    for(QRCode.ScannerInfo player : SCInfo){
-                        if(!usernameList.contains(player.getUsername())) {
-                            addedPlayer = Boolean.TRUE;
 
-                            usernameList.add(player.getUsername());
-                            Player currPlayer = new Player(player.getUsername(), "10000","FAKEDEVICE");
-                            currPlayer.setRank(rank);
-                            currPlayer.setHighScore(qrCode.getScore());
-                            playerList.add(currPlayer);
+
+        DB.getAllPlayers(new DB.CallbackAllPlayers() {
+            @Override
+            public void onCallBack(ArrayList<Player> allPlayers) {
+                Collections.sort(allPlayers, new Comparator<Player>() {
+                    @Override
+                    public int compare(Player o1, Player o2) {
+                        return Integer.compare(o2.getHighScore(), o1.getHighScore());
+                    }
+
+                });
+                for (Player player:allPlayers){
+                    int index = allPlayers.indexOf(player);
+
+                    Player currPlayer = new Player(player.getUsername(), "10000","FAKEDEVICE");
+                    currPlayer.setRank((index+1));
+                    currPlayer.setHighScore(player.getHighScore());
+                    playerList.add(currPlayer);
+                }
+                DB.getPlayer(FirstTimeLogInActivity.getDeviceID(ScoreboardActivity.this), new DB.CallbackGetPlayer() {
+
+                    @Override
+                    public void onCallBack(Player player) {
+
+
+                        if(player.getHighScore()!=0) {
+                            my_rank = allPlayers.indexOf(player) + 1;
+
                         }
+//                        else{
+//                            myRankScoreText.setText("No rank! Please scan QR Code.");
+//                        }
+
 
                     }
-                    if (addedPlayer)
-                        rank++;
-                }
+
+                });
+
                 listView = findViewById(R.id.ltvw_ranks);
                 playerAdapter = new ScoreboardList(getApplicationContext(), playerList);
                 listView.setAdapter(playerAdapter);
-                Player myplayer = (Player) getIntent().getSerializableExtra("player");
                 TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
-                if(myplayer.getRank()!=0) {
-                    myRankScoreText.setText("My Rank is : " + String.valueOf(myplayer.getRank()));
-                }
-                else{
-                    myRankScoreText.setText("No rank. Please scan QR Code!");
-                }
+                myRankScoreText.setText("My rank is: " + String.valueOf(my_rank));
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (listView.getItemAtPosition(i) instanceof Player) {
                             Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
                             intent.putExtra("player", (Player) listView.getItemAtPosition(i));
-                            
+
                             startActivity(intent);
                         }
                     }
@@ -108,19 +121,13 @@ public class ScoreboardActivity extends AppCompatActivity {
                         }
                 );
 
+
             }
+
         });
 
     }
-//    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        View view = convertView;
-//        if (view == null) {
-//            view = LayoutInflater.from(context).inflate(R.layout.scoreboard_content, parent, false);
-//
-//        }
-//        TextView scoreText = view.findViewById(R.id.txtvw_score);
-//        rankText.setText(String.valueOf(player.getRank()));
-//    }
+
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
      * @param item

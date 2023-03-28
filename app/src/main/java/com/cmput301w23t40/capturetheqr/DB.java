@@ -155,6 +155,20 @@ public class DB {
                                         .update("numberOfCodes", FieldValue.increment(1));
                         collectionReferencePlayer.document(scannerInfo.getUsername())
                                 .update("scoreSum", FieldValue.increment(qrCode.getScore()));
+                        getScore(new Player(scannerInfo.getUsername(), "", ""), new CallbackScore() {
+                            @Override
+                            public void onCallBack(QRCode max, QRCode min) {
+                                if(qrCode.getScore()>max.getScore()){
+                                    collectionReferencePlayer.document(scannerInfo.getUsername())
+                                            .update("highScore",qrCode.getScore());
+                                if(qrCode.getScore()<min.getScore()){
+                                    collectionReferencePlayer.document(scannerInfo.getUsername())
+                                            .update("lowScore",qrCode.getScore());
+                                }
+                                }
+                            }
+                        });
+
                         callback.onCallBack();
                     }
                 });
@@ -300,13 +314,7 @@ public class DB {
                             for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
                                 List<Map<String, Object>> scannerInfoArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("scannersInfo");
                                 List<Map<String, Object>> commentsArrayListInDB = (List<Map<String, Object>>) documentSnapshot.get("comments");
-//                            Log.d("scannerinfo", String.valueOf(scannerInfoArrayListInDB.size()));
-//                            Log.d("comments", String.valueOf(commentsArrayListInDB.size()));
-//
-//                            Log.d("hashvalue", documentSnapshot.getString("hashValue"));
-//                            Log.d("codename", documentSnapshot.getString("codeName"));
-//                            Log.d("visualization", documentSnapshot.getString("visualization"));
-//                            Log.d("score", String.valueOf(documentSnapshot.getLong("score").intValue()));
+
                                 QRCode.Geolocation geolocation = null;
                                 if(documentSnapshot.get("geolocation", QRCode.Geolocation.class) != null){
                                     geolocation = documentSnapshot.get("geolocation", QRCode.Geolocation.class);
@@ -337,6 +345,34 @@ public class DB {
                                 qrCodes.add(newQRCode);
                             }
                             callbackGetAllQRCodes.onCallBack(qrCodes);
+                        }
+                    }
+                });
+    }
+
+    static protected void getAllPlayers(CallbackAllPlayers callbackAllPlayers){
+        ArrayList<Player> allPlayers = new ArrayList<>();
+        collectionReferencePlayer.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.getResult().isEmpty()){
+                            Log.d("Getting all QR Codes", "No codes exist in the DB at at all");
+                            callbackAllPlayers.onCallBack(allPlayers);
+                        } else {
+                            for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                                QRCode.Geolocation geolocation = null;
+//                                if(documentSnapshot.get("geolocation", QRCode.Geolocation.class) != null){
+//                                    geolocation = documentSnapshot.get("geolocation", QRCode.Geolocation.class);
+//                                }
+                                Player newPlayer = new Player(
+                                        documentSnapshot.getString("username"),
+                                        documentSnapshot.getString("deviceID"),
+                                        documentSnapshot.getString("phoneNumber"));
+
+                                allPlayers.add(newPlayer);
+                            }
+                            callbackAllPlayers.onCallBack(allPlayers);
                         }
                     }
                 });
@@ -614,5 +650,8 @@ public class DB {
 
     public interface CallbackOrderQRCodes {
         void onCallBack(ArrayList<QRCode> orderedQRCodes);
+    }
+    public interface CallbackAllPlayers {
+        void onCallBack(ArrayList<Player> allPlayers);
     }
  }
