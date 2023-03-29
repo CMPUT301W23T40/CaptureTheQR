@@ -37,6 +37,8 @@ public class ScoreboardActivity extends AppCompatActivity {
     private ArrayAdapter<Player> playerAdapter;
     private int my_rank;
 
+    private Player my_player;
+
 
     /**
      * override Activity onCreate method
@@ -75,10 +77,10 @@ public class ScoreboardActivity extends AppCompatActivity {
                     @Override
                     public void onCallBack(Player player) {
 
-
+                        my_player = player;
                         if(player.getHighScore()!=0) {
-                            my_rank = allPlayers.indexOf(player) + 1;
-
+                            //my_rank = allPlayers.indexOf(player) + 1;
+                            my_player = player;
                         }
 //                        else{
 //                            myRankScoreText.setText("No rank! Please scan QR Code.");
@@ -88,7 +90,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                     }
 
                 });
-
+                my_rank = allPlayers.indexOf(my_player) + 1;
                 listView = findViewById(R.id.ltvw_ranks);
                 playerAdapter = new ScoreboardList(getApplicationContext(), playerList);
                 listView.setAdapter(playerAdapter);
