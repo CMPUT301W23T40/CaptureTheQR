@@ -101,10 +101,11 @@ public class QRAnalyzer {
      */
     public static int generateScore(String inputString) {
 
+        //get the consecutive repeats in the input string
         Map<Character, Integer> map = getConsecutiveRepeats(inputString);
 
-        // init the sum
-        int sum = 0;
+        // init the sum to the number of isolated 0's
+        int sum = countIsolatedZeros(inputString);
 
         // loop through the map
         for (Map.Entry<Character, Integer> entry : map.entrySet()) {
@@ -163,6 +164,21 @@ public class QRAnalyzer {
             occurrences.put(currentChar, count);
 
         return occurrences;
+    }
+
+    /**
+     * This function will count isolated 0's in a string
+     * @param inputString the input string to parse throught
+     * @return the number of isolated 0's in the string
+     */
+    public static int countIsolatedZeros(String inputString) {
+        int count = 0;
+
+        for (int i = 0; i < inputString.length(); i++)
+            if (inputString.charAt(i) == '0' && (i == 0 || inputString.charAt(i-1) != '0') && (i == inputString.length()-1 || inputString.charAt(i+1) != '0'))
+                count++;
+
+        return count;
     }
 
     /**

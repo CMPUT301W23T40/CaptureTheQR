@@ -57,7 +57,9 @@
         <activity
             android:name=".ScoreboardActivity"
             android:label="@string/scoreboard"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustNothing">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

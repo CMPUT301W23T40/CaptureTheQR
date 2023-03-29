@@ -1,6 +1,12 @@
 package com.cmput301w23t40.capturetheqr;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.content.Context;
+import android.location.Location;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
@@ -8,18 +14,30 @@ import java.util.ArrayList;
  * This class models the location of a player and the QR codes around them
  */
 public class PlayerLocation {
-    interface CallbackNearbyCodes {
+    /**
+     * Callback for when the nearby codes have been processed
+     */
+    public interface CallbackNearbyCodes {
         void onUpdateNearbyCodes();
+    }
+
+    /**
+     * Callback for when the current geolocation has been obtained from location services
+     */
+    public interface CallbackLocation {
+        void onUpdateLocation();
     }
     /**
      * The location of the player
      */
     private QRCode.Geolocation location;
+    private FusedLocationProviderClient locationClient;
     private ArrayList<QRCode> nearbyCodes;
 
-    public PlayerLocation() {
+    public PlayerLocation(Context context) {
         // FIXME: For testing, this is set to somewhere in the middle of UofA quad
         this.location = new QRCode.Geolocation(53.52704,-113.52563);
+        this.locationClient = LocationServices.getFusedLocationProviderClient(context);
         nearbyCodes = new ArrayList<>();
     }
 
@@ -29,6 +47,24 @@ public class PlayerLocation {
      */
     public QRCode.Geolocation getLocation() {
         return location;
+    }
+
+    /**
+     * Request an update to the current location from location services
+     * @param callback Callback to be called when new location information is available
+     */
+    public void updateLocation(CallbackLocation callback) {
+        QRCode.Geolocation geolocation;
+        locationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location currentLocation) {
+                        if (currentLocation != null) {
+                            location = new QRCode.Geolocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        }
+                        callback.onUpdateLocation();
+                    }
+                });
     }
 
     /**

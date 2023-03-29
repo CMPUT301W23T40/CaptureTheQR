@@ -15,12 +15,28 @@ public class QRAnalyzerTest {
     @Test
     void testScore(){
         String s = QRAnalyzer.generateHashValue("BFG5DGW54");
-        assertEquals(QRAnalyzer.generateScore(s),111);
+        assertEquals(QRAnalyzer.generateScore(s),115);
     }
 
     @Test
     void testScoreZeros(){
         assertEquals(QRAnalyzer.generateScore("0000"),8000);
+    }
+
+    @Test
+    void testNoIsolatedZeros(){
+        assertEquals(QRAnalyzer.countIsolatedZeros("0000"),0);
+    }
+
+    @Test
+    void testIsolatedZeros(){
+        assertEquals(QRAnalyzer.countIsolatedZeros("01203400560"),3);
+    }
+
+    @Test
+    void testSingleZero(){
+        assertEquals(QRAnalyzer.countIsolatedZeros("0"),1);
+        assertEquals(QRAnalyzer.generateScore("0"),1);
     }
 
     @Test
