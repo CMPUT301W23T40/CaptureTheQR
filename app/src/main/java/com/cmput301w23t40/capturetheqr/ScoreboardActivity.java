@@ -1,43 +1,31 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
  */
-public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class ScoreboardActivity extends AppCompatActivity{
 
     private ListView listView;
-    private ArrayList<Player> playerList;
     private ArrayAdapter<Player> playerAdapter;
-    private int my_rank;
-
     private Player my_player;
 
 
@@ -51,52 +39,25 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_score);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        playerList = new ArrayList<Player>();
-
-
+        String deviceID = FirstTimeLogInActivity.getDeviceID(ScoreboardActivity.this);
         DB.getAllPlayers(new DB.CallbackAllPlayers() {
             @Override
             public void onCallBack(ArrayList<Player> allPlayers) {
-                Collections.sort(allPlayers, new Comparator<Player>() {
-                    @Override
-                    public int compare(Player o1, Player o2) {
-                        return Integer.compare(o2.getHighScore(), o1.getHighScore());
+                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
+                for(int i = 1; i <= allPlayers.size(); ++i){
+                    Player tempPlayer;
+                    tempPlayer = allPlayers.get(i-1);
+                    tempPlayer.setRank(i);
+                    if (tempPlayer.getDeviceID().equals(deviceID)){
+                        my_player = tempPlayer;
                     }
-
-                });
-                for (Player player:allPlayers){
-                    int index = allPlayers.indexOf(player);
-
-                    Player currPlayer = new Player(player.getUsername(), "10000","FAKEDEVICE");
-                    currPlayer.setRank((index+1));
-                    currPlayer.setHighScore(player.getHighScore());
-                    playerList.add(currPlayer);
                 }
-                DB.getPlayer(FirstTimeLogInActivity.getDeviceID(ScoreboardActivity.this), new DB.CallbackGetPlayer() {
-
-                    @Override
-                    public void onCallBack(Player player) {
-
-                        my_player = player;
-                        if(player.getHighScore()!=0) {
-                            //my_rank = allPlayers.indexOf(player) + 1;
-                            my_player = player;
-                        }
-//                        else{
-//                            myRankScoreText.setText("No rank! Please scan QR Code.");
-//                        }
-
-
-                    }
-
-                });
-                my_rank = allPlayers.indexOf(my_player) + 1;
                 listView = findViewById(R.id.ltvw_ranks);
-                playerAdapter = new ScoreboardList(getApplicationContext(), playerList);
+                playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
                 listView.setAdapter(playerAdapter);
+
                 TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
-                myRankScoreText.setText("My rank is: " + String.valueOf(my_rank));
+                myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -165,11 +126,11 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                 return true;
             }
         });
-        Spinner spinner = findViewById(R.id.search_spinner);
-        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this, R.array.scorearray, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemClickListener(this);
+//        Spinner spinner = findViewById(R.id.search_spinner);
+//        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this, R.array.scorearray, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinner.setAdapter(adapter);
+//        spinner.setOnItemClickListener(this);
     }
 
     /**
@@ -187,8 +148,8 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
+//    @Override
+//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//    }
 }
