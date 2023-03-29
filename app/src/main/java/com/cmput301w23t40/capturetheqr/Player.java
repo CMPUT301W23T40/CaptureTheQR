@@ -16,6 +16,7 @@ public class Player implements Serializable {
     private String phoneNumber;
 
     private int highScore;
+    private int lowScore;
     private int rank;
     private String deviceID;
     private int numberOfCodes;
@@ -29,6 +30,7 @@ public class Player implements Serializable {
         this.phoneNumber = phoneNumber;
         this.deviceID = deviceID;
     }
+
 
     public String getUsername() {
         return this.username;
@@ -51,6 +53,13 @@ public class Player implements Serializable {
     }
     public void setRank(int rank){
         this.rank= rank;
+    }
+
+    public void setLowScore(int lowScore){
+        this.lowScore = lowScore;
+    }
+    public int getLowScore() {
+        return lowScore;
     }
 
     public int getHighScore() {

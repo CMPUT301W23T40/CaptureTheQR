@@ -69,24 +69,24 @@ public class DB {
     static protected void saveQRCodeInDB(QRCode qrCode, Callback callback){
         DocumentReference documentReference = collectionReferenceQR.document(qrCode.getHashValue());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.getResult().exists()){
-                            Log.d("Saving a qrCode", "Hash value: " + qrCode.getHashValue() + "already exists");
-                            callback.onCallBack();
-                        } else {
-                            documentReference
-                                    .set(qrCode)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            Log.d("Saving QRCode", "Hash value: " + qrCode.getHashValue() + "added");
-                                            callback.onCallBack();
-                                        }
-                                    });
-                        }
-                    }
-                });
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.getResult().exists()){
+                    Log.d("Saving a qrCode", "Hash value: " + qrCode.getHashValue() + "already exists");
+                    callback.onCallBack();
+                } else {
+                    documentReference
+                            .set(qrCode)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d("Saving QRCode", "Hash value: " + qrCode.getHashValue() + "added");
+                                    callback.onCallBack();
+                                }
+                            });
+                }
+            }
+        });
     }
 
     /**
@@ -134,7 +134,7 @@ public class DB {
                         Log.d("Verifying if scanner info is new", scannerInfo.getUsername() + ' ' + true);
                         callbackVerifyIfScannerInfoIsNew.onCallBack(true);
                     }
-                    });
+                });
     }
 
     /**
@@ -154,6 +154,21 @@ public class DB {
                         .update("numberOfCodes", FieldValue.increment(1));
                 collectionReferencePlayer.document(scannerInfo.getUsername())
                         .update("scoreSum", FieldValue.increment(qrCode.getScore()));
+                collectionReferencePlayer.document(scannerInfo.getUsername()).get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                Player player = task.getResult().toObject(Player.class);
+                                if (qrCode.getScore() > player.getHighScore()){
+                                    collectionReferencePlayer.document(scannerInfo.getUsername())
+                                            .update("highScore", qrCode.getScore());
+                                }
+                                if (qrCode.getScore() < player.getLowScore()){
+                                    collectionReferencePlayer.document(scannerInfo.getUsername())
+                                            .update("lowScore", qrCode.getScore());
+                                }
+                            }
+                        });
                 callback.onCallBack();
             }
         });
@@ -234,7 +249,7 @@ public class DB {
                             }
                         });
                     }
-                //problems!!! lets log it
+                    //problems!!! lets log it
                 } else {
                     Log.d("error getting user from db", task.getException().toString());
                 }
@@ -295,19 +310,19 @@ public class DB {
         collectionReferencePlayer.whereEqualTo("username", username)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.getResult().isEmpty()){
-                            Log.d("Search for player", "username: " + username + " does not exists");
-                            callbackGetPlayer.onCallBack(null);
-                        } else {
-                            Player player = task.getResult().getDocuments().get(0).toObject(Player.class);
-                            Log.d("Search for player", "username: " + username + " found");
-                            callbackGetPlayer.onCallBack(player);
-                        }
-                    }
-                }
-        );
+                                           @Override
+                                           public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                               if (task.getResult().isEmpty()){
+                                                   Log.d("Search for player", "username: " + username + " does not exists");
+                                                   callbackGetPlayer.onCallBack(null);
+                                               } else {
+                                                   Player player = task.getResult().getDocuments().get(0).toObject(Player.class);
+                                                   Log.d("Search for player", "username: " + username + " found");
+                                                   callbackGetPlayer.onCallBack(player);
+                                               }
+                                           }
+                                       }
+                );
     }
 
     /**
@@ -461,7 +476,7 @@ public class DB {
                                 cbGetImage.onCallBack(sci.get(i).get("imageLink"));
 
                     }
-                //problems!!! lets log it
+                    //problems!!! lets log it
                 } else
                     Log.d("Error getting qr from db", task.getException().toString());
             }
@@ -494,17 +509,17 @@ public class DB {
         DocumentReference docRef = collectionReferenceQR.document(hash);
 
         docRef.update("scannersInfo", FieldValue.arrayUnion(dataToInsert))
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Log.d("Saving new image", "Saved");
-                    cb.onCallBack();
-                }
-            }
-        );
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               Log.d("Saving new image", "Saved");
+                                               cb.onCallBack();
+                                           }
+                                       }
+                );
     }
-    
-     /** Return the times scanned of the this code, if the return value is null, then this
+
+    /** Return the times scanned of the this code, if the return value is null, then this
      * code has never been scanned
      * @param qrCode qrCode object to be queried
      * @param callbackGetTimesScanned actions to perform after the query is done
@@ -544,14 +559,14 @@ public class DB {
                         //Log.d("score", String.valueOf(qrCode.getScore()));
 //                        Integer scoretoAdd = qrCode.getScore();
 
-                    if(qrCode.getScore()>highScore){
-                        highScore = qrCode.getScore();
-                        maxCode = qrCode;
-                    }
-                    if(qrCode.getScore()<lowestScore){
-                        lowestScore = qrCode.getScore();
-                        minCode = qrCode;
-                    }
+                        if(qrCode.getScore()>highScore){
+                            highScore = qrCode.getScore();
+                            maxCode = qrCode;
+                        }
+                        if(qrCode.getScore()<lowestScore){
+                            lowestScore = qrCode.getScore();
+                            minCode = qrCode;
+                        }
 
 
                         callbackScore.onCallBack(maxCode, minCode);
@@ -576,6 +591,25 @@ public class DB {
             }
         });
 
+    }
+
+
+    static protected void getAllPlayers(CallbackAllPlayers callbackAllPlayers){
+        ArrayList<Player> allPlayers = new ArrayList<>();
+        collectionReferencePlayer.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.getResult().isEmpty()){
+                            Log.d("Getting all players", "No players exist in the DB at at all");
+                        } else {
+                            for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
+                                allPlayers.add(documentSnapshot.toObject(Player.class));
+                            }
+                        }
+                        callbackAllPlayers.onCallBack(allPlayers);
+                    }
+                });
     }
 
     /**
@@ -605,27 +639,27 @@ public class DB {
     public interface Callback {
         void onCallBack();
     }
-    
+
     public interface CallbackGetPlayer {
         void onCallBack(Player player);
     }
-    
+
     public interface CallbackVerifyIfScannerInfoIsNew {
         void onCallBack(Boolean scannerInfoIsNew);
     }
-    
+
     public interface CallbackAddNewPlayer {
         void onCallBack(Boolean playerExists);
     }
-    
+
     public interface CallbackVerifyIfDeviceIDIsNew {
         void onCallBack(Boolean deviceIDIsNew);
     }
-    
+
     public interface CallbackGetAllQRCodes {
         void onCallBack(ArrayList<QRCode> allQRCodes);
     }
-    
+
     public interface CallbackGetUsersQRCodes {
         void onCallBack(ArrayList<QRCode> myQRCodes);
     }
@@ -649,4 +683,7 @@ public class DB {
     public interface CallbackOrderQRCodes {
         void onCallBack(ArrayList<QRCode> orderedQRCodes);
     }
- }
+    public interface CallbackAllPlayers {
+        void onCallBack(ArrayList<Player> allPlayers);
+    }
+}
