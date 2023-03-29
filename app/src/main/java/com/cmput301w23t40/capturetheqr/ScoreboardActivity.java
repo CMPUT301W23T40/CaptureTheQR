@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * This class defines the UI page for the QR Code Library
  */
-public class ScoreboardActivity extends AppCompatActivity {
+public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView listView;
     private ArrayList<Player> playerList;
@@ -96,6 +97,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                 listView.setAdapter(playerAdapter);
                 TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
                 myRankScoreText.setText("My rank is: " + String.valueOf(my_rank));
+
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -163,6 +165,11 @@ public class ScoreboardActivity extends AppCompatActivity {
                 return true;
             }
         });
+        Spinner spinner = findViewById(R.id.search_spinner);
+        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this, R.array.scorearray, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemClickListener(this);
     }
 
     /**
@@ -180,4 +187,8 @@ public class ScoreboardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
 }

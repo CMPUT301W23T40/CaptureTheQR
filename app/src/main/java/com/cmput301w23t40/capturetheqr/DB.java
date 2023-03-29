@@ -159,10 +159,10 @@ public class DB {
                     public void onCallBack(QRCode max, QRCode min) {
                         if(qrCode.getScore()>max.getScore()){
                             collectionReferencePlayer.document(scannerInfo.getUsername())
-                                    .update("highScore",FieldValue.increment(qrCode.getScore()));
+                                    .update("highScore",qrCode.getScore());
                             if(qrCode.getScore()<min.getScore()){
                                 collectionReferencePlayer.document(scannerInfo.getUsername())
-                                        .update("lowScore",FieldValue.increment(qrCode.getScore()));
+                                        .update("lowScore",qrCode.getScore());
                             }
                         }
                     }
