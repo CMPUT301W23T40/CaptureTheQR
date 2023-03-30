@@ -163,10 +163,6 @@ public class DB {
                                     collectionReferencePlayer.document(scannerInfo.getUsername())
                                             .update("highScore", qrCode.getScore());
                                 }
-                                if (qrCode.getScore() < player.getLowScore()){
-                                    collectionReferencePlayer.document(scannerInfo.getUsername())
-                                            .update("lowScore", qrCode.getScore());
-                                }
                             }
                         });
                 callback.onCallBack();
