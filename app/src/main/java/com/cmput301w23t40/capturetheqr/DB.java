@@ -552,8 +552,6 @@ public class DB {
                 QRCode minCode = null;
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
-                        //Log.d("score", String.valueOf(qrCode.getScore()));
-//                        Integer scoretoAdd = qrCode.getScore();
 
                         if(qrCode.getScore()>highScore){
                             highScore = qrCode.getScore();
@@ -574,22 +572,8 @@ public class DB {
     }
 
     /**
-     * The method gets ordering of QR codes from highest to lowest on the scoreboard
+     * The query gets all the players from the database
      * */
-    static protected void orderBasedOnScore(CallbackOrderQRCodes callbackOrder){
-        List<QRCode> scoreList = new ArrayList<QRCode>();
-        getAllQRCodes(new CallbackGetAllQRCodes() {
-            @Override
-            public void onCallBack(ArrayList<QRCode> allQRCodes) {
-                Collections.sort(allQRCodes, QRCode.SCORE_COMPARATOR);
-                Collections.reverse(allQRCodes);
-                callbackOrder.onCallBack(allQRCodes);
-            }
-        });
-
-    }
-
-
     static protected void getAllPlayers(CallbackAllPlayers callbackAllPlayers){
         ArrayList<Player> allPlayers = new ArrayList<>();
         collectionReferencePlayer.get()

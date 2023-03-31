@@ -2,6 +2,7 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,15 +20,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
  */
-public class ScoreboardActivity extends AppCompatActivity{
+public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private ListView listView;
     private ArrayAdapter<Player> playerAdapter;
     private Player my_player;
+//    private ArrayAdapter<CharSequence> adapter;
 
 
     /**
@@ -43,21 +48,66 @@ public class ScoreboardActivity extends AppCompatActivity{
         DB.getAllPlayers(new DB.CallbackAllPlayers() {
             @Override
             public void onCallBack(ArrayList<Player> allPlayers) {
-                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
-                for(int i = 1; i <= allPlayers.size(); ++i){
-                    Player tempPlayer;
-                    tempPlayer = allPlayers.get(i-1);
-                    tempPlayer.setRank(i);
-                    if (tempPlayer.getDeviceID().equals(deviceID)){
-                        my_player = tempPlayer;
-                    }
-                }
                 listView = findViewById(R.id.ltvw_ranks);
-                playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
-                listView.setAdapter(playerAdapter);
-
                 TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
-                myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
+
+                /** The idea of how to implement a spinner was learnt from the tutorial below
+                 * Author: Code in Flow
+                 * url: https://www.youtube.com/watch?v=on_OrrX7Nw4
+                 * edited: Nov 13,2017
+                 * license: CC BY-SA 3.0
+                 */
+                //spinner related declarations
+                Spinner spinner = findViewById(R.id.search_spinner);
+                ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(getApplicationContext(), R.array.scorearray, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                /**
+                 * The method below uses the spinner to present the user a choice to sort by and implements the sorting
+                 * algorithm accordingly
+                 * */
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                       String itemSelected = parent.getItemAtPosition(position).toString();
+                        Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
+                        if (itemSelected.equals("Sort by highest score")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
+                        } else if (itemSelected.equals("Sort by most QR codes")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getNumberOfCodes(), o1.getNumberOfCodes()));
+                        } else if (itemSelected.equals("Sort by highest sum of scores")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getScoreSum(), o1.getScoreSum()));
+                        }
+                        for(int i = 1; i <= allPlayers.size(); ++i){
+                            Player tempPlayer;
+                            tempPlayer = allPlayers.get(i-1);
+                            tempPlayer.setRank(i);
+                            if (tempPlayer.getDeviceID().equals(deviceID)){
+                                my_player = tempPlayer;
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        listView.setAdapter(playerAdapter);
+
+                        myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
+                        String itemSelected = "Sort by highest score";
+
+                        Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+
+                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        listView.setAdapter(playerAdapter);
+                        myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
+                    }
+                });
+
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
@@ -126,11 +176,7 @@ public class ScoreboardActivity extends AppCompatActivity{
                 return true;
             }
         });
-//        Spinner spinner = findViewById(R.id.search_spinner);
-//        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this, R.array.scorearray, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinner.setAdapter(adapter);
-//        spinner.setOnItemClickListener(this);
+
     }
 
     /**
@@ -147,9 +193,13 @@ public class ScoreboardActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
+// the methods below are needed by the AdapterView.SetOnCompleteListener which is used for the spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//    }
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }
