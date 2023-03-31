@@ -39,7 +39,6 @@ public class OtherPlayerActivity extends AppCompatActivity {
             @Override
             public void onCallBack(QRCode maxQR, QRCode minQR) {
                 if(maxQR != null) {
-                    // FIXME check if the following two lines work after merging Anushka's PR
                     scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
                     numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                     highScoreCodeTxt.setText(maxQR.getCodeName());
