@@ -1,6 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -108,18 +107,24 @@ public class MainActivity extends AppCompatActivity {
                     contactText.setText(player.getPhoneNumber());
 
                     // Set stats
-
+                    TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+                    TextView scoreLabel = findViewById(R.id.txtvw_scoreSumLabel);
+                    TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
+                    TextView numberLabel = findViewById(R.id.txtvw_numberOfCodesLabel);
                     TextView highScoreTxt = findViewById(R.id.txtvw_highestScore);
                     TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
                     TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
                     TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
-                    TextView estRankTxt = findViewById(R.id.txtvw_estimateRank);
                     LinearLayout statistics = findViewById(R.id.statistics);
                     DB.getScore(player, new DB.CallbackScore() {
                         @Override
                         public void onCallBack(QRCode maxQR, QRCode minQR) {
                             if(maxQR != null){
                                 statistics.setVisibility(View.VISIBLE);
+                                scoreLabel.setVisibility(View.VISIBLE);
+                                numberLabel.setVisibility(View.VISIBLE);
+                                scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
+                                numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                                 highScoreCodeTxt.setText(maxQR.getCodeName());
                                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                                 lowScoreCodeTxt.setText(minQR.getCodeName());
@@ -141,7 +146,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         LinearLayout statistics = findViewById(R.id.statistics);
+        TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+        TextView scoreLabel = findViewById(R.id.txtvw_scoreSumLabel);
+        TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
+        TextView numberLabel = findViewById(R.id.txtvw_numberOfCodesLabel);
+
         statistics.setVisibility(View.INVISIBLE);
+        scoreSumTxt.setText("");
+        scoreLabel.setVisibility(View.INVISIBLE);
+        numberOfCodesTxt.setText("");
+        numberLabel.setVisibility(View.INVISIBLE);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.cmput301w23t40.capturetheqr;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class OtherPlayerActivity extends AppCompatActivity {
         usernameText.setText(player.getUsername());
 
         // set stats
+        TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+        TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
         TextView highScoreTxt = findViewById(R.id.txtvw_highestScore);
         TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
         TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
@@ -36,6 +39,8 @@ public class OtherPlayerActivity extends AppCompatActivity {
             @Override
             public void onCallBack(QRCode maxQR, QRCode minQR) {
                 if(maxQR != null) {
+                    scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
+                    numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                     highScoreCodeTxt.setText(maxQR.getCodeName());
                     highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                     lowScoreCodeTxt.setText(minQR.getCodeName());
