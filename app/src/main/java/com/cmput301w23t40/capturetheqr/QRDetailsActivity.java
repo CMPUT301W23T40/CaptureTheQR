@@ -49,7 +49,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
-        scoreText.setText(String.valueOf(code.getScore()));
+        scoreText.setText(String.valueOf(code.getScore()) + " points");
 
         if(code.getGeolocation() != null){
             locationText.setText(code.getGeolocation().toString());
