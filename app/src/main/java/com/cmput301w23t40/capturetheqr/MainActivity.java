@@ -1,6 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         DB.getPlayer(deviceId, new DB.CallbackGetPlayer() {
             @Override
             public void onCallBack(Player player) {
-                currPlayer = player;
+
                 if(player!=null){
                     TextView helloText = findViewById(R.id.txtvw_usernameHello);
                     TextView contactText = findViewById(R.id.txtvw_contactInfo);
@@ -81,10 +80,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (id == R.id.navigation_qrLibrary){
                     startActivity(new Intent(getApplicationContext(), LibraryActivity.class));
                 } else if (id == R.id.navigation_score){
-                    //startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
-                    Intent intent = new Intent(getApplicationContext(), ScoreboardActivity.class);
-                    intent.putExtra("player", currPlayer);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), ScoreboardActivity.class));
+
                 }
                 return true;
             }
@@ -110,18 +107,24 @@ public class MainActivity extends AppCompatActivity {
                     contactText.setText(player.getPhoneNumber());
 
                     // Set stats
-
+                    TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+                    TextView scoreLabel = findViewById(R.id.txtvw_scoreSumLabel);
+                    TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
+                    TextView numberLabel = findViewById(R.id.txtvw_numberOfCodesLabel);
                     TextView highScoreTxt = findViewById(R.id.txtvw_highestScore);
                     TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
                     TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
                     TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
-                    TextView estRankTxt = findViewById(R.id.txtvw_estimateRank);
                     LinearLayout statistics = findViewById(R.id.statistics);
                     DB.getScore(player, new DB.CallbackScore() {
                         @Override
                         public void onCallBack(QRCode maxQR, QRCode minQR) {
                             if(maxQR != null){
                                 statistics.setVisibility(View.VISIBLE);
+                                scoreLabel.setVisibility(View.VISIBLE);
+                                numberLabel.setVisibility(View.VISIBLE);
+                                scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
+                                numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                                 highScoreCodeTxt.setText(maxQR.getCodeName());
                                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                                 lowScoreCodeTxt.setText(minQR.getCodeName());
@@ -143,7 +146,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         LinearLayout statistics = findViewById(R.id.statistics);
+        TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
+        TextView scoreLabel = findViewById(R.id.txtvw_scoreSumLabel);
+        TextView numberOfCodesTxt = findViewById(R.id.txtvw_numberOfCodes);
+        TextView numberLabel = findViewById(R.id.txtvw_numberOfCodesLabel);
+
         statistics.setVisibility(View.INVISIBLE);
+        scoreSumTxt.setText("");
+        scoreLabel.setVisibility(View.INVISIBLE);
+        numberOfCodesTxt.setText("");
+        numberLabel.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -158,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
          */
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
-        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES);
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(ScanActivity.class);

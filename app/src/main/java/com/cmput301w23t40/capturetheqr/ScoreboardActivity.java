@@ -1,38 +1,37 @@
 package com.cmput301w23t40.capturetheqr;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
  */
-public class ScoreboardActivity extends AppCompatActivity {
+public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private ListView listView;
-    private ArrayList<Player> playerList;
     private ArrayAdapter<Player> playerAdapter;
+    private Player my_player;
+//    private ArrayAdapter<CharSequence> adapter;
 
 
     /**
@@ -45,49 +44,78 @@ public class ScoreboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        playerList = new ArrayList<Player>();
-        DB.orderBasedOnScore(new DB.CallbackOrderQRCodes() {
-            ArrayList<String> usernameList= new ArrayList<String>();
+        String deviceID = FirstTimeLogInActivity.getDeviceID(ScoreboardActivity.this);
+        DB.getAllPlayers(new DB.CallbackAllPlayers() {
             @Override
-            public void onCallBack(ArrayList<QRCode> orderedQRCodes) {
-                int rank = 1;
-                for (QRCode qrCode: orderedQRCodes) {
-                    Boolean addedPlayer = Boolean.FALSE;
-                    ArrayList<QRCode.ScannerInfo> SCInfo = qrCode.getScannersInfo();
-                    for(QRCode.ScannerInfo player : SCInfo){
-                        if(!usernameList.contains(player.getUsername())) {
-                            addedPlayer = Boolean.TRUE;
+            public void onCallBack(ArrayList<Player> allPlayers) {
+                listView = findViewById(R.id.ltvw_ranks);
+                TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
 
-                            usernameList.add(player.getUsername());
-                            Player currPlayer = new Player(player.getUsername(), "10000","FAKEDEVICE");
-                            currPlayer.setRank(rank);
-                            currPlayer.setHighScore(qrCode.getScore());
-                            playerList.add(currPlayer);
+                /** The idea of how to implement a spinner was learnt from the tutorial below
+                 * Author: Code in Flow
+                 * url: https://www.youtube.com/watch?v=on_OrrX7Nw4
+                 * edited: Nov 13,2017
+                 * license: CC BY-SA 3.0
+                 */
+                //spinner related declarations
+                Spinner spinner = findViewById(R.id.search_spinner);
+                ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(getApplicationContext(), R.array.scorearray, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                /**
+                 * The method below uses the spinner to present the user a choice to sort by and implements the sorting
+                 * algorithm accordingly
+                 * */
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                       String itemSelected = parent.getItemAtPosition(position).toString();
+                        Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
+                        if (itemSelected.equals("Sort by highest score")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
+                        } else if (itemSelected.equals("Sort by most QR codes")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getNumberOfCodes(), o1.getNumberOfCodes()));
+                        } else if (itemSelected.equals("Sort by highest sum of scores")) {
+                            Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getScoreSum(), o1.getScoreSum()));
                         }
+                        for(int i = 1; i <= allPlayers.size(); ++i){
+                            Player tempPlayer;
+                            tempPlayer = allPlayers.get(i-1);
+                            tempPlayer.setRank(i);
+                            if (tempPlayer.getDeviceID().equals(deviceID)){
+                                my_player = tempPlayer;
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        listView.setAdapter(playerAdapter);
+
+                        myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
 
                     }
-                    if (addedPlayer)
-                        rank++;
-                }
-                listView = findViewById(R.id.ltvw_ranks);
-                playerAdapter = new ScoreboardList(getApplicationContext(), playerList);
-                listView.setAdapter(playerAdapter);
-                Player myplayer = (Player) getIntent().getSerializableExtra("player");
-                TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
-                if(myplayer.getRank()!=0) {
-                    myRankScoreText.setText("My Rank is : " + String.valueOf(myplayer.getRank()));
-                }
-                else{
-                    myRankScoreText.setText("No rank. Please scan QR Code!");
-                }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
+                        String itemSelected = "Sort by highest score";
+
+                        Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+
+                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        listView.setAdapter(playerAdapter);
+                        myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
+                    }
+                });
+
+
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         if (listView.getItemAtPosition(i) instanceof Player) {
                             Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
                             intent.putExtra("player", (Player) listView.getItemAtPosition(i));
-                            
+
                             startActivity(intent);
                         }
                     }
@@ -113,7 +141,9 @@ public class ScoreboardActivity extends AppCompatActivity {
                         }
                 );
 
+
             }
+
         });
 
         //get the search param
@@ -146,17 +176,9 @@ public class ScoreboardActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
-//    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        View view = convertView;
-//        if (view == null) {
-//            view = LayoutInflater.from(context).inflate(R.layout.scoreboard_content, parent, false);
-//
-//        }
-//        TextView scoreText = view.findViewById(R.id.txtvw_score);
-//        rankText.setText(String.valueOf(player.getRank()));
-//    }
     /**
      * override Activity onOptionsItemSelection method for our actionBar back button
      * @param item
@@ -171,5 +193,13 @@ public class ScoreboardActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+// the methods below are needed by the AdapterView.SetOnCompleteListener which is used for the spinner
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

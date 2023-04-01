@@ -52,21 +52,21 @@ public class AddQRActivity extends AppCompatActivity {
     Bitmap photo;
     /* Object for requesting Android Location permissions */
     private ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
-        new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
             /* result is a map with the permission name as the key and the value being a
             boolean indicating whether the permission was granted */
-            boolean accessCoarseLocation = result.get("android.permission.ACCESS_COARSE_LOCATION");
-            boolean accessFineLocation = result.get("android.permission.ACCESS_FINE_LOCATION");
-            // Fine location access also grants coarse location access. Work with at least coarse location permissions
-            if (!accessCoarseLocation) {
-                // Location permissions denied
-                Toast.makeText(getApplicationContext(), R.string.location_perm_failure_toast, Toast.LENGTH_SHORT).show();
-                geoSwitch.setChecked(false);
-            } else {
-                // User granted at least coarse location access
-                locationHelper = new PlayerLocation(AddQRActivity.this);
-            }
-        });
+                boolean accessCoarseLocation = result.get("android.permission.ACCESS_COARSE_LOCATION");
+                boolean accessFineLocation = result.get("android.permission.ACCESS_FINE_LOCATION");
+                // Fine location access also grants coarse location access. Work with at least coarse location permissions
+                if (!accessCoarseLocation) {
+                    // Location permissions denied
+                    Toast.makeText(getApplicationContext(), R.string.location_perm_failure_toast, Toast.LENGTH_SHORT).show();
+                    geoSwitch.setChecked(false);
+                } else {
+                    // User granted at least coarse location access
+                    locationHelper = new PlayerLocation(AddQRActivity.this);
+                }
+            });
 
     /**
      * override Activity onCreate method
@@ -87,7 +87,7 @@ public class AddQRActivity extends AppCompatActivity {
         geoSwitch = findViewById(R.id.btn_geoToggle);
         commentEditText = findViewById(R.id.edtxt_comment);
         qrCodeName.setText(qrCode.getCodeName());
-        score.setText(String.valueOf(qrCode.getScore()));
+        score.setText("You scored " + String.valueOf(qrCode.getScore()) + " points!");
         visualization.setText(qrCode.getVisualization());
         DB.getTimesScanned(qrCode, new DB.CallbackGetTimesScanned() {
             @Override
@@ -203,9 +203,9 @@ public class AddQRActivity extends AppCompatActivity {
     }
 
     private void finishAddQR() {
-            // Display a success message and return to home
-            Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
-            finish();
+        // Display a success message and return to home
+        Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
+        finish();
     }
 
     private void updateLocation() {

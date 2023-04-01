@@ -19,6 +19,11 @@
     <string name="add_qr_optional_pic">Add optional picture...</string>
     <string name="add_qr_submit">Submit</string>
     <string name="scoreboard">Scoreboard</string>
+    <string-array name = "scorearray">
+        <item> Sort by highest score</item>
+        <item> Sort by most QR codes</item>
+        <item> Sort by highest sum of scores</item>
+    </string-array>
     <string name="player">Player Profile</string>
     <string name="first_scanner">Congrats, you are the first scanner of this code!</string>
     <string name="location_perm_failure_toast">No location permission, will not save geolocation!</string>

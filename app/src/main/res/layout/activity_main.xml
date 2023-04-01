@@ -12,39 +12,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
         android:text=""
         android:textColor="@color/med_blue"
         android:textSize="35dp"
         android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_contactInfo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.285"
+        app:layout_constraintHorizontal_bias="0.315"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.588" />
 
     <TextView
         android:id="@+id/txtvw_contactInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
         android:fontFamily="sans-serif"
         android:text=""
         android:textColor="@color/med_blue"
         android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_scoreSum"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtvw_usernameHello" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/nav_items" />
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toEndOf="@+id/imageView" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -52,9 +49,70 @@
         android:layout_height="94dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_scoreSum"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/profile_icon_24" />
+
+    <TextView
+        android:id="@+id/txtvw_scoreSum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif"
+        android:text=""
+        android:textColor="@color/med_blue"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_scoreSumLabel"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_scoreSumLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="45dp"
+        android:fontFamily="sans-serif"
+        android:text="Current Total Score"
+        android:textColor="@color/med_blue"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_numberOfCodes"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_numberOfCodes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif"
+        android:text=""
+        android:textColor="@color/med_blue"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_numberOfCodesLabel"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_numberOfCodesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="56dp"
+        android:fontFamily="sans-serif"
+        android:text="Number of Codes"
+        android:textColor="@color/med_blue"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/statistics"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/statistics"
@@ -81,130 +139,99 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:clickable="true"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingBottom="10dp">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/txtvw_highestScoreCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_weight="0.8"
                 android:fontFamily="sans-serif"
                 android:text=""
                 android:textColor="@color/med_blue"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_weight="0.8"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtvw_highestScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="0.2"
                 android:fontFamily="sans-serif"
                 android:text=""
                 android:textColor="@color/med_blue"
                 android:textSize="25dp"
-                android:textStyle="bold"
-                android:layout_weight="0.2"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <TextView
-                android:id="@+id/txtvw_lowestScoreLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif"
-                android:text="Lowest Scoring Code:"
-                android:textColor="@color/med_blue"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/nav_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtvw_highestScore" />
+            android:id="@+id/txtvw_lowestScoreLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:fontFamily="sans-serif"
+            android:text="Lowest Scoring Code:"
+            android:textColor="@color/med_blue"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/nav_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtvw_highestScore" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingBottom="10dp">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/txtvw_lowestScoreCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_weight="0.8"
                 android:fontFamily="sans-serif"
                 android:text=""
                 android:textColor="@color/med_blue"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_weight="0.8"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtvw_lowestScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:layout_weight="0.2"
                 android:fontFamily="sans-serif"
                 android:text=""
                 android:textColor="@color/med_blue"
                 android:textSize="25dp"
-                android:textStyle="bold"
-                android:layout_weight="0.2"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#993BACA5"
-            app:layout_constraintBottom_toTopOf="@+id/nav_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
-
-            <TextView
-                android:id="@+id/txtvw_estimateRankLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif"
-                android:text="Estimate Rank of Highest Score"
-                android:textColor="@color/med_blue"
-                android:textSize="20dp"
-                android:maxLines="2"
-                android:textStyle="bold"
-                android:layout_weight="0.8"/>
-
-            <TextView
-                android:id="@+id/txtvw_estimateRank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:fontFamily="sans-serif"
-                android:text=""
-                android:maxLines="1"
-                android:textColor="@color/med_blue"
-                android:textSize="25dp"
-                android:textStyle="bold"
-                android:layout_weight="0.2"/>
-
-        </LinearLayout>
-
-
 
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/nav_items" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

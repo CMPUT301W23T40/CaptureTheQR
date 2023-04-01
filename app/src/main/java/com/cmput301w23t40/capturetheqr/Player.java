@@ -30,6 +30,7 @@ public class Player implements Serializable {
         this.deviceID = deviceID;
     }
 
+
     public String getUsername() {
         return this.username;
     }
