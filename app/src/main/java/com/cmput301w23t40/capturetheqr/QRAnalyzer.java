@@ -14,6 +14,8 @@ import java.util.Map;
  * Based on the hash value, it then generates a name, a visualization, and a score for this QR code.
  */
 public class QRAnalyzer {
+    private static HashMap<Character, String> hexToBinMap;
+    private static Map<Integer, ArrayList<String>> nameDict;
     /**
      * Generate a QRCode object from a real code's hashvalue
      * @param hashValue hashvalue of the real code
@@ -182,44 +184,60 @@ public class QRAnalyzer {
     }
 
     /**
+     * Initialize the maps for getting the first six bits of hash values, and getting the name components
+     */
+    private static void mapsInit(){
+        if (hexToBinMap == null){
+            hexToBinMap = new HashMap<>();
+            hexToBinMap.put('0', "0000");
+            hexToBinMap.put('1', "0001");
+            hexToBinMap.put('2', "0010");
+            hexToBinMap.put('3', "0011");
+            hexToBinMap.put('4', "0100");
+            hexToBinMap.put('5', "0101");
+            hexToBinMap.put('6', "0110");
+            hexToBinMap.put('7', "0111");
+            hexToBinMap.put('8', "1000");
+            hexToBinMap.put('9', "1001");
+            hexToBinMap.put('A', "1010");
+            hexToBinMap.put('B', "1011");
+            hexToBinMap.put('C', "1100");
+            hexToBinMap.put('D', "1101");
+            hexToBinMap.put('E', "1110");
+            hexToBinMap.put('F', "1111");
+            hexToBinMap.put('a', "1010");
+            hexToBinMap.put('b', "1011");
+            hexToBinMap.put('c', "1100");
+            hexToBinMap.put('d', "1101");
+            hexToBinMap.put('e', "1110");
+            hexToBinMap.put('f', "1111");
+        }
+        if (nameDict == null){
+            nameDict = new HashMap<>();
+            nameDict.put(0, new ArrayList<>(Arrays.asList("cool", "hot")));
+            nameDict.put(1, new ArrayList<>(Arrays.asList("Fro", "Glo")));
+            nameDict.put(2, new ArrayList<>(Arrays.asList("Mo", "Lo")));
+            nameDict.put(3, new ArrayList<>(Arrays.asList("Mega", "Ultra")));
+            nameDict.put(4, new ArrayList<>(Arrays.asList("Spectral", "Sonic")));
+            nameDict.put(5, new ArrayList<>(Arrays.asList("Crab", "Shark")));
+        }
+    }
+
+    /**
      * This function generates a name based on the first byte of the hashed value of a string
      * @param hashString - the string to generate a name from
      * @return a string representing the new name
      */
     public static String generateName(String hashString) {
-        // create a dictionary for the names
-        Map<Integer, ArrayList<String>> nameDict = new HashMap<Integer, ArrayList<String>>();
-
-        // the key is the index of the bit in the array, the value is the possible
-        // options for the name in that slot
-        nameDict.put(0, new ArrayList<String>(Arrays.asList("cool", "hot")));
-        nameDict.put(1, new ArrayList<String>(Arrays.asList("Fro", "Glo")));
-        nameDict.put(2, new ArrayList<String>(Arrays.asList("Mo", "Lo")));
-        nameDict.put(3, new ArrayList<String>(Arrays.asList("Mega", "Ultra")));
-        nameDict.put(4, new ArrayList<String>(Arrays.asList("Spectral", "Sonic")));
-        nameDict.put(5, new ArrayList<String>(Arrays.asList("Crab", "Shark")));
-
-        // get the first byte of the hashed string
-        byte arrHash = hashString.getBytes()[0];
-        // byte arrHash = 1;
-
-        // turn the first byte into bits
-        String bits = Integer.toBinaryString(arrHash);
-
-        // if the bits of the string is less than 8, prefix 0's
-        while (bits.length() < 8)
-            bits = "0" + bits;
-
-        // build the name, add a space between the first word and the rest
+        mapsInit();
+        String firstTwoChar = hexToBinMap.get(hashString.charAt(0)) + hexToBinMap.get(hashString.charAt(1));
         String name = "";
-
         for (int i = 0; i < 6; i++) {
-            if (i==0)
-                name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i)))) + " ";
-            else
-                name += nameDict.get(i).get(Integer.parseInt(String.valueOf(bits.charAt(i))));
+            name += nameDict.get(i).get(Integer.parseInt(String.valueOf(firstTwoChar.charAt(i))));
+            if (i == 0) {
+                name += " ";
+            }
         }
-
         return name;
     }
 
@@ -230,18 +248,9 @@ public class QRAnalyzer {
      * @return a string representing the visualization
      */
     public static String generateVisualization(String hashString) {
-
-        // get the first byte of the hashed string
-        byte arrHash = hashString.getBytes()[0];
-        // byte arrHash = 1;
-
-        // turn the first byte into bits
-        String bits = Integer.toBinaryString(arrHash);
-
-        // if the bits of the string is less than 8, prefix 0's
-        while (bits.length() < 8)
-            bits = "0" + bits;
-
+        mapsInit();
+        // actually the variable bits contains the first eight bits
+        String bits = hexToBinMap.get(hashString.charAt(0)) + hexToBinMap.get(hashString.charAt(1));
         String face = "";
 
         // this picture will be build from the top down
