@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <!-- Adapted from the following resource to add the map to the layout
         author: Google Inc.
         url: https://developers.google.com/maps/documentation/android-sdk/map
         last updated: March 2, 2023
 -->
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:id="@+id/frgmt_qrMap"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    map:uiZoomControls="true"
-    map:uiCompass="true"
-    map:cameraZoom="18" />
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/frgmt_qrMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:uiZoomControls="true"
+        map:uiCompass="true"
+        map:cameraZoom="18" />
+
+    <SearchView
+        android:id="@+id/srchvw_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
