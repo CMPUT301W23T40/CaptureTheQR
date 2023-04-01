@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ScoreboardActivity">
-
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ScoreboardActivity">
 
     <TextView
-        android:id="@+id/txt_vwv_estRank"
+        android:id="@+id/txtvwv_estRank"
         android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:background="@color/med_blue"
+        android:layout_height="80dp"
         android:fontFamily="sans-serif"
         android:text=""
         android:textColor="#000000"
         android:textSize="30dp"
         android:textStyle="bold"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -26,40 +23,73 @@
     <ListView
         android:id="@+id/ltvw_ranks"
         android:layout_width="0dp"
-        android:layout_height="450dp"
+        android:layout_height="300dp"
         android:layout_weight="1"
         android:background="#663BACA5"
-        app:layout_constraintBottom_toTopOf="@+id/txt_vwv_estRank"
+        app:layout_constraintBottom_toTopOf="@+id/txtvwv_estRank"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
     </ListView>
 
-    <EditText
-        android:id="@+id/editTextSearchUsername"
+
+    <TextView
+        android:id="@+id/txtvw_usernameHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Search for username"
-        android:imeOptions="actionSearch"
-        app:layout_constraintBottom_toTopOf="@+id/ltvw_ranks"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif"
+        android:text="Username Search:"
+        android:textColor="@color/med_blue"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/edtxt_searchUsername"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.317" />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/edtxt_searchUsername"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/input_white_rectangle"
+        android:ems="10"
+        android:imeOptions="actionSearch"
+        android:inputType="textPersonName"
+        android:paddingLeft="35dp"
+        app:layout_constraintBottom_toTopOf="@+id/txtvw_sortHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtvw_sortHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif"
+        android:text="Sort By:"
+        android:textColor="@color/med_blue"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/search_spinner"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/search_spinner"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:paddingLeft="35dp"
+        android:gravity="center"
+        android:background="@drawable/input_white_rectangle"
+        android:popupBackground="@drawable/input_white_rectangle"
+        android:dropDownWidth="375dp"
         app:layout_constraintBottom_toTopOf="@+id/ltvw_ranks"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextSearchUsername" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

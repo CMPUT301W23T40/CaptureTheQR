@@ -2,7 +2,6 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * This class defines the UI page for the QR Code Library
@@ -31,7 +28,7 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
     private ListView listView;
     private ArrayAdapter<Player> playerAdapter;
     private Player my_player;
-//    private ArrayAdapter<CharSequence> adapter;
+    private String metric = "Highest QR score";
 
 
     /**
@@ -49,7 +46,7 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onCallBack(ArrayList<Player> allPlayers) {
                 listView = findViewById(R.id.ltvw_ranks);
-                TextView myRankScoreText = findViewById(R.id.txt_vwv_estRank);
+                TextView myRankScoreText = findViewById(R.id.txtvwv_estRank);
 
                 /** The idea of how to implement a spinner was learnt from the tutorial below
                  * Author: Code in Flow
@@ -69,13 +66,13 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                       String itemSelected = parent.getItemAtPosition(position).toString();
-                        Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
-                        if (itemSelected.equals("Sort by highest score")) {
+                        String itemSelected = parent.getItemAtPosition(position).toString();
+                        metric = itemSelected;
+                        if (itemSelected.equals("Highest QR score")) {
                             Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
-                        } else if (itemSelected.equals("Sort by most QR codes")) {
+                        } else if (itemSelected.equals("Highest number of QRs scanned")) {
                             Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getNumberOfCodes(), o1.getNumberOfCodes()));
-                        } else if (itemSelected.equals("Sort by highest sum of scores")) {
+                        } else if (itemSelected.equals("Highest sum of QR scores")) {
                             Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getScoreSum(), o1.getScoreSum()));
                         }
                         for(int i = 1; i <= allPlayers.size(); ++i){
@@ -96,7 +93,15 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                         }
                         listView.setAdapter(playerAdapter);
 
-                        myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
+                        String rank = String.valueOf(my_player.getRank());
+                        if (rank.endsWith("1") && !rank.endsWith("11"))
+                            rank += "st";
+                        else if (rank.endsWith("2") && !rank.endsWith("12"))
+                            rank += "nd";
+                        else
+                            rank += "th";
+
+                        myRankScoreText.setText("You have the " + rank + " " + metric);
 
                     }
 
@@ -121,6 +126,7 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                         if (listView.getItemAtPosition(i) instanceof Player) {
                             Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
                             intent.putExtra("player", (Player) listView.getItemAtPosition(i));
+                            intent.putExtra("metric", metric);
 
                             startActivity(intent);
                         }
@@ -152,8 +158,8 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
 
         });
 
-        //get the search param
-        EditText userSearch = findViewById(R.id.editTextSearchUsername);
+        // get the search param
+        EditText userSearch = findViewById(R.id.edtxt_searchUsername);
 
         userSearch.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
