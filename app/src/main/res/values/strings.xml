@@ -20,9 +20,9 @@
     <string name="add_qr_submit">Submit</string>
     <string name="scoreboard">Scoreboard</string>
     <string-array name = "scorearray">
-        <item> Sort by highest score</item>
-        <item> Sort by most QR codes</item>
-        <item> Sort by highest sum of scores</item>
+        <item>Highest QR score</item>
+        <item>Highest number of QRs scanned</item>
+        <item>Highest sum of QR scores</item>
     </string-array>
     <string name="player">Player Profile</string>
     <string name="first_scanner">Congrats, you are the first scanner of this code!</string>
