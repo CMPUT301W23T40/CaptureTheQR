@@ -17,11 +17,12 @@ public class QRAnalyzer {
     private static HashMap<Character, String> hexToBinMap;
     private static Map<Integer, ArrayList<String>> nameDict;
     /**
-     * Generate a QRCode object from a real code's hashvalue
-     * @param hashValue hashvalue of the real code
+     * Generate a QRCode object from a real code's codeContent
+     * @param codeContent codeContent of the real code
      * @return qrcode object
      */
-    public static QRCode generateQRCodeObject(String hashValue){
+    public static QRCode generateQRCodeObject(String codeContent){
+        String hashValue = generateHashValue(codeContent);
         return new QRCode(hashValue,
                 generateName(hashValue),
                 generateVisualization(hashValue),
