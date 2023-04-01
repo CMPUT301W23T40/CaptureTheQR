@@ -182,6 +182,7 @@ public class AddQRActivity extends AppCompatActivity {
         DB.saveScannerInfoInDB(qrCode, scannerInfo, photo, new DB.Callback() {
             @Override
             public void onCallBack() {
+                DB.updateGeolocationOfCode(qrCode);
                 // Only save comment if user entered one
                 if (commentEditText.getText().toString().length() != 0){
                     saveComment();

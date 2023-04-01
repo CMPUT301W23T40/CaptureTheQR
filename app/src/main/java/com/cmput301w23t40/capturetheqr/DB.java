@@ -24,6 +24,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -608,6 +609,19 @@ public class DB {
                         Log.d("Deleting all codes", "deleted");
                     }
                 });
+    }
+
+    /**
+     * Update the geolocation of the code scanned if the new geolocation is not null
+     * @param qrCode qrCode object to be updated
+     */
+    protected static void updateGeolocationOfCode(QRCode qrCode){
+        if (qrCode.getGeolocation() != null){
+            Map<String, Object> newLocation = new HashMap<>();
+            newLocation.put("geolocation", qrCode.getGeolocation());
+            collectionReferenceQR.document(qrCode.getHashValue())
+                    .update(newLocation);
+        }
     }
 
     /** The idea of using callbacks is learnt from Alex Mamo
