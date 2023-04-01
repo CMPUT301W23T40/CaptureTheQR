@@ -31,9 +31,9 @@ public class QRCodeListTest {
         assertThrows(IndexOutOfBoundsException.class, () -> qrCodeList.getCode(0));
 
 
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("1"));
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("2"));
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("3"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("11"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("22"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("33"));
         qrCodeList = new QRCodeList(null, qrCodeArrayList);
 
         assertEquals(qrCodeList.getCode(0), qrCodeArrayList.get(0));
@@ -63,11 +63,11 @@ public class QRCodeListTest {
 
         assertEquals(qrCodeList.getItemCount(), 0);
 
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("1"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("11"));
         assertEquals(qrCodeList.getItemCount(), 1);
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("2"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("22"));
         assertEquals(qrCodeList.getItemCount(), 2);
-        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("3"));
+        qrCodeArrayList.add(QRAnalyzer.generateQRCodeObject("33"));
         assertEquals(qrCodeList.getItemCount(), 3);
     }
 }
