@@ -102,7 +102,7 @@ public class QRAnalyzerTest {
 
     @Test
     void testGenerateQRCode(){
-        QRCode qrCode = QRAnalyzer.generateQRCodeObject("BFG5DGW54");
+        QRCode qrCode = QRAnalyzer.generateQRCodeObject("696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
         assertEquals(qrCode.getHashValue(),"696ce4dbd7bb57cbfe58b64f530f428b74999cb37e2ee60980490cd9552de3a6");
         assertEquals(qrCode.getCodeName(), "cool GloLoMegaSonicCrab");
         assertEquals(qrCode.getScore(), 115);
