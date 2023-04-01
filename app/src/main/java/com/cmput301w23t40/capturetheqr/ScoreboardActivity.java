@@ -87,7 +87,13 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        if (itemSelected.equals("Sort by highest score")) {
+                            playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.HIGHEST_SCORE);
+                        } else if (itemSelected.equals("Sort by most QR codes")) {
+                            playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.NUMBER_OF_CODES);
+                        } else if (itemSelected.equals("Sort by highest sum of scores")) {
+                            playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.SCORE_SUM);
+                        }
                         listView.setAdapter(playerAdapter);
 
                         myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
@@ -102,7 +108,7 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                         Toast.makeText(parent.getContext(), itemSelected, Toast.LENGTH_SHORT).show();
                         adapter.notifyDataSetChanged();
 
-                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers);
+                        playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.HIGHEST_SCORE);
                         listView.setAdapter(playerAdapter);
                         myRankScoreText.setText("My rank is: " + String.valueOf(my_player.getRank()));
                     }
