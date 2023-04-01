@@ -87,7 +87,7 @@ public class AddQRActivity extends AppCompatActivity {
         geoSwitch = findViewById(R.id.btn_geoToggle);
         commentEditText = findViewById(R.id.edtxt_comment);
         qrCodeName.setText(qrCode.getCodeName());
-        score.setText(String.valueOf(qrCode.getScore()));
+        score.setText("You scored " + String.valueOf(qrCode.getScore()) + " points!");
         visualization.setText(qrCode.getVisualization());
         DB.getTimesScanned(qrCode, new DB.CallbackGetTimesScanned() {
             @Override

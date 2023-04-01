@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
          */
         ScanOptions options = new ScanOptions();
         options.setPrompt("Scan a QR Code");
-        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES);
         options.setBeepEnabled(true);
         options.setOrientationLocked(true);
         options.setCaptureActivity(ScanActivity.class);
