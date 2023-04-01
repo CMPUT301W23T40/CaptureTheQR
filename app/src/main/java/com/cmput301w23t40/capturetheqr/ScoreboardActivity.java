@@ -84,11 +84,11 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
                             }
                         }
                         adapter.notifyDataSetChanged();
-                        if (itemSelected.equals("Sort by highest score")) {
+                        if (itemSelected.equals("Highest QR score")) {
                             playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.HIGHEST_SCORE);
-                        } else if (itemSelected.equals("Sort by most QR codes")) {
+                        } else if (itemSelected.equals("Highest number of QRs scanned")) {
                             playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.NUMBER_OF_CODES);
-                        } else if (itemSelected.equals("Sort by highest sum of scores")) {
+                        } else if (itemSelected.equals("Highest sum of QR scores")) {
                             playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, ScoreboardList.SortBy.SCORE_SUM);
                         }
                         listView.setAdapter(playerAdapter);
