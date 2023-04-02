@@ -32,7 +32,7 @@ import java.util.Comparator;
  */
 public class ScoreboardActivity extends AppCompatActivity {
 
-    private ListView listView;
+    ListView listView;
     private ArrayAdapter<Player> playerAdapter;
     private Player my_player;
     private String deviceID;
@@ -222,10 +222,8 @@ public class ScoreboardActivity extends AppCompatActivity {
 
                                 startActivity(intent);
                             }
-                            else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
