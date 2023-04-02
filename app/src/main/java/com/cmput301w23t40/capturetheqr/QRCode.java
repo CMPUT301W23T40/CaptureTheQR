@@ -65,7 +65,7 @@ public class QRCode implements Serializable{
 
     protected static class Geolocation implements Serializable{
         private double latitude, longitude;
-        final static private double radius = 0.5;
+        final static private double radius = 0.08;
 
         public Geolocation() {
         }

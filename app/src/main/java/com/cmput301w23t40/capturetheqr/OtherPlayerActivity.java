@@ -3,6 +3,8 @@ package com.cmput301w23t40.capturetheqr;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +27,9 @@ public class OtherPlayerActivity extends AppCompatActivity {
         // set textviews
         Player player = (Player) getIntent().getSerializableExtra("player");
         TextView usernameText = findViewById(R.id.txtvw_usernameHello);
+        TextView contactText = findViewById(R.id.txtvw_contactInfo);
         usernameText.setText(player.getUsername());
+        contactText.setText(player.getPhoneNumber());
 
         // set stats
         TextView scoreSumTxt = findViewById(R.id.txtvw_scoreSum);
@@ -34,11 +38,17 @@ public class OtherPlayerActivity extends AppCompatActivity {
         TextView highScoreCodeTxt = findViewById(R.id.txtvw_highestScoreCode);
         TextView lowScoreCodeTxt = findViewById(R.id.txtvw_lowestScoreCode);
         TextView lowScoreTxt = findViewById(R.id.txtvw_lowestScore);
+        TextView scoreSumLabelTxt = findViewById(R.id.txtvw_scoreSumLabel);
+        TextView numberOfCodesLabelTxt = findViewById(R.id.txtvw_numberOfCodesLabel);
+        LinearLayout statistics = findViewById(R.id.statistics);
 
         DB.getScore(player, new DB.CallbackScore() {
             @Override
             public void onCallBack(QRCode maxQR, QRCode minQR) {
                 if(maxQR != null) {
+                    statistics.setVisibility(View.VISIBLE);
+                    scoreSumLabelTxt.setVisibility(View.VISIBLE);
+                    numberOfCodesLabelTxt.setVisibility(View.VISIBLE);
                     scoreSumTxt.setText(String.valueOf(player.getScoreSum()));
                     numberOfCodesTxt.setText(String.valueOf(player.getNumberOfCodes()));
                     highScoreCodeTxt.setText(maxQR.getCodeName());
