@@ -27,4 +27,5 @@
     <string name="player">Player Profile</string>
     <string name="first_scanner">Congratulations! You are the first user to scan this code!</string>
     <string name="location_perm_failure_toast">Location permission denied! Geolocation will not be saved!</string>
+    <string name="search_location_failure">No results for queried location!</string>
 </resources>
