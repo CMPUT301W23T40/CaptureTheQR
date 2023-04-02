@@ -28,4 +28,5 @@
     <string name="player">Player Profile</string>
     <string name="first_scanner">Congrats, you are the first scanner of this code!</string>
     <string name="location_perm_failure_toast">No location permission, will not save geolocation!</string>
+    <string name="location_perm_failure_toast_on_scoreboard">No location permission Refresh after granting it</string>
 </resources>
