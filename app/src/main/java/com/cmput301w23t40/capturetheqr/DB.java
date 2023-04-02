@@ -1,34 +1,26 @@
 package com.cmput301w23t40.capturetheqr;
 
 
-import android.graphics.Bitmap;
 import static java.lang.Integer.MAX_VALUE;
+
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import android.util.Base64;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.common.primitives.Bytes;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -209,6 +201,26 @@ public class DB {
                                 .update("numberOfCodes", FieldValue.increment(-1));
                         collectionReferencePlayer.document(username)
                                 .update("scoreSum", FieldValue.increment(-QRAnalyzer.generateScore(hashValue)));
+                        collectionReferencePlayer.document(username).get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        Player player = task.getResult().toObject(Player.class);
+                                        if (player.getHighScore() == QRAnalyzer.generateScore(hashValue)){
+                                            getScore(player, new CallbackScore() {
+                                                @Override
+                                                public void onCallBack(QRCode max, QRCode min) {
+                                                    int maxScore = 0;
+                                                    if (max != null){
+                                                        maxScore = max.getScore();
+                                                    }
+                                                    collectionReferencePlayer.document(username)
+                                                            .update("highScore", maxScore);
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
                         callback.onCallBack();
                     }
                 });
@@ -553,7 +565,6 @@ public class DB {
                 QRCode minCode = null;
                 for(QRCode qrCode:myQRCodes){
                     if(qrCode!=null) {
-
                         if(qrCode.getScore()>highScore){
                             highScore = qrCode.getScore();
                             maxCode = qrCode;
@@ -562,14 +573,11 @@ public class DB {
                             lowestScore = qrCode.getScore();
                             minCode = qrCode;
                         }
-
-
-                        callbackScore.onCallBack(maxCode, minCode);
                     }
                 }
+                callbackScore.onCallBack(maxCode, minCode);
             }
         });
-
     }
 
     /**
