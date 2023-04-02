@@ -98,12 +98,12 @@ public class ScoreboardActivityTest {
         View view1 = solo.getView(Spinner.class, 0);
         solo.clickOnView(view1);
         solo.scrollToTop();
-        // select the 1st item in the spinner
-        solo.clickOnView(solo.getView(TextView.class, 3));
+        // choose highest metric
+        solo.clickOnText("Highest QR score");
         ScoreboardActivity activity = (ScoreboardActivity) solo.getCurrentActivity();
         final ListView listView = activity.listView; // Get the listview
 
-        String score = "Highest QR score" ;
+        String score = "Highest QR score";
         TestCase.assertTrue(solo.waitForText(score, 1, 2000));
     }
 
@@ -139,10 +139,11 @@ public class ScoreboardActivityTest {
         View view1 = solo.getView(Spinner.class, 0);
         solo.clickOnView(view1);
         solo.scrollToTop();
-        // select the 1st item in the spinner
-        solo.clickOnView(solo.getView(TextView.class, 1));
+        // select sum metric
+        solo.clickOnText("Highest sum of QR scores");
         ScoreboardActivity activity = (ScoreboardActivity) solo.getCurrentActivity();
         final ListView listView = activity.listView; // Get the listview
+
 
         String score = "Highest sum of QR scores" ;
         TestCase.assertTrue(solo.waitForText(score, 1, 2000));
