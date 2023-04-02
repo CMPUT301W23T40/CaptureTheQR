@@ -1,7 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ public class ScoreboardList extends ArrayAdapter<Player> {
         }
         Player player = players.get(position);
         TextView rankText = view.findViewById(R.id.txtvw_rank);
-        TextView playerText = view.findViewById(R.id.txtvw_player);
+        TextView playerText = view.findViewById(R.id.txtvw_playerORCode);
         TextView scoreText = view.findViewById(R.id.txtvw_score);
         rankText.setText(String.valueOf(player.getRank()));
         playerText.setText(player.getUsername());

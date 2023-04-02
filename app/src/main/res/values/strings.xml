@@ -23,7 +23,7 @@
         <item>Highest QR score</item>
         <item>Highest number of QRs scanned</item>
         <item>Highest sum of QR scores</item>
-        <item>Nearby Highest QR codes</item>
+        <item>Nearby Highest Scoring QR code</item>
     </string-array>
     <string name="player">Player Profile</string>
     <string name="first_scanner">Congrats, you are the first scanner of this code!</string>

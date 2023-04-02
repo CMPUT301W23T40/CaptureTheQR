@@ -110,6 +110,7 @@ public class QRCode implements Serializable{
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
     private int timesScanned;
+    private int rank; // should only be used locally by scoreboard
 
     public QRCode() {
     }
@@ -178,5 +179,12 @@ public class QRCode implements Serializable{
 
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
+    }
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

@@ -23,7 +23,9 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This class defines the UI page for the QR Code Library
@@ -36,7 +38,6 @@ public class ScoreboardActivity extends AppCompatActivity {
     private String deviceID;
     private PlayerLocation locationHelper;
 
-    private ArrayList<QRCode> nearbyQRCodes;
     private ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(), result -> {
         /* result is a map with the permission name as the key and the value being a
@@ -95,13 +96,16 @@ public class ScoreboardActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), OtherPlayerActivity.class);
                     intent.putExtra("player", (Player) listView.getItemAtPosition(i));
                     startActivity(intent);
+                } else if (listView.getItemAtPosition(i) instanceof QRCode){
+                    Intent intent = new Intent(getApplicationContext(), QRDetailsActivity.class);
+                    intent.putExtra("qrcode", (QRCode) listView.getItemAtPosition(i));
+                    startActivity(intent);
                 }
             }
         });
         DB.getAllPlayers(new DB.CallbackAllPlayers() {
             @Override
             public void onCallBack(ArrayList<Player> allPlayers) {
-                TextView myRankScoreText = findViewById(R.id.txtvwv_estRank);
                 spinner.setAdapter(adapter);
                 /*
                  * The method below uses the spinner to present the user a choice to sort by and implements the sorting
@@ -111,40 +115,29 @@ public class ScoreboardActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         String itemSelected = parent.getItemAtPosition(position).toString();
-                        if(!itemSelected.equals("Nearby Highest QR codes")){
+                        if(!itemSelected.equals("Nearby Highest Scoring QR code")){
                             if (itemSelected.equals("Highest QR score")) {
                                 Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
-                            } else if (itemSelected.equals("Highest number of QRs scanned")) {
-                                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getNumberOfCodes(), o1.getNumberOfCodes()));
-                            } else if (itemSelected.equals("Highest sum of QR scores")) {
-                                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getScoreSum(), o1.getScoreSum()));
-                            }
-                            for(int i = 1; i <= allPlayers.size(); ++i){
-                                Player tempPlayer;
-                                tempPlayer = allPlayers.get(i-1);
-                                tempPlayer.setRank(i);
-                                if (tempPlayer.getDeviceID().equals(deviceID)){
-                                    my_player = tempPlayer;
-                                }
-                            }
-                            if (itemSelected.equals("Highest QR score")) {
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.HIGHEST_SCORE);
                             } else if (itemSelected.equals("Highest number of QRs scanned")) {
+                                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getNumberOfCodes(), o1.getNumberOfCodes()));
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.NUMBER_OF_CODES);
                             } else if (itemSelected.equals("Highest sum of QR scores")) {
+                                Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getScoreSum(), o1.getScoreSum()));
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.SCORE_SUM);
                             }
+                            boolean foundMyPlayer = false;
+                            for(int i = 0; i < allPlayers.size(); ++i){
+                                Player tempPlayer = allPlayers.get(i);
+                                tempPlayer.setRank(i+1);
+                                if(!foundMyPlayer && tempPlayer.getDeviceID().equals(deviceID)){
+                                    my_player = tempPlayer;
+                                    foundMyPlayer = true;
+                                }
+                            }
+                            playerAdapter.notifyDataSetChanged();
                             listView.setAdapter(playerAdapter);
-
-                            String rank = String.valueOf(my_player.getRank());
-                            if (rank.endsWith("1") && !rank.endsWith("11"))
-                                rank += "st";
-                            else if (rank.endsWith("2") && !rank.endsWith("12"))
-                                rank += "nd";
-                            else
-                                rank += "th";
-
-                            myRankScoreText.setText("You have the " + rank + " " + itemSelected);
+                            setMyRankText(my_player.getRank(), itemSelected);
                         } else {
                             updateLocation();
                             locationHelper.updateLocation(new PlayerLocation.CallbackLocation() {
@@ -154,6 +147,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                                         @Override
                                         public void onCallBack(ArrayList<QRCode> allQRCodes) {
                                             QRCode.Geolocation playerLocation = locationHelper.getLocation();
+                                            ArrayList<QRCode> nearbyQRCodes = new ArrayList<>();
                                             for (QRCode qrCode : allQRCodes){
                                                 if(qrCode.getGeolocation() != null){
                                                     if(QRCode.Geolocation.nearby(playerLocation, qrCode.getGeolocation())){
@@ -161,15 +155,29 @@ public class ScoreboardActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             }
-
-
+                                            int myCodeRank = -1;
+                                            boolean foundMyHighestNearbyCode = false;
+                                            Collections.sort(nearbyQRCodes, (o1, o2) -> Integer.compare(o2.getScore(), o1.getScore()));
+                                            for (int i = 0; i < nearbyQRCodes.size(); ++i){
+                                                nearbyQRCodes.get(i).setRank(i+1);
+                                                if (!foundMyHighestNearbyCode){
+                                                    for(QRCode.ScannerInfo scannerInfo : nearbyQRCodes.get(i).getScannersInfo()){
+                                                        if(scannerInfo.getUsername().equals(my_player.getUsername())){
+                                                            myCodeRank = nearbyQRCodes.get(i).getRank();
+                                                            foundMyHighestNearbyCode = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            ScoreboardCodeList nearbyQRCodeList = new ScoreboardCodeList(getApplicationContext(), nearbyQRCodes);
+                                            listView.setAdapter(nearbyQRCodeList);
+                                            setMyRankText(myCodeRank, itemSelected);
                                         }
                                     });
                                 }
                             });
                         }
-
-
                     }
 
                     @Override
@@ -230,5 +238,21 @@ public class ScoreboardActivity extends AppCompatActivity {
                     Manifest.permission.ACCESS_FINE_LOCATION
             });
         }
+    }
+
+    private void setMyRankText(int myRank, String itemSelected){
+        TextView myRankScoreText = findViewById(R.id.txtvwv_estRank);
+        if(myRank == -1){
+            myRankScoreText.setText("You do not have any nearby codes");
+            return;
+        }
+        String rank = String.valueOf(myRank);
+        if (rank.endsWith("1") && !rank.endsWith("11"))
+            rank += "st";
+        else if (rank.endsWith("2") && !rank.endsWith("12"))
+            rank += "nd";
+        else
+            rank += "th";
+        myRankScoreText.setText("You have the " + rank + " " + itemSelected);
     }
 }
