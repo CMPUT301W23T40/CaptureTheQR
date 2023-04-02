@@ -25,7 +25,7 @@ import java.util.Collections;
  */
 public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private ListView listView;
+    ListView listView;
     private ArrayAdapter<Player> playerAdapter;
     private Player my_player;
     private String metric = "Highest QR score";
