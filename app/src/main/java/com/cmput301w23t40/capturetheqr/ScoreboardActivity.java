@@ -178,17 +178,14 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
 
                                 startActivity(intent);
                             }
-                            else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
                 return true;
             }
         });
-
     }
 
     /**

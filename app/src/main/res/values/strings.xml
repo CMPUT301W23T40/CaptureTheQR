@@ -13,8 +13,8 @@
     <string name="add_qr_scan_count">This code has been scanned {COUNT} times!</string>
     <string name="add_qr_code_points">{POINTS} points</string>
     <string name="add_qr_optional_comment">Add optional comment...</string>
-    <string name="add_qr_success_toast">Successfully added code!\nView it in QR Library</string>
-    <string name="add_qr_failure_toast">This code was scanned before!</string>
+    <string name="add_qr_success_toast">Successfully added code!\nYou can view it in the QR Library</string>
+    <string name="add_qr_failure_toast">You have already scanned this code! Unable to add duplicate code!</string>
     <string name="add_qr_geolocation_toggle">Keep geolocation?</string>
     <string name="add_qr_optional_pic">Add optional picture...</string>
     <string name="add_qr_submit">Submit</string>
@@ -25,6 +25,6 @@
         <item>Highest sum of QR scores</item>
     </string-array>
     <string name="player">Player Profile</string>
-    <string name="first_scanner">Congrats, you are the first scanner of this code!</string>
-    <string name="location_perm_failure_toast">No location permission, will not save geolocation!</string>
+    <string name="first_scanner">Congratulations! You are the first user to scan this code!</string>
+    <string name="location_perm_failure_toast">Location permission denied! Geolocation will not be saved!</string>
 </resources>
