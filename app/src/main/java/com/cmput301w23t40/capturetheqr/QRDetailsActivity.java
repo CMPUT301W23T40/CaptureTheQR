@@ -10,9 +10,12 @@ import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +29,9 @@ import java.util.Locale;
  * This class displays the details of a code clicked
  */
 public class QRDetailsActivity extends AppCompatActivity {
+    private Player player;
+    private EditText commentEditText;
+    private QRCode code;
 
     /**
      * override Activity onCreate method
@@ -40,14 +46,14 @@ public class QRDetailsActivity extends AppCompatActivity {
 
         // initialize Views
         QRCode code = (QRCode) getIntent().getSerializableExtra("qrcode");
-        LinearLayout linearLayout = findViewById(R.id.linLayout);
+        LinearLayout linearLayout = findViewById(R.id.blueLayout);
         TextView visText = findViewById(R.id.txtvw_qrDetVis);
         TextView nameText = findViewById(R.id.txtvw_qrDetName);
         TextView scoreText = findViewById(R.id.txtvw_qrDetScore);
         TextView locationText = findViewById(R.id.txtvw_qrDetLocation);
         TextView scanCountText = findViewById(R.id.txtvw_qrDetCount);
         TextView commentsText = findViewById(R.id.txtvw_qrDetComments);
-
+        EditText commentEditText = findViewById(R.id.edtxt_qrDetComment);
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
@@ -87,6 +93,13 @@ public class QRDetailsActivity extends AppCompatActivity {
                 linearLayout.addView(imgView);
             }
         }
+
+
+        //    !!!!!! TODO !!!!!!!
+//        Button buttonSubmit = findViewById(R.id.btn_submitComment);
+//        buttonSubmit.setOnClickListener(v -> {
+//            saveComment();
+//        });
     }
 
     /**
@@ -137,4 +150,29 @@ public class QRDetailsActivity extends AppCompatActivity {
             return e.toString();
         }
     }
+//    !!!!!! TODO !!!!!!!
+//    private void saveComment() {
+//        DB.getPlayer(FirstTimeLogInActivity.getDeviceID(QRDetailsActivity.this), new DB.CallbackGetPlayer() {
+//            @Override
+//            public void onCallBack(Player player) {
+//                QRDetailsActivity.this.player = player;
+//            }
+//        });
+//        QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
+//        DB.saveCommentInDB(code, comment, new DB.Callback() {
+//            @Override
+//            public void onCallBack() {
+//                ArrayList<QRCode.Comment> comments = code.getComments();
+//                String commentString = "";
+//                for (QRCode.Comment com: comments) {
+//                    if (!commentString.equals("")) {
+//                        commentString += "<br>";
+//                    }
+//                    commentString += "<b>" + com.getUsername() + ": " + "</b> " + com.getContent();
+//                }
+//                //Toast.makeText(getApplicationContext(), "Successfully added comment!", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+
 }
