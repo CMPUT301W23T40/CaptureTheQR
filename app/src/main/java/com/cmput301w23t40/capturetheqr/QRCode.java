@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Each QR code object maintains the actual code's hash value, the generated code name, visualization,
@@ -64,6 +65,7 @@ public class QRCode implements Serializable{
 
     protected static class Geolocation implements Serializable{
         private double latitude, longitude;
+        final static private double radius = 0.5;
 
         public Geolocation() {
         }
@@ -92,6 +94,12 @@ public class QRCode implements Serializable{
         @Override
         public String toString(){
             return this.latitude + ", " + this.longitude;
+        }
+
+        static public boolean nearby(Geolocation g1, Geolocation g2){
+            return Math.pow(g1.getLatitude() - g2.getLatitude(), 2) +
+                    Math.pow(g1.getLongitude() - g2.getLongitude(), 2)
+                    < radius;
         }
     }
     private String hashValue;
@@ -171,6 +179,4 @@ public class QRCode implements Serializable{
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
-    public static final Comparator<QRCode> SCORE_COMPARATOR = Comparator
-            .comparing(QRCode::getScore);
 }
