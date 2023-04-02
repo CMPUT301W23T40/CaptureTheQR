@@ -44,6 +44,9 @@ import java.util.Map;
 public class ScoreboardActivityTest {
 
     private Solo solo;
+    private Player player = new Player("Test","","");
+    private FirebaseFirestore database = FirebaseFirestore.getInstance();
+    private CollectionReference crPlayer = database.collection("player");
 
     @Rule
     public ActivityTestRule<MainActivity> rule =
@@ -56,6 +59,13 @@ public class ScoreboardActivityTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
+        DB.setDB(FirebaseFirestore.getInstance());
+        DB.addNewPlayer(player, new DB.CallbackAddNewPlayer() {
+            @Override
+            public void onCallBack(Boolean playerExists) {
+
+            }
+        });
     }
 
     /**
@@ -170,9 +180,22 @@ public class ScoreboardActivityTest {
         solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
         solo.clickOnView(solo.getView(R.id.navigation_score));
         solo.assertCurrentActivity("Wrong Activity", ScoreboardActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.edtxt_searchUsername), "anushka");
+        solo.enterText((EditText) solo.getView(R.id.edtxt_searchUsername), "Test");
         solo.pressSoftKeyboardSearchButton();
         solo.assertCurrentActivity("Wrong Activity", OtherPlayerActivity.class);
+    }
+
+    /**
+     * Searching for a player that doesn't exist and checking if an error is thrown
+     */
+    @Test
+    public void checkSearchFunctionToast(){
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnView(solo.getView(R.id.navigation_score));
+        solo.assertCurrentActivity("Wrong Activity", ScoreboardActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.edtxt_searchUsername), "Test123");
+        solo.pressSoftKeyboardSearchButton();
+        solo.searchText("Sorry! That username does not exist.");
     }
     /**
      * Cleans the DB after each test
@@ -181,6 +204,16 @@ public class ScoreboardActivityTest {
     @After
     public void tearDown() throws Exception{
         solo.finishOpenedActivities();
+
+        // delete the data this test added to DB
+        crPlayer.document("Test")
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("Delete test data", "completed");
+                    }
+                });
 
     }
 
