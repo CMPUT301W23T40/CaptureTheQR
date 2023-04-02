@@ -30,25 +30,44 @@
                 android:gravity="center_horizontal"
                 android:textColor="@color/black" />
             <TextView
-                android:id="@+id/txtvw_qrDetVis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/courier_prime"
-                android:gravity="center_horizontal"
-                android:padding="5dp"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
-            <TextView
                 android:id="@+id/txtvw_qrDetScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5sp"
                 android:textSize="20sp"
                 android:gravity="center_horizontal"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/txtvw_qrDetVis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/courier_prime"
+                android:gravity="center_horizontal"
+                android:padding="5sp"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/txtvw_qrDetLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="@color/med_blue"
+                android:textStyle="bold|italic"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/txtvw_qrDetCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5sp"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="@color/med_blue"
+                android:textStyle="bold|italic"
+                android:textSize="25sp" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/txtvw_qrDetComments"
             android:layout_width="match_parent"
@@ -56,34 +75,11 @@
             android:background="#1A3B98C0"
             android:lineSpacingExtra="5sp"
             android:layout_margin="15dp"
-            android:padding="10dp"
+            android:padding="5sp"
             android:text=""
-            android:visibility="invisible"
             android:textColor="@color/black"
             android:textSize="25sp"/>
-        <TextView
-            android:id="@+id/txtvw_qrDetLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:text=""
-            android:textColor="@color/med_blue"
-            android:textStyle="bold|italic"
-            android:textSize="25sp" />
 
-        <TextView
-            android:id="@+id/txtvw_qrDetCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:text=""
-            android:textColor="@color/med_blue"
-            android:textStyle="bold|italic"
-            android:textSize="25sp" />
-
-        
         <ImageView
             android:id="@+id/imgvw_qrImage"
             android:layout_width="wrap_content"

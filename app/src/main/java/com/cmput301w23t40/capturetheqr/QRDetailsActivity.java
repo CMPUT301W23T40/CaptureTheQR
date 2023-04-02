@@ -2,6 +2,7 @@ package com.cmput301w23t40.capturetheqr;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +54,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         scoreText.setText(String.valueOf(code.getScore()) + " points");
 
         if(code.getGeolocation() != null){
-            locationText.setText(code.getGeolocation().toString());
+            locationText.setText(getAddress(code.getGeolocation().getLatitude(), code.getGeolocation().getLongitude()));
         } else {
             locationText.setText("No geolocation recorded for this code");
         }
@@ -70,7 +72,10 @@ public class QRDetailsActivity extends AppCompatActivity {
         if (!commentString.equals("")) {
             System.out.println(commentString);
             commentsText.setText(Html.fromHtml(commentString));
-            commentsText.setVisibility(TextView.VISIBLE);
+        }
+        else {
+            commentsText.setText("There are no comments for this code.");
+            commentsText.setTypeface(null, Typeface.ITALIC);
         }
 
         ArrayList<QRCode.ScannerInfo> scannerInfo = code.getScannersInfo();
@@ -110,5 +115,26 @@ public class QRDetailsActivity extends AppCompatActivity {
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray1, 0, byteArray1.length);
         bmp = Bitmap.createScaledBitmap(bmp, 800, 800, true);
         return bmp;
+    }
+
+    /* Adapted code from the following resource to turn longitude/latitude of the QRCode
+    into a readable location.
+    author: https://stackoverflow.com/users/588763/dynamicmind & https://stackoverflow.com/users/12892553/nimantha
+    url: https://stackoverflow.com/questions/6172451/given-a-latitude-and-longitude-get-the-location-name
+    last updated: 4 November, 2021
+     */
+    public String getAddress(double lat, double lng) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            String add = obj.getThoroughfare() + "\n" +
+                    obj.getLocality() + ", " +
+                    obj.getAdminArea();
+            return add;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return e.toString();
+        }
     }
 }
