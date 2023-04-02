@@ -25,7 +25,7 @@ import java.util.Collections;
  */
 public class ScoreboardActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private ListView listView;
+    ListView listView;
     private ArrayAdapter<Player> playerAdapter;
     private Player my_player;
     private String metric = "Highest QR score";
@@ -178,17 +178,14 @@ public class ScoreboardActivity extends AppCompatActivity implements AdapterView
 
                                 startActivity(intent);
                             }
-                            else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
                 return true;
             }
         });
-
     }
 
     /**
