@@ -180,11 +180,15 @@ public class QRCode implements Serializable{
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
+
     public int getRank() {
         return rank;
     }
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+    public void addComment(Comment comment){
+        comments.add(comment);
     }
 }

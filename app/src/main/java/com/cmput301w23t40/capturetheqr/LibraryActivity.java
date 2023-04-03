@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * This class defines the UI page for the QR Code Library
  */
 public class LibraryActivity extends AppCompatActivity {
-    private final String TAG ="Database update";
     private RecyclerView qrCodeView;
     private ArrayList<QRCode> qrCodeDataList = new ArrayList<>();
     private QRCodeList qrCodeList = new QRCodeList(this, qrCodeDataList);
@@ -48,6 +47,7 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
             Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
             intent.putExtra("qrcode", (QRCode) qrCodeList.getCode(position));
+            intent.putExtra("onUserView", onUserView);
             startActivity(intent);
         });
 
