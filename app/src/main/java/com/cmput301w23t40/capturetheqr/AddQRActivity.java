@@ -248,6 +248,8 @@ public class AddQRActivity extends AppCompatActivity {
          */
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             photo = (Bitmap) data.getExtras().get("data"); // this is the bitmap of optional photo
+            Toast.makeText(getApplicationContext(), "Successfully added picture!", Toast.LENGTH_LONG).show();
+            buttonPicture.setText("Retake picture?");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
