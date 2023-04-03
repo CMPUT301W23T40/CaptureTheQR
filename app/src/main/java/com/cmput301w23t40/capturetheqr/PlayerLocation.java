@@ -36,7 +36,7 @@ public class PlayerLocation {
 
     public PlayerLocation(Context context) {
         // FIXME: For testing, this is set to somewhere in the middle of UofA quad
-        this.location = new QRCode.Geolocation(53.52704,-113.52563);
+        this.location = new QRCode.Geolocation(53.5267106493,-113.527117074);
         this.locationClient = LocationServices.getFusedLocationProviderClient(context);
         nearbyCodes = new ArrayList<>();
     }
