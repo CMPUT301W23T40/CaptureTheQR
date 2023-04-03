@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.cmput301w23t40.capturetheqr"}];updateSearchResults();
