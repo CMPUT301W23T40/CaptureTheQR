@@ -132,6 +132,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.SCORE_SUM);
                             }
                             boolean foundMyPlayer = false;
+                            my_player.setRank(-1);
                             for(int i = 0; i < allPlayers.size(); ++i){
                                 Player tempPlayer = allPlayers.get(i);
                                 tempPlayer.setRank(i+1);
@@ -232,6 +233,7 @@ public class ScoreboardActivity extends AppCompatActivity {
         });
     }
 
+    // TODO comments and citations
     private void updateLocation() {
         // Check for location permissions
         int accessCoarseLocation = ContextCompat.checkSelfPermission(this,
@@ -251,6 +253,11 @@ public class ScoreboardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * set the text for displaying the user's rank
+     * @param myRank -1: no nearby codes  -2: no geolocation permissions -3: no codes all
+     * @param itemSelected
+     */
     private void setMyRankText(int myRank, String itemSelected){
         TextView myRankScoreText = findViewById(R.id.txtvwv_estRank);
         if(myRank == -1){
@@ -259,6 +266,10 @@ public class ScoreboardActivity extends AppCompatActivity {
         }
         if(myRank == -2){
             myRankScoreText.setText(R.string.location_perm_failure_toast_on_scoreboard);
+            return;
+        }
+        if(myRank == -3){
+            myRankScoreText.setText("You do not have any codes");
             return;
         }
         String rank = String.valueOf(myRank);

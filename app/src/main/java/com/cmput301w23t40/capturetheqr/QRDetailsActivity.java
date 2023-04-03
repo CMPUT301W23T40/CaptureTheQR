@@ -139,7 +139,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         return bmp;
     }
 
-    /* Adapted code from the following resource to turn longitude/latitude of the QRCode
+    /** Adapted code from the following resource to turn longitude/latitude of the QRCode
     into a readable location.
     author: https://stackoverflow.com/users/588763/dynamicmind & https://stackoverflow.com/users/12892553/nimantha
     url: https://stackoverflow.com/questions/6172451/given-a-latitude-and-longitude-get-the-location-name
@@ -160,6 +160,9 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * saves a comment to the QRCode in the database
+     */
     private void saveComment(){
         String newCommentContent = commentEditText.getText().toString();
         if(newCommentContent.length() == 0){
@@ -184,6 +187,9 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * display all the comments this code has
+     */
     private void displayComments() {
         if (!commentString.equals("")) {
             System.out.println(commentString);
