@@ -153,10 +153,27 @@ public class QRDetailsActivity extends AppCompatActivity {
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
-            String add = obj.getThoroughfare() + "\n" +
-                    obj.getLocality() + ", " +
-                    obj.getAdminArea();
+            String add = "";
+
+            if (obj.getThoroughfare() != null) {
+                add += obj.getThoroughfare() + "\n";
+            }
+
+            if (obj.getPremises() != null) {
+                add += obj.getPremises() + "\n";
+            }
+
+            if (obj.getLocality() != null && obj.getAdminArea() != null) {
+                add += obj.getLocality() + ", " + obj.getAdminArea();
+            }
+            else if (obj.getLocality() == null && obj.getAdminArea() != null) {
+                add += obj.getAdminArea();
+            }
+            else if (obj.getLocality() != null && obj.getAdminArea() == null) {
+                add += obj.getLocality();
+            }
             return add;
+
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
