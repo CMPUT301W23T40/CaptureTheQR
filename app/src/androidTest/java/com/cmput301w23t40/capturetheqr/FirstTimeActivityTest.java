@@ -87,6 +87,7 @@ public class FirstTimeActivityTest {
 
         // Add data to DB
         Map<String, Object> newPlayer = new HashMap<>();
+        newPlayer.put("username", username);
         newPlayer.put("deviceID", "fakeDeviceID");
         newPlayer.put("phoneNumber", "fakeNumber");
         DocumentReference docRef =  crPlayer.document( username);
