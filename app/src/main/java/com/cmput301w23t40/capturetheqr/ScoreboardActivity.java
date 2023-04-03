@@ -266,8 +266,10 @@ public class ScoreboardActivity extends AppCompatActivity {
             rank += "st";
         else if (rank.endsWith("2") && !rank.endsWith("12"))
             rank += "nd";
+        else if (rank.endsWith("3") && !rank.endsWith("13"))
+            rank += "rd";
         else
             rank += "th";
-        myRankScoreText.setText("You have the " + rank + " " + itemSelected);
+        myRankScoreText.setText("You have the " + rank + " " + itemSelected.replace("H", "h"));
     }
 }
