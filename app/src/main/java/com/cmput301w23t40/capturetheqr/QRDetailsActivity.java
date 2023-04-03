@@ -10,6 +10,7 @@ import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,9 +30,13 @@ import java.util.Locale;
  * This class displays the details of a code clicked
  */
 public class QRDetailsActivity extends AppCompatActivity {
-    private Player player;
     private EditText commentEditText;
+    private TextView commentsText;
     private QRCode code;
+    private String commentString;
+    private Boolean onUserView;
+    private Button buttonSubmit;
+
 
     /**
      * override Activity onCreate method
@@ -45,19 +50,26 @@ public class QRDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // initialize Views
-        QRCode code = (QRCode) getIntent().getSerializableExtra("qrcode");
+        code = (QRCode) getIntent().getSerializableExtra("qrcode");
         LinearLayout linearLayout = findViewById(R.id.blueLayout);
         TextView visText = findViewById(R.id.txtvw_qrDetVis);
         TextView nameText = findViewById(R.id.txtvw_qrDetName);
         TextView scoreText = findViewById(R.id.txtvw_qrDetScore);
         TextView locationText = findViewById(R.id.txtvw_qrDetLocation);
         TextView scanCountText = findViewById(R.id.txtvw_qrDetCount);
-        TextView commentsText = findViewById(R.id.txtvw_qrDetComments);
-        EditText commentEditText = findViewById(R.id.edtxt_qrDetComment);
+        commentsText = findViewById(R.id.txtvw_qrDetComments);
+        commentEditText = findViewById(R.id.edtxt_qrDetComment);
+        buttonSubmit = findViewById(R.id.btn_submitComment);
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
         scoreText.setText(String.valueOf(code.getScore()) + " points");
+
+        onUserView = getIntent().getBooleanExtra("onUserView", Boolean.FALSE);
+        if(onUserView){
+            commentEditText.setVisibility(View.VISIBLE);
+            buttonSubmit.setVisibility(View.VISIBLE);
+        }
 
         if(code.getGeolocation() != null){
             locationText.setText(getAddress(code.getGeolocation().getLatitude(), code.getGeolocation().getLongitude()));
@@ -66,23 +78,21 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
         scanCountText.setText("This code has been scanned " + String.valueOf(code.getTimesScanned()) + " time(s).");
 
-        String commentString = "";
-        ArrayList<QRCode.Comment> comments = code.getComments();
-        for (QRCode.Comment com: comments) {
-            if (!commentString.equals("")) {
-                commentString += "<br>";
+        DB.getCodeCommentsInDB(code.getHashValue(), new DB.CallbackGetCodeCommentsInDB() {
+            @Override
+            public void onCallBack(ArrayList<QRCode.Comment> comments) {
+                commentString = "";
+                if(comments != null){
+                    for (QRCode.Comment com: comments) {
+                        if (!commentString.equals("")) {
+                            commentString += "<br>";
+                        }
+                        commentString += "<b>" + com.getUsername() + ": " + "</b> " + com.getContent();
+                    }
+                }
+                displayComments();
             }
-            commentString += "<b>" + com.getUsername() + ": " + "</b> " + com.getContent();
-        }
-
-        if (!commentString.equals("")) {
-            System.out.println(commentString);
-            commentsText.setText(Html.fromHtml(commentString));
-        }
-        else {
-            commentsText.setText("There are no comments for this code.");
-            commentsText.setTypeface(null, Typeface.ITALIC);
-        }
+        });
 
         ArrayList<QRCode.ScannerInfo> scannerInfo = code.getScannersInfo();
         for (QRCode.ScannerInfo si: scannerInfo) {
@@ -95,11 +105,10 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
 
 
-        //    !!!!!! TODO !!!!!!!
-//        Button buttonSubmit = findViewById(R.id.btn_submitComment);
-//        buttonSubmit.setOnClickListener(v -> {
-//            saveComment();
-//        });
+
+        buttonSubmit.setOnClickListener(v -> {
+            saveComment();
+        });
     }
 
     /**
@@ -148,6 +157,41 @@ public class QRDetailsActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
+        }
+    }
+
+    private void saveComment(){
+        String newCommentContent = commentEditText.getText().toString();
+        if(newCommentContent.length() == 0){
+            Toast.makeText(getApplicationContext(), "Nothing to comment", Toast.LENGTH_SHORT).show();
+        } else {
+            DB.getPlayer(FirstTimeLogInActivity.getDeviceID(getApplicationContext()), new DB.CallbackGetPlayer() {
+                @Override
+                public void onCallBack(Player player) {
+                    QRCode.Comment newComment = new QRCode.Comment(player.getUsername(), newCommentContent);
+                    DB.saveCommentInDB(code, newComment, new DB.Callback() {
+                        @Override
+                        public void onCallBack() {
+                            Toast.makeText(getApplicationContext(), "Comment Added Successfully", Toast.LENGTH_SHORT).show();
+                            commentEditText.setText("");
+                            code.addComment(newComment);
+                            commentString += "<br>" + "<b>" + player.getUsername() + ": " + "</b> " + newCommentContent;
+                            displayComments();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void displayComments() {
+        if (!commentString.equals("")) {
+            System.out.println(commentString);
+            commentsText.setText(Html.fromHtml(commentString));
+        }
+        else {
+            commentsText.setText("There are no comments for this code.");
+            commentsText.setTypeface(null, Typeface.ITALIC);
         }
     }
 //    !!!!!! TODO !!!!!!!

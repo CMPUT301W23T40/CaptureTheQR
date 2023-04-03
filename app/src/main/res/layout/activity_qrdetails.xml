@@ -96,13 +96,15 @@
             android:inputType="textMultiLine"
             android:textColorHint="#CAC2C2"
             android:textSize="30sp"
+            android:visibility="invisible"
              />
         <Button
             android:id="@+id/btn_submitComment"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/add_qr_submit"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="invisible"/>
     </LinearLayout>
 
 </ScrollView>

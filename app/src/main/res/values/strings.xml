@@ -12,7 +12,7 @@
     <string name="add_qr_code_name">{CODE NAME}</string>
     <string name="add_qr_scan_count">This code has been scanned {COUNT} times!</string>
     <string name="add_qr_code_points">{POINTS} points</string>
-    <string name="add_qr_optional_comment">Add optional comment...</string>
+    <string name="add_qr_optional_comment">Add a comment...</string>
     <string name="add_qr_success_toast">Successfully added code!\nYou can view it in the QR Library</string>
     <string name="add_qr_failure_toast">You have already scanned this code! Unable to add duplicate code!</string>
     <string name="add_qr_geolocation_toggle">Keep geolocation?</string>

@@ -173,4 +173,7 @@ public class QRCode implements Serializable{
     }
     public static final Comparator<QRCode> SCORE_COMPARATOR = Comparator
             .comparing(QRCode::getScore);
+    public void addComment(Comment comment){
+        comments.add(comment);
+    }
 }
