@@ -132,7 +132,8 @@ public class ScoreboardActivity extends AppCompatActivity {
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.SCORE_SUM);
                             }
                             boolean foundMyPlayer = false;
-                            my_player.setRank(-1);
+                            my_player = new Player("tempUsername", "tempPhoneNumber", "tempID");
+                            my_player.setRank(-3);
                             for(int i = 0; i < allPlayers.size(); ++i){
                                 Player tempPlayer = allPlayers.get(i);
                                 tempPlayer.setRank(i+1);
