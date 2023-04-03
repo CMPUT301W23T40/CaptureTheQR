@@ -1,5 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -32,16 +33,19 @@ import java.util.Locale;
 public class QRDetailsActivity extends AppCompatActivity {
     private EditText commentEditText;
     private TextView commentsText;
+    private TextView LikesNumber;
     private QRCode code;
     private String commentString;
     private Boolean onUserView;
     private Button buttonSubmit;
+    private Button buttonLike;
 
 
     /**
      * override Activity onCreate method
      * @param savedInstanceState
      */
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         commentsText = findViewById(R.id.txtvw_qrDetComments);
         commentEditText = findViewById(R.id.edtxt_qrDetComment);
         buttonSubmit = findViewById(R.id.btn_submitComment);
+        buttonLike = findViewById(R.id.btn_likeQR);
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
@@ -104,7 +109,9 @@ public class QRDetailsActivity extends AppCompatActivity {
             }
         }
 
-
+        buttonLike.setOnClickListener(v -> {
+            incrementLikes();
+        });
 
         buttonSubmit.setOnClickListener(v -> {
             saveComment();
@@ -126,7 +133,13 @@ public class QRDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    /** Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
     author: yinpeng263@hotmail.com
     url: http://www.java2s.com/example/android/graphics/convert-string-to-bitmap.html
     last updated: 16 October, 2023
@@ -139,7 +152,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         return bmp;
     }
 
-    /* Adapted code from the following resource to turn longitude/latitude of the QRCode
+    /** Adapted code from the following resource to turn longitude/latitude of the QRCode
     into a readable location.
     author: https://stackoverflow.com/users/588763/dynamicmind & https://stackoverflow.com/users/12892553/nimantha
     url: https://stackoverflow.com/questions/6172451/given-a-latitude-and-longitude-get-the-location-name
@@ -183,7 +196,16 @@ public class QRDetailsActivity extends AppCompatActivity {
             });
         }
     }
+ int numLikes = 0;
+    private void incrementLikes(){
+        LikesNumber =findViewById(R.id.txtvw_numberOfLikes);
+        numLikes++;
+        code.setNumberOfLikes(numLikes);
 
+        LikesNumber.setText(String.valueOf(numLikes) + " likes");
+
+
+    }
     private void displayComments() {
         if (!commentString.equals("")) {
             System.out.println(commentString);
@@ -194,5 +216,6 @@ public class QRDetailsActivity extends AppCompatActivity {
             commentsText.setTypeface(null, Typeface.ITALIC);
         }
     }
+
 
 }

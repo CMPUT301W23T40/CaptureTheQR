@@ -644,6 +644,12 @@ public class DB {
                 });
     }
 
+    protected static void incrementNumberOfLikes(int numberOfLikes){
+
+    }
+
+
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679

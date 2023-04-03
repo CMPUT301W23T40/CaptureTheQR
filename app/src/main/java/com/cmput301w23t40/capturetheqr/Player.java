@@ -20,6 +20,7 @@ public class Player implements Serializable {
     private String deviceID;
     private int numberOfCodes;
     private int scoreSum;
+    private int timesLiked;
 
     public Player() {
     }
@@ -34,6 +35,7 @@ public class Player implements Serializable {
     public String getUsername() {
         return this.username;
     }
+    public int getTimesLiked(){return this.timesLiked;}
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -53,6 +55,7 @@ public class Player implements Serializable {
     public void setRank(int rank){
         this.rank= rank;
     }
+    public void setTimesLiked(int timesLiked){this.timesLiked = timesLiked;}
 
     public int getHighScore() {
         return highScore;

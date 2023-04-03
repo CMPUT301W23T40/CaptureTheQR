@@ -1,9 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import com.google.firebase.Timestamp;
-
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -96,6 +92,7 @@ public class QRCode implements Serializable{
     }
     private String hashValue;
     private String codeName;
+    private int numberOfLikes;
     private String visualization;
     private int score;
     private ArrayList<ScannerInfo> scannersInfo;
@@ -150,6 +147,7 @@ public class QRCode implements Serializable{
     public int getTimesScanned(){
         return timesScanned;
     }
+    public int getNumberOfLikes(){return numberOfLikes;}
 
     @Override
     public String toString() {
@@ -167,6 +165,7 @@ public class QRCode implements Serializable{
     public void setScannersInfo(ArrayList<ScannerInfo> scannersInfo) {
         this.scannersInfo = scannersInfo;
     }
+    public void setNumberOfLikes(int numLikes){this.numberOfLikes = numberOfLikes;}
 
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
