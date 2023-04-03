@@ -46,7 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_codePoints" />
 
-
     <TextView
         android:id="@+id/txtvw_scanCount"
         android:layout_width="wrap_content"

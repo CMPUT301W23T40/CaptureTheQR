@@ -6,7 +6,6 @@
     android:padding="10dp"
     android:fillViewport="false">
 
-
     <LinearLayout
         android:id="@+id/linLayout"
         android:gravity="center_horizontal"
@@ -79,7 +78,6 @@
             android:text=""
             android:textColor="@color/black"
             android:textSize="25sp"/>
-
 
         <TextView
             android:id="@+id/txtvw_qrDetCommentHint"
