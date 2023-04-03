@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
     </TextView>
     <TextView
-        android:id="@+id/txtvw_player"
+        android:id="@+id/txtvw_playerORCode"
         android:padding="20dp"
         android:textSize="30sp"
         android:text=""
