@@ -129,6 +129,27 @@ public class MainActivity extends AppCompatActivity {
                                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                                 lowScoreCodeTxt.setText(minQR.getCodeName());
                                 lowScoreTxt.setText(String.valueOf(minQR.getScore()));
+
+
+                                highScoreCodeTxt.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
+                                        intent.putExtra("qrcode", maxQR);
+                                        intent.putExtra("onUserView", true);
+                                        startActivity(intent);
+                                    }
+                                });
+
+                                lowScoreCodeTxt.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
+                                        intent.putExtra("qrcode", minQR);
+                                        intent.putExtra("onUserView", true);
+                                        startActivity(intent);
+                                    }
+                                });
                             }
                         }
                     });
