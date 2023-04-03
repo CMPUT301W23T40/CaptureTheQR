@@ -1,16 +1,25 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +46,25 @@ public class MapActivity extends AppCompatActivity
     private PlayerLocation locationHelper;
     private GoogleMap googleMap;
     private SearchView locationSearch;
+    private FloatingActionButton locationButton;
+
+    @SuppressLint("MissingPermission")
+    private ActivityResultLauncher<String[]> locationPermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            /* result is a map with the permission name as the key and the value being a
+            boolean indicating whether the permission was granted */
+                boolean accessCoarseLocation = result.get("android.permission.ACCESS_COARSE_LOCATION");
+                boolean accessFineLocation = result.get("android.permission.ACCESS_FINE_LOCATION");
+                // Fine location access also grants coarse location access. Work with at least coarse location permissions
+                if (!accessCoarseLocation) {
+                    // Location permissions denied
+                    Toast.makeText(getApplicationContext(), R.string.location_perm_failure_toast, Toast.LENGTH_SHORT).show();
+                    googleMap.setMyLocationEnabled(false);
+                } else {
+                    // User granted at least coarse location access
+                    googleMap.setMyLocationEnabled(true);
+                }
+            });
 
     /**
      * override Activity onCreate method
@@ -73,6 +102,13 @@ public class MapActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
+            }
+        });
+        locationButton = findViewById(R.id.btn_geolocation);
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateGeolocation();
             }
         });
 
@@ -135,6 +171,7 @@ public class MapActivity extends AppCompatActivity
         QRCode.Geolocation geolocation = locationHelper.getLocation();
         moveMapToLocation(geolocation);
         googleMap.setOnInfoWindowClickListener(this);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 /**
  * This function moves the map to the location
@@ -144,9 +181,37 @@ public class MapActivity extends AppCompatActivity
         CameraUpdate camPosition;
         camPosition = CameraUpdateFactory.newLatLng(latLng);
         googleMap.moveCamera(camPosition);
-
         // FIXME: set search radius based on visible part of map
         locationHelper.refreshNearbyQRs(1, this);
+    }
+
+    /**
+     * Update the current location in the location helper
+     */
+    private void updateGeolocation() {
+        // Check for location permissions
+        int accessCoarseLocation = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        int accessFineLocation = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+        // We already have location permissions, so continue with the action
+        if (accessCoarseLocation == PackageManager.PERMISSION_GRANTED &&
+                accessFineLocation == PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(true);
+            locationHelper.updateLocation(new PlayerLocation.CallbackLocation() {
+                @Override
+                public void onUpdateLocation() {
+                    Log.d("Map", "Location callback");
+                    moveMapToLocation(locationHelper.getLocation());
+                }
+            });
+        } else {
+            // Request location permissions
+            locationPermissionLauncher.launch(new String[] {
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            });
+        }
     }
 
     /**
