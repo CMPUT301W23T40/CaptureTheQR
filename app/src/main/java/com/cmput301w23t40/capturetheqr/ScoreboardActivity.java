@@ -223,7 +223,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                             else
-                                Toast.makeText(getApplicationContext(), "Sorry! That username does not exist.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),R.string.username_dne, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
