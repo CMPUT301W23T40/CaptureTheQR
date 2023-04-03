@@ -194,29 +194,5 @@ public class QRDetailsActivity extends AppCompatActivity {
             commentsText.setTypeface(null, Typeface.ITALIC);
         }
     }
-//    !!!!!! TODO !!!!!!!
-//    private void saveComment() {
-//        DB.getPlayer(FirstTimeLogInActivity.getDeviceID(QRDetailsActivity.this), new DB.CallbackGetPlayer() {
-//            @Override
-//            public void onCallBack(Player player) {
-//                QRDetailsActivity.this.player = player;
-//            }
-//        });
-//        QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
-//        DB.saveCommentInDB(code, comment, new DB.Callback() {
-//            @Override
-//            public void onCallBack() {
-//                ArrayList<QRCode.Comment> comments = code.getComments();
-//                String commentString = "";
-//                for (QRCode.Comment com: comments) {
-//                    if (!commentString.equals("")) {
-//                        commentString += "<br>";
-//                    }
-//                    commentString += "<b>" + com.getUsername() + ": " + "</b> " + com.getContent();
-//                }
-//                //Toast.makeText(getApplicationContext(), "Successfully added comment!", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
 
 }
