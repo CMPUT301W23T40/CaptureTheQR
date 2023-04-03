@@ -60,6 +60,8 @@ public class QRDetailsActivity extends AppCompatActivity {
         commentsText = findViewById(R.id.txtvw_qrDetComments);
         commentEditText = findViewById(R.id.edtxt_qrDetComment);
         buttonSubmit = findViewById(R.id.btn_submitComment);
+        TextView commentHint = findViewById(R.id.txtvw_qrDetCommentHint);
+
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
@@ -69,6 +71,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         if(onUserView){
             commentEditText.setVisibility(View.VISIBLE);
             buttonSubmit.setVisibility(View.VISIBLE);
+            commentHint.setVisibility(View.VISIBLE);
         }
 
         if(code.getGeolocation() != null){

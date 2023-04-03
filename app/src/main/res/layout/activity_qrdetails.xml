@@ -90,7 +90,8 @@
             android:text="Add comment:"
             android:textColor="@color/med_blue"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="invisible"/>
 
         <EditText
             android:id="@+id/edtxt_qrDetComment"
