@@ -99,7 +99,7 @@ public class QRDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
+    /** Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
     author: yinpeng263@hotmail.com
     url: http://www.java2s.com/example/android/graphics/convert-string-to-bitmap.html
     last updated: 16 October, 2023

@@ -1,9 +1,5 @@
 package com.cmput301w23t40.capturetheqr;
 
-import com.google.firebase.Timestamp;
-
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,11 +29,6 @@ public class QRCode implements Serializable{
 
         public String getImageLink() {
             return imageLink;
-        }
-
-        // optional feature
-        public void deleteImage() {
-            this.imageLink = null;
         }
     }
 
@@ -171,6 +162,4 @@ public class QRCode implements Serializable{
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
-    public static final Comparator<QRCode> SCORE_COMPARATOR = Comparator
-            .comparing(QRCode::getScore);
 }

@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This class defines the UI home page and starts the app
  */
 public class MainActivity extends AppCompatActivity {
-    Player currPlayer;
     /**
      * override Activity onCreate method
      * @param savedInstanceState
@@ -142,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * override activity onStop method
+     */
     @Override
     protected void onStop() {
         super.onStop();

@@ -35,10 +35,6 @@ public class Player implements Serializable {
         return this.username;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getPhoneNumber() {
         return this.phoneNumber;
     }
@@ -47,9 +43,6 @@ public class Player implements Serializable {
         return deviceID;
     }
 
-    public void setHighScore(int highScore){
-        this.highScore = highScore;
-    }
     public void setRank(int rank){
         this.rank= rank;
     }
