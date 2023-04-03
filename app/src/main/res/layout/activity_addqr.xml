@@ -17,7 +17,6 @@
         android:textSize="25sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +43,6 @@
         android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_codePoints" />
 
@@ -56,49 +54,47 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:textColor="@color/med_blue"
-        android:textSize="26sp"
+        android:textSize="25sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_codeDrawing" />
 
     <EditText
         android:id="@+id/edtxt_comment"
         android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:layout_marginBottom="176dp"
-        android:background="@color/white"
-        android:ems="30"
+        android:layout_height="75dp"
+        android:background="@drawable/input_white_rectangle"
+        android:ems="10"
         android:gravity="start|top"
+        android:paddingTop="15dp"
+        android:paddingLeft="35dp"
+        android:layout_margin="10sp"
         android:hint="@string/add_qr_optional_comment"
         android:inputType="textMultiLine"
         android:textColorHint="#CAC2C2"
-        android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@+id/txtvw_scanCount"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
         android:id="@+id/btn_geoToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
+        android:layout_marginTop="8dp"
         android:text="@string/add_qr_geolocation_toggle"
         android:textColor="@color/med_blue"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_uploadPic" />
 
     <Button
         android:id="@+id/btn_uploadPic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="16dp"
         android:text="@string/add_qr_optional_pic"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,10 +106,14 @@
         android:id="@+id/btn_Submit"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:text="@string/add_qr_submit"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_geoToggle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
