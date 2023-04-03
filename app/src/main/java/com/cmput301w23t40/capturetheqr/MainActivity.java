@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(View view) {
                                         Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
                                         intent.putExtra("qrcode", maxQR);
+                                        intent.putExtra("onUserView", true);
                                         startActivity(intent);
                                     }
                                 });
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(View view) {
                                         Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
                                         intent.putExtra("qrcode", minQR);
+                                        intent.putExtra("onUserView", true);
                                         startActivity(intent);
                                     }
                                 });
