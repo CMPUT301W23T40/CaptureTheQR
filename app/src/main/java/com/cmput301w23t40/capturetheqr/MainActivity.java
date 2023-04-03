@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                                 highScoreCodeTxt.setText(maxQR.getCodeName());
                                 highScoreTxt.setText(String.valueOf(maxQR.getScore()));
                                 lowScoreCodeTxt.setText(minQR.getCodeName());
-                                lowScoreTxt.setText(Strisng.valueOf(minQR.getScore()));
+                                lowScoreTxt.setText(String.valueOf(minQR.getScore()));
 
 
                                 highScoreCodeTxt.setOnClickListener(new View.OnClickListener() {
