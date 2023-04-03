@@ -23,9 +23,10 @@
     <ListView
         android:id="@+id/ltvw_ranks"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="370dp"
         android:layout_weight="1"
         android:background="#663BACA5"
+        app:layout_constraintTop_toBottomOf="@id/search_spinner"
         app:layout_constraintBottom_toTopOf="@+id/txtvwv_estRank"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -38,14 +39,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginBottom="12dp"
+        android:paddingTop="10sp"
+        android:paddingBottom="10sp"
         android:fontFamily="sans-serif"
         android:text="Username Search:"
         android:textColor="@color/med_blue"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/edtxt_searchUsername"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
@@ -58,8 +60,9 @@
         android:imeOptions="actionSearch"
         android:inputType="textPersonName"
         android:paddingLeft="35dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtvw_sortHint"
+        android:paddingTop="15sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_usernameHint"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -70,10 +73,11 @@
         android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif"
         android:text="Sort By:"
+        android:paddingTop="20sp"
         android:textColor="@color/med_blue"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/search_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/edtxt_searchUsername"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
@@ -86,7 +90,7 @@
         android:background="@drawable/input_white_rectangle"
         android:popupBackground="@drawable/input_white_rectangle"
         android:dropDownWidth="375dp"
-        app:layout_constraintBottom_toTopOf="@+id/ltvw_ranks"
+        app:layout_constraintTop_toBottomOf="@+id/txtvw_sortHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
