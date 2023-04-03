@@ -197,7 +197,6 @@ public class QRDetailsActivity extends AppCompatActivity {
                     DB.saveCommentInDB(code, newComment, new DB.Callback() {
                         @Override
                         public void onCallBack() {
-                            Toast.makeText(getApplicationContext(), "Comment Added Successfully", Toast.LENGTH_SHORT).show();
                             commentEditText.setText("");
                             code.addComment(newComment);
                             commentString += "<br>" + "<b>" + player.getUsername() + ": " + "</b> " + newCommentContent;
