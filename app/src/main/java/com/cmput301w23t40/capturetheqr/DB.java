@@ -6,6 +6,7 @@ import static java.lang.Integer.MAX_VALUE;
 import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
@@ -571,6 +572,17 @@ public class DB {
         }
     }
 
+    protected static void getCodeCommentsInDB(String codeHash, CallbackGetCodeCommentsInDB callbackGetCodeCommentsInDB){
+        collectionReferenceQR.document(codeHash)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        callbackGetCodeCommentsInDB.onCallBack(task.getResult().toObject(QRCode.class).getComments());
+                    }
+                });
+    }
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -623,5 +635,8 @@ public class DB {
 
     public interface CallbackAllPlayers {
         void onCallBack(ArrayList<Player> allPlayers);
+    }
+    public interface CallbackGetCodeCommentsInDB{
+        void onCallBack(ArrayList<QRCode.Comment> comments);
     }
 }

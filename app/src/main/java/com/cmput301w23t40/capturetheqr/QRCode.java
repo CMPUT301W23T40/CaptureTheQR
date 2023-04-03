@@ -1,5 +1,9 @@
 package com.cmput301w23t40.capturetheqr;
 
+import com.google.firebase.Timestamp;
+
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,6 +34,11 @@ public class QRCode implements Serializable{
         public String getImageLink() {
             return imageLink;
         }
+
+        // optional feature
+        public void deleteImage() {
+            this.imageLink = null;
+        }
     }
 
     protected static class Comment implements Serializable{
@@ -55,6 +64,7 @@ public class QRCode implements Serializable{
 
     protected static class Geolocation implements Serializable{
         private double latitude, longitude;
+        final static private double radius = 0.08;
 
         public Geolocation() {
         }
@@ -84,6 +94,12 @@ public class QRCode implements Serializable{
         public String toString(){
             return this.latitude + ", " + this.longitude;
         }
+
+        static public boolean nearby(Geolocation g1, Geolocation g2){
+            return Math.pow(g1.getLatitude() - g2.getLatitude(), 2) +
+                    Math.pow(g1.getLongitude() - g2.getLongitude(), 2)
+                    < radius;
+        }
     }
     private String hashValue;
     private String codeName;
@@ -93,6 +109,7 @@ public class QRCode implements Serializable{
     private ArrayList<Comment> comments;
     private Geolocation geolocation;
     private int timesScanned;
+    private int rank; // should only be used locally by scoreboard
 
     public QRCode() {
     }
@@ -161,5 +178,16 @@ public class QRCode implements Serializable{
 
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+    public void addComment(Comment comment){
+        comments.add(comment);
     }
 }

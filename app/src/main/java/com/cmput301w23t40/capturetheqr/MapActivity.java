@@ -1,9 +1,13 @@
 package com.cmput301w23t40.capturetheqr;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,9 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
  * This class defines the main UI page for the Map flow
@@ -55,8 +59,8 @@ public class MapActivity extends AppCompatActivity
         locationSearch = findViewById(R.id.srchvw_map);
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                setMapLocation(s);
+            public boolean onQueryTextSubmit(String searchText) {
+                searchMap(searchText);
                 /* return true to tell android that we handled the event
                 and that no additional handling is necessary
                  */
@@ -76,22 +80,46 @@ public class MapActivity extends AppCompatActivity
     }
 
     /**
-     * Move the location helper to the specified location
+     * Handle the location search query from the user
      * @param location
      * The user supplied location query
      */
-    private void setMapLocation(String location) {
-        /* Match a comma separated latitude longitude pair, where each coordinate is a floating point
-        value. There may be an unlimited amount of whitespace after the comma before the longitude
-         */
-        Pattern regex = Pattern.compile("(-?\\d*\\.?\\d*),\\s*(-?\\d*\\.?\\d*)");
-        Matcher match = regex.matcher(location);
-        if (match.matches()) {
-            double latitude = Double.valueOf(match.group(1));
-            double longitude = Double.valueOf(match.group(2));
+    private void searchMap(String location) {
+        Geocoder geocoder = new Geocoder(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocationName(location, 1, new Geocoder.GeocodeListener() {
+                @Override
+                public void onGeocode(@NonNull List<Address> locationResults) {
+                    handleGeocodeResults(locationResults);
+                }
+                public void onError(String errorMessage) {
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+                }
+            });
+        } else {
+            List<Address> locationResults = null;
+            try {
+                locationResults = geocoder.getFromLocationName(location, 1);
+                handleGeocodeResults(locationResults);
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), R.string.search_location_failure, Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
+    /**
+     * Get the coordinates from the geocode results and update the map
+     * @param locationResults
+     */
+    private void handleGeocodeResults(@NonNull List<Address> locationResults) {
+        if (locationResults.size() > 0) {
+            double latitude = locationResults.get(0).getLatitude();
+            double longitude = locationResults.get(0).getLongitude();
             QRCode.Geolocation geolocation = new QRCode.Geolocation(latitude, longitude);
             locationHelper.setLocation(geolocation);
             moveMapToLocation(geolocation);
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.search_location_failure, Toast.LENGTH_SHORT);
         }
     }
 

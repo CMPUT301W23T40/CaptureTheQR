@@ -47,6 +47,7 @@ public class LibraryActivity extends AppCompatActivity {
         qrCodeList.setOnItemClickListener((QRCodeList.OnItemClickListener) (view, position) -> {
             Intent intent = new Intent(getApplicationContext(),QRDetailsActivity.class);
             intent.putExtra("qrcode", (QRCode) qrCodeList.getCode(position));
+            intent.putExtra("onUserView", onUserView);
             startActivity(intent);
         });
 
