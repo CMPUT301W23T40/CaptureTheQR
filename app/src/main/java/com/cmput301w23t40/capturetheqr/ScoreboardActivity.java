@@ -120,7 +120,7 @@ public class ScoreboardActivity extends AppCompatActivity {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         String itemSelected = parent.getItemAtPosition(position).toString();
-                        if(!itemSelected.equals("Nearby Highest Scoring QR code")){
+                        if(!itemSelected.equals("Highest QR score in region")){
                             if (itemSelected.equals("Highest QR score")) {
                                 Collections.sort(allPlayers, (o1, o2) -> Integer.compare(o2.getHighScore(), o1.getHighScore()));
                                 playerAdapter = new ScoreboardList(getApplicationContext(), allPlayers, SortBy.HIGHEST_SCORE);
