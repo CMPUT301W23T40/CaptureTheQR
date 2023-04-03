@@ -129,10 +129,11 @@ public class QRDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /* Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
+    /** Adapted code from the following resource to turn the bitmap string from DB into java Bitmap
     author: yinpeng263@hotmail.com
     url: http://www.java2s.com/example/android/graphics/convert-string-to-bitmap.html
     last updated: 16 October, 2023
+     license: N/A
     */
     public static Bitmap convertStringToBitmap(String string) {
         byte[] byteArray1;
@@ -142,27 +143,48 @@ public class QRDetailsActivity extends AppCompatActivity {
         return bmp;
     }
 
-    /* Adapted code from the following resource to turn longitude/latitude of the QRCode
+    /** Adapted code from the following resource to turn longitude/latitude of the QRCode
     into a readable location.
     author: https://stackoverflow.com/users/588763/dynamicmind & https://stackoverflow.com/users/12892553/nimantha
     url: https://stackoverflow.com/questions/6172451/given-a-latitude-and-longitude-get-the-location-name
     last updated: 4 November, 2021
+     license: CC BY-SA 4.0.
      */
     public String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             Address obj = addresses.get(0);
-            String add = obj.getThoroughfare() + "\n" +
-                    obj.getLocality() + ", " +
-                    obj.getAdminArea();
+            String add = "";
+
+            if (obj.getThoroughfare() != null) {
+                add += obj.getThoroughfare() + "\n";
+            }
+
+            if (obj.getPremises() != null) {
+                add += obj.getPremises() + "\n";
+            }
+
+            if (obj.getLocality() != null && obj.getAdminArea() != null) {
+                add += obj.getLocality() + ", " + obj.getAdminArea();
+            }
+            else if (obj.getLocality() == null && obj.getAdminArea() != null) {
+                add += obj.getAdminArea();
+            }
+            else if (obj.getLocality() != null && obj.getAdminArea() == null) {
+                add += obj.getLocality();
+            }
             return add;
+
         } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
         }
     }
 
+    /**
+     * saves a comment to the QRCode in the database
+     */
     private void saveComment(){
         String newCommentContent = commentEditText.getText().toString();
         if(newCommentContent.length() == 0){
@@ -187,6 +209,9 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * display all the comments this code has
+     */
     private void displayComments() {
         if (!commentString.equals("")) {
             System.out.println(commentString);

@@ -91,7 +91,10 @@ public class LibraryActivity extends AppCompatActivity {
         }).attachToRecyclerView(qrCodeView);
     }
 
-
+    /**
+     * This function adds "ALL QRs" and "MY QR" tab
+     * @return boolean. It is a default boolean set to true
+     * */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.qrlibrary_actions, menu);

@@ -1,7 +1,12 @@
 package com.cmput301w23t40.capturetheqr;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,6 +32,7 @@ public class PlayerLocation {
     public interface CallbackLocation {
         void onUpdateLocation();
     }
+
     /**
      * The location of the player
      */
@@ -36,14 +42,14 @@ public class PlayerLocation {
 
     public PlayerLocation(Context context) {
         // FIXME: For testing, this is set to somewhere in the middle of UofA quad
-        this.location = new QRCode.Geolocation(53.5267106493,-113.527117074);
+        this.location = new QRCode.Geolocation(53.5267106493, -113.527117074);
         this.locationClient = LocationServices.getFusedLocationProviderClient(context);
         nearbyCodes = new ArrayList<>();
     }
 
     /**
      * Get the location of the player
-     * @return
+     * @return QRCode.Geolocation
      */
     public QRCode.Geolocation getLocation() {
         return location;
@@ -51,18 +57,21 @@ public class PlayerLocation {
 
     /**
      * Request an update to the current location from location services
+     * Assumes the calling activity has location permissions
      * @param callback Callback to be called when new location information is available
      */
+    @SuppressLint("MissingPermission")
     public void updateLocation(CallbackLocation callback) {
         QRCode.Geolocation geolocation;
-        locationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+        locationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location currentLocation) {
                         if (currentLocation != null) {
-                            location = new QRCode.Geolocation(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            location.setLatitude(currentLocation.getLatitude());
+                            location.setLongitude(currentLocation.getLongitude());
+                            callback.onUpdateLocation();
                         }
-                        callback.onUpdateLocation();
                     }
                 });
     }

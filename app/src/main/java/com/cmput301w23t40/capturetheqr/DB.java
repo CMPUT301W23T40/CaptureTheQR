@@ -48,13 +48,6 @@ public class DB {
     }
 
     /**
-     * Getting the Collection Reference for QR
-     */
-    static public CollectionReference getCollectionReferenceQR(){
-        return collectionReferenceQR;
-    }
-
-    /**
      * This method only saves the hashValue, codeName, visualization and score.
      * Comments and scanner's info will be added by other methods.
      * @param qrCode qr code object to be added
@@ -132,7 +125,7 @@ public class DB {
     }
 
     /**
-     * Save the scanner into to the qr code
+     * Save the scanner into to the qr code, and update related fields in the DB
      * @param qrCode qr code object
      * @param scannerInfo scanner info to be saved
      * @param callback actions to perform after the query is executed
@@ -165,7 +158,7 @@ public class DB {
     }
 
     /**
-     * Delete scanner info from the qr code
+     * Delete scanner info from the qr code, and update related fields
      * @param hashValue hash value of the qr code
      * @param username username of the scanner
      * @param callback actions to perform after the query is executed
@@ -458,42 +451,6 @@ public class DB {
     }
 
     /**
-     * This function will get get the user's image of the specified QR from the db
-     * @param username  the name of the user
-     * @param hash  the hash value of the qr (ie. the id of the document in the DB)
-     * @param cbGetImage    a callback to get the image
-     */
-    static protected void getImageFromDB(String username, String hash, CallbackGetImage cbGetImage){
-
-        //get the qrcode
-        DocumentReference docRef = collectionReferenceQR.document(hash);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot doc = task.getResult();
-                    //document exists, now need to find correct picture
-                    if(doc.exists()){
-
-                        //get the scanner info obj from the db
-                        List<Map<String, Object>> sci = (List<Map<String, Object>>) doc.get("scannersInfo");
-
-                        //iterate through the object
-                        for (int i = 0; i < sci.size(); i++)
-                            //find the correct player
-                            if(sci.get(i).get("username").equals(username))
-                                //return the image
-                                cbGetImage.onCallBack(sci.get(i).get("imageLink"));
-
-                    }
-                    //problems!!! lets log it
-                } else
-                    Log.d("Error getting qr from db", task.getException().toString());
-            }
-        });
-    }
-
-    /**
      * This function will save an image (in the form of a bitmap) to a users account
      * @param username  the user to save the image to
      * @param hash  the hash value of the qr (ie. the id of the document in the DB)
@@ -554,6 +511,7 @@ public class DB {
     /**
      * The method gets the highest and lowest score for the players QR Codes
      * @param player
+     * @param callbackScore
      * */
     static protected void getScore(Player player,CallbackScore callbackScore){
         List<Integer> scoreList = new ArrayList<Integer>();
@@ -583,6 +541,7 @@ public class DB {
 
     /**
      * The query gets all the players from the database
+     * @param callbackAllPlayers
      * */
     static protected void getAllPlayers(CallbackAllPlayers callbackAllPlayers){
         ArrayList<Player> allPlayers = new ArrayList<>();
@@ -603,24 +562,6 @@ public class DB {
     }
 
     /**
-     * Delete all the codes in the DB, should only be called for testing
-     * @param callbackDeleteAllCodes actions to perform after the query is done
-     */
-    private static void deleteAllCodes(CallbackDeleteAllCodes callbackDeleteAllCodes){
-        collectionReferenceQR.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-                            documentSnapshot.getReference().delete();
-                        }
-                        callbackDeleteAllCodes.onCallBack();
-                        Log.d("Deleting all codes", "deleted");
-                    }
-                });
-    }
-
-    /**
      * Update the geolocation of the code scanned if the new geolocation is not null
      * @param qrCode qrCode object to be updated
      */
@@ -633,6 +574,11 @@ public class DB {
         }
     }
 
+    /**
+     * The function gets different QR code comments from the database
+     * @param codeHash
+     * @param callbackGetCodeCommentsInDB
+     */
     protected static void getCodeCommentsInDB(String codeHash, CallbackGetCodeCommentsInDB callbackGetCodeCommentsInDB){
         collectionReferenceQR.document(codeHash)
                 .get()
@@ -694,9 +640,6 @@ public class DB {
         void onCallBack();
     }
 
-    public interface CallbackOrderQRCodes {
-        void onCallBack(ArrayList<QRCode> orderedQRCodes);
-    }
     public interface CallbackAllPlayers {
         void onCallBack(ArrayList<Player> allPlayers);
     }
