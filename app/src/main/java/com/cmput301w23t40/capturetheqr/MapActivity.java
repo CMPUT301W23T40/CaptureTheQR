@@ -136,7 +136,9 @@ public class MapActivity extends AppCompatActivity
         moveMapToLocation(geolocation);
         googleMap.setOnInfoWindowClickListener(this);
     }
-
+/**
+ * This function moves the map to the location
+ * */
     private void moveMapToLocation(QRCode.Geolocation location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate camPosition;

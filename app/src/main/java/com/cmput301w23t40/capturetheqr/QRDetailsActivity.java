@@ -130,6 +130,7 @@ public class QRDetailsActivity extends AppCompatActivity {
     author: yinpeng263@hotmail.com
     url: http://www.java2s.com/example/android/graphics/convert-string-to-bitmap.html
     last updated: 16 October, 2023
+     license: N/A
     */
     public static Bitmap convertStringToBitmap(String string) {
         byte[] byteArray1;
@@ -144,6 +145,7 @@ public class QRDetailsActivity extends AppCompatActivity {
     author: https://stackoverflow.com/users/588763/dynamicmind & https://stackoverflow.com/users/12892553/nimantha
     url: https://stackoverflow.com/questions/6172451/given-a-latitude-and-longitude-get-the-location-name
     last updated: 4 November, 2021
+     license: CC BY-SA 4.0.
      */
     public String getAddress(double lat, double lng) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());

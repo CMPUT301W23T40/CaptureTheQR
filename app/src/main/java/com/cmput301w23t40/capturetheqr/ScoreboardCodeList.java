@@ -18,7 +18,9 @@ import java.util.ArrayList;
 public class ScoreboardCodeList extends ArrayAdapter<QRCode> {
     private ArrayList<QRCode> qrCodes;
     private Context context;
-
+    /**
+     * The following is the constructor for ScoreboardCodeList
+     * */
     public ScoreboardCodeList(Context context, ArrayList<QRCode> qrCodes) {
         super(context,0,qrCodes);
         this.qrCodes = qrCodes;

@@ -20,7 +20,9 @@ public class ScoreboardList extends ArrayAdapter<Player> {
     private Context context;
     private SortBy sortBy;
 
-
+    /**
+     * The following is the constructor for ScoreboardList
+     * */
     public ScoreboardList(Context context, ArrayList<Player> players, SortBy sortBy) {
         super(context,0,players);
         this.players = players;

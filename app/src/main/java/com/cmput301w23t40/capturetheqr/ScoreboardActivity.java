@@ -233,7 +233,9 @@ public class ScoreboardActivity extends AppCompatActivity {
         });
     }
 
-    // TODO comments and citations
+   /**
+    * The function checks for and request location permission if necesary and intialize location helper
+    * */
     private void updateLocation() {
         // Check for location permissions
         int accessCoarseLocation = ContextCompat.checkSelfPermission(this,

@@ -20,10 +20,17 @@ public class Player implements Serializable {
     private String deviceID;
     private int numberOfCodes;
     private int scoreSum;
-
+    /**
+     * the following is a constructor for Player
+     * */
     public Player() {
     }
-
+    /**
+     * the following is a constructor for Player that takes in username, phonenumber, deviceID
+     * @param deviceID
+     * @param phoneNumber
+     * @param username
+     * */
     public Player(String username, String phoneNumber, String deviceID) {
         this.username = username;
         this.phoneNumber = phoneNumber;

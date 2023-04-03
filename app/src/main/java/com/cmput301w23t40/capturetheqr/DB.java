@@ -511,6 +511,7 @@ public class DB {
     /**
      * The method gets the highest and lowest score for the players QR Codes
      * @param player
+     * @param callbackScore
      * */
     static protected void getScore(Player player,CallbackScore callbackScore){
         List<Integer> scoreList = new ArrayList<Integer>();
@@ -540,6 +541,7 @@ public class DB {
 
     /**
      * The query gets all the players from the database
+     * @param callbackAllPlayers
      * */
     static protected void getAllPlayers(CallbackAllPlayers callbackAllPlayers){
         ArrayList<Player> allPlayers = new ArrayList<>();
@@ -572,6 +574,11 @@ public class DB {
         }
     }
 
+    /**
+     * The function gets different QR code comments from the database
+     * @param codeHash
+     * @param callbackGetCodeCommentsInDB
+     */
     protected static void getCodeCommentsInDB(String codeHash, CallbackGetCodeCommentsInDB callbackGetCodeCommentsInDB){
         collectionReferenceQR.document(codeHash)
                 .get()
