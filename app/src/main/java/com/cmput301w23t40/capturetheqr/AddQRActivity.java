@@ -127,6 +127,9 @@ public class AddQRActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     * submit the whole scanned code and its geolocation (if any) to the database
+     */
     private void submitQRCode() {
         if(geoSwitch.isChecked()){
             locationHelper.updateLocation(new PlayerLocation.CallbackLocation() {
@@ -143,6 +146,9 @@ public class AddQRActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * save the code object to the database first and save the scannerInfo to it
+     */
     private void saveCodeInDB() {
         DB.saveQRCodeInDB(this.qrCode, new DB.Callback() {
             @Override
@@ -152,6 +158,9 @@ public class AddQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * get the name of this user based on the device ID, and verify if this scannerInfo is new to this code
+     */
     private void saveScannerInfo() {
         DB.getPlayer(FirstTimeLogInActivity.getDeviceID(AddQRActivity.this), new DB.CallbackGetPlayer() {
             @Override
@@ -163,6 +172,10 @@ public class AddQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Verify if this user has already scanned this code before; If new, save the scannerInfo;
+     * otherwise, quit and prompt the user this code has be scanned before
+     */
     private void verifyNewScanner() {
         DB.verifyIfScannerInfoIsNew(qrCode, scannerInfo, new DB.CallbackVerifyIfScannerInfoIsNew() {
             @Override
@@ -178,6 +191,9 @@ public class AddQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * save the new scannerInfo and comment (if any) to the code
+     */
     private void saveScannerInfoInDB(){
         DB.saveScannerInfoInDB(qrCode, scannerInfo, photo, new DB.Callback() {
             @Override
@@ -193,6 +209,9 @@ public class AddQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * save the comment to the code
+     */
     private void saveComment() {
         QRCode.Comment comment = new QRCode.Comment(player.getUsername(), commentEditText.getText().toString());
         DB.saveCommentInDB(qrCode, comment, new DB.Callback() {
@@ -203,12 +222,18 @@ public class AddQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * prompt the user the code has been added and finish the activity
+     */
     private void finishAddQR() {
         // Display a success message and return to home
         Toast.makeText(getApplicationContext(), R.string.add_qr_success_toast, Toast.LENGTH_LONG).show();
         finish();
     }
 
+    /**
+     * The function checks for and request location permission if necesary and intialize location helper
+     * */
     private void updateLocation() {
         // Check for location permissions
         int accessCoarseLocation = ContextCompat.checkSelfPermission(this,

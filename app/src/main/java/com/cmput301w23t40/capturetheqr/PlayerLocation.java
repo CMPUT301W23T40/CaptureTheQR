@@ -43,7 +43,7 @@ public class PlayerLocation {
 
     /**
      * Get the location of the player
-     * @return
+     * @return QRCode.Geolocation
      */
     public QRCode.Geolocation getLocation() {
         return location;
