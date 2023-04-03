@@ -1,7 +1,6 @@
 package com.cmput301w23t40.capturetheqr;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,6 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class ScoreboardList extends ArrayAdapter<Player> {
-    public enum SortBy{
-        HIGHEST_SCORE,
-        NUMBER_OF_CODES,
-        SCORE_SUM
-    }
     private ArrayList<Player> players;
     private Context context;
     private SortBy sortBy;
@@ -40,7 +34,7 @@ public class ScoreboardList extends ArrayAdapter<Player> {
         }
         Player player = players.get(position);
         TextView rankText = view.findViewById(R.id.txtvw_rank);
-        TextView playerText = view.findViewById(R.id.txtvw_player);
+        TextView playerText = view.findViewById(R.id.txtvw_playerORCode);
         TextView scoreText = view.findViewById(R.id.txtvw_score);
         rankText.setText(String.valueOf(player.getRank()));
         playerText.setText(player.getUsername());

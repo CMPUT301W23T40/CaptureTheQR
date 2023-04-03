@@ -1,8 +1,13 @@
 package com.cmput301w23t40.capturetheqr;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +20,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class defines the main UI page for the Map flow
@@ -26,8 +33,9 @@ public class MapActivity extends AppCompatActivity
     /**
      * The model of the players location and surroundings
      */
-    private PlayerLocation playerLocation;
+    private PlayerLocation locationHelper;
     private GoogleMap googleMap;
+    private SearchView locationSearch;
 
     /**
      * override Activity onCreate method
@@ -37,7 +45,7 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        playerLocation = new PlayerLocation(this);
+        locationHelper = new PlayerLocation(this);
 
         /* Copied the following code snippet for getting the map fragment
                 author: Google Inc.
@@ -48,9 +56,73 @@ public class MapActivity extends AppCompatActivity
                 .findFragmentById(R.id.frgmt_qrMap);
         mapFragment.getMapAsync(this);
 
+        locationSearch = findViewById(R.id.srchvw_map);
+        locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String searchText) {
+                searchMap(searchText);
+                /* return true to tell android that we handled the event
+                and that no additional handling is necessary
+                 */
+                return true;
+            }
+
+            /* Necessary for OnQueryTextListener interface, return false
+            to tell android that it needs to handle the event
+             */
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
+
+    /**
+     * Handle the location search query from the user
+     * @param location
+     * The user supplied location query
+     */
+    private void searchMap(String location) {
+        Geocoder geocoder = new Geocoder(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geocoder.getFromLocationName(location, 1, new Geocoder.GeocodeListener() {
+                @Override
+                public void onGeocode(@NonNull List<Address> locationResults) {
+                    handleGeocodeResults(locationResults);
+                }
+                public void onError(String errorMessage) {
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+                }
+            });
+        } else {
+            List<Address> locationResults = null;
+            try {
+                locationResults = geocoder.getFromLocationName(location, 1);
+                handleGeocodeResults(locationResults);
+            } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), R.string.search_location_failure, Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
+    /**
+     * Get the coordinates from the geocode results and update the map
+     * @param locationResults
+     */
+    private void handleGeocodeResults(@NonNull List<Address> locationResults) {
+        if (locationResults.size() > 0) {
+            double latitude = locationResults.get(0).getLatitude();
+            double longitude = locationResults.get(0).getLongitude();
+            QRCode.Geolocation geolocation = new QRCode.Geolocation(latitude, longitude);
+            locationHelper.setLocation(geolocation);
+            moveMapToLocation(geolocation);
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.search_location_failure, Toast.LENGTH_SHORT);
+        }
+    }
+
     /**
      * Implement onMapReady callback for OnMapReadyCallback
      * and initialize the map UI
@@ -60,15 +132,19 @@ public class MapActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         // Move the camera to the current user location
-        QRCode.Geolocation geolocation = playerLocation.getLocation();
-        LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+        QRCode.Geolocation geolocation = locationHelper.getLocation();
+        moveMapToLocation(geolocation);
+        googleMap.setOnInfoWindowClickListener(this);
+    }
+
+    private void moveMapToLocation(QRCode.Geolocation location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate camPosition;
         camPosition = CameraUpdateFactory.newLatLng(latLng);
         googleMap.moveCamera(camPosition);
 
         // FIXME: set search radius based on visible part of map
-        playerLocation.refreshNearbyQRs(1, this);
-        googleMap.setOnInfoWindowClickListener(this);
+        locationHelper.refreshNearbyQRs(1, this);
     }
 
     /**
@@ -105,7 +181,7 @@ public class MapActivity extends AppCompatActivity
      */
     @Override
     public void onUpdateNearbyCodes() {
-        ArrayList<QRCode> nearbyQRs = playerLocation.getNearbyCodes();
+        ArrayList<QRCode> nearbyQRs = locationHelper.getNearbyCodes();
         // Add all visible QR codes to map
         for (QRCode qr : nearbyQRs) {
             // The Maps API uses LatLng objects to the geolocation must be converted

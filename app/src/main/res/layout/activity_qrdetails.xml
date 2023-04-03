@@ -6,7 +6,6 @@
     android:padding="10dp"
     android:fillViewport="false">
 
-
     <LinearLayout
         android:id="@+id/linLayout"
         android:gravity="center_horizontal"
@@ -15,10 +14,10 @@
         android:orientation="vertical">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/blueLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:background="#1A3B98C0">
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/txtvw_qrDetName"
                 android:layout_width="match_parent"
@@ -30,64 +29,91 @@
                 android:gravity="center_horizontal"
                 android:textColor="@color/black" />
             <TextView
-                android:id="@+id/txtvw_qrDetVis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/courier_prime"
-                android:gravity="center_horizontal"
-                android:padding="5dp"
-                android:textColor="@color/black"
-                android:textSize="25sp" />
-            <TextView
                 android:id="@+id/txtvw_qrDetScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5sp"
                 android:textSize="20sp"
                 android:gravity="center_horizontal"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/txtvw_qrDetVis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/courier_prime"
+                android:gravity="center_horizontal"
+                android:padding="5sp"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/txtvw_qrDetLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="@color/med_blue"
+                android:textStyle="bold|italic"
+                android:textSize="25sp" />
+            <TextView
+                android:id="@+id/txtvw_qrDetCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5sp"
+                android:gravity="center_horizontal"
+                android:text=""
+                android:textColor="@color/med_blue"
+                android:textStyle="bold|italic"
+                android:textSize="25sp" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/txtvw_qrDetComments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#1A3B98C0"
             android:lineSpacingExtra="5sp"
-            android:layout_margin="15dp"
-            android:padding="10dp"
+            android:layout_margin="10sp"
+            android:padding="5sp"
             android:text=""
-            android:visibility="invisible"
             android:textColor="@color/black"
             android:textSize="25sp"/>
-        <TextView
-            android:id="@+id/txtvw_qrDetLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:text=""
-            android:textColor="@color/med_blue"
-            android:textStyle="bold|italic"
-            android:textSize="25sp" />
 
         <TextView
-            android:id="@+id/txtvw_qrDetCount"
-            android:layout_width="match_parent"
+            android:id="@+id/txtvw_qrDetCommentHint"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:gravity="center_horizontal"
-            android:text=""
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="sans-serif"
+            android:text="Add comment:"
             android:textColor="@color/med_blue"
-            android:textStyle="bold|italic"
-            android:textSize="25sp" />
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:visibility="invisible"/>
 
-        
-        <ImageView
-            android:id="@+id/imgvw_qrImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/edtxt_qrDetComment"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="30sp"
+            android:layout_margin="10sp"
+            android:paddingTop="10dp"
+            android:paddingLeft="35dp"
+            android:background="@drawable/input_white_rectangle"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btn_submitComment"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_qr_submit"
+            android:textColor="@color/white"
+            android:visibility="invisible"/>
     </LinearLayout>
 
 </ScrollView>
