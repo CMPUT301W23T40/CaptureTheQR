@@ -2,13 +2,10 @@ package com.cmput301w23t40.capturetheqr;
 
 import static com.google.zxing.integration.android.IntentIntegrator.REQUEST_CODE;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,20 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.firebase.Timestamp;
-import com.google.zxing.client.android.Intents;
-import com.journeyapps.barcodescanner.ScanContract;
-import com.journeyapps.barcodescanner.ScanOptions;
-
-import java.util.Date;
+import com.airbnb.lottie.LottieAnimationView;
 
 /**
  * This class defines the main UI page for the Add QR Code flow
@@ -96,6 +85,16 @@ public class AddQRActivity extends AppCompatActivity {
                     scanCount.setText("This code has been scanned " + timesScanned + " time(s)!");
                 } else {
                     scanCount.setText(R.string.first_scanner);
+
+                    /* Adapted code and xml from the following resource for the animation functionality:
+                    author:
+                    url: https://www.geeksforgeeks.org/how-to-control-lottie-animations-programmatically-in-android/
+                    last updated: 23 Feb, 2021
+                    license: CC BY-SA
+                    */
+                    // add animation
+                    LottieAnimationView animation = findViewById(R.id.animation);
+                    animation.playAnimation();
                 }
             }
         });
