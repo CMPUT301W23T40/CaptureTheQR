@@ -115,6 +115,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_geoToggle" />
 
+<!--animation is from the following source:
+    author: https://lottiefiles.com/2p6qkkagd4u8n78w
+    url: https://lottiefiles.com/118309-confetti-blueyellow
+    date accessed: April 3, 2023
+    license: Lottie Simple License -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation"
         android:layout_width="match_parent"
