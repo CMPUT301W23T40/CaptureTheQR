@@ -8,11 +8,11 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,9 @@ public class QRDetailsActivity extends AppCompatActivity {
     private String commentString;
     private Boolean onUserView;
     private Button buttonSubmit;
+    private TextView timesLikedText;
+    private int timesLiked;
+    private boolean alreadyLiked = false;
 
 
     /**
@@ -61,11 +63,15 @@ public class QRDetailsActivity extends AppCompatActivity {
         commentEditText = findViewById(R.id.edtxt_qrDetComment);
         buttonSubmit = findViewById(R.id.btn_submitComment);
         TextView commentHint = findViewById(R.id.txtvw_qrDetCommentHint);
+        ImageButton likeButton = findViewById(R.id.imgbtn_like_heart);
+        timesLikedText = findViewById(R.id.txtvw_timesLiked);
+
 
         // set View contents
         visText.setText(code.getVisualization());
         nameText.setText(code.getCodeName());
         scoreText.setText(String.valueOf(code.getScore()) + " points");
+
 
         onUserView = getIntent().getBooleanExtra("onUserView", Boolean.FALSE);
         if(onUserView){
@@ -97,6 +103,14 @@ public class QRDetailsActivity extends AppCompatActivity {
             }
         });
 
+        DB.getTimesLiked(code, new DB.CallbackGetTimesLiked() {
+            @Override
+            public void onCallBack(int timesLikedInDB) {
+                timesLiked = timesLikedInDB;
+                timesLikedText.setText("Likes: " + String.valueOf(timesLiked));
+            }
+        });
+
         ArrayList<QRCode.ScannerInfo> scannerInfo = code.getScannersInfo();
         for (QRCode.ScannerInfo si: scannerInfo) {
             if (si.getImageLink() != null) {
@@ -111,6 +125,14 @@ public class QRDetailsActivity extends AppCompatActivity {
 
         buttonSubmit.setOnClickListener(v -> {
             saveComment();
+        });
+
+        likeButton.setOnClickListener(v -> {
+            if(!alreadyLiked){
+                timesLiked += 1;
+                timesLikedText.setText("Likes: " + String.valueOf(timesLiked));
+                alreadyLiked = true;
+            }
         });
     }
 
@@ -222,4 +244,12 @@ public class QRDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * on destroy, update the timesLiked field of this code
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DB.updateTimesLiked(code, timesLiked);
+    }
 }
