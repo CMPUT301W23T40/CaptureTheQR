@@ -87,12 +87,12 @@ public class AddQRActivity extends AppCompatActivity {
                     scanCount.setText(R.string.first_scanner);
 
                     /* Adapted code and xml from the following resource for the animation functionality:
-                    author:
+                    author: Not Found
                     url: https://www.geeksforgeeks.org/how-to-control-lottie-animations-programmatically-in-android/
                     last updated: 23 Feb, 2021
                     license: CC BY-SA
                     */
-                    // add animation
+                    // play animation
                     LottieAnimationView animation = findViewById(R.id.animation);
                     animation.playAnimation();
                 }
