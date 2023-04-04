@@ -590,6 +590,32 @@ public class DB {
                 });
     }
 
+    /**
+     * get the timesLiked field of this code
+     * @param qrCode
+     * @param callbackGetTimesLiked
+     */
+    protected static void getTimesLiked(QRCode qrCode, CallbackGetTimesLiked callbackGetTimesLiked){
+        collectionReferenceQR.document(qrCode.getHashValue())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        callbackGetTimesLiked.onCallBack(task.getResult().toObject(QRCode.class).getTimesLiked());
+                    }
+                });
+    }
+
+    /**
+     * Update the timesLiked field of a code
+     * @param qrCode qrCode in the database to be updated
+     * @param timesLiked number to be updated to
+     */
+    protected static void updateTimesLiked(QRCode qrCode, int timesLiked){
+        collectionReferenceQR.document(qrCode.getHashValue())
+                .update("timesLiked", timesLiked);
+    }
+
     /** The idea of using callbacks is learnt from Alex Mamo
      * Author: Alex Mamo
      * url: https://stackoverflow.com/questions/48499310/how-to-return-a-documentsnapshot-as-a-result-of-a-method/48500679#48500679
@@ -645,5 +671,8 @@ public class DB {
     }
     public interface CallbackGetCodeCommentsInDB{
         void onCallBack(ArrayList<QRCode.Comment> comments);
+    }
+    public interface CallbackGetTimesLiked{
+        void onCallBack(int timesLikedInDB);
     }
 }

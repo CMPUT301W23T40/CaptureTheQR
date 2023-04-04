@@ -110,6 +110,7 @@ public class QRCode implements Serializable{
     private Geolocation geolocation;
     private int timesScanned;
     private int rank; // should only be used locally by scoreboard
+    private int timesLiked;
 
     public QRCode() {
     }
@@ -189,5 +190,9 @@ public class QRCode implements Serializable{
     }
     public void addComment(Comment comment){
         comments.add(comment);
+    }
+
+    public int getTimesLiked() {
+        return timesLiked;
     }
 }

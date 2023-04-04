@@ -114,6 +114,24 @@
             android:text="@string/add_qr_submit"
             android:textColor="@color/white"
             android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/txtvw_timesLiked"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/med_blue"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_like"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/qr_details_like"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </ScrollView>
