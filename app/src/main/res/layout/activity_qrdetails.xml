@@ -46,6 +46,30 @@
                 android:padding="5sp"
                 android:textColor="@color/black"
                 android:textSize="25sp" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+                <ImageButton
+                    style="@style/Widget.AppCompat.ActionButton"
+                    android:id="@+id/imgbtn_like_heart"
+                    android:layout_width="45sp"
+                    android:layout_marginLeft="100sp"
+                    android:layout_height="45sp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/qrcode_like_heart" />
+                <TextView
+                    android:id="@+id/txtvw_timesLiked"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/txtvw_qrDetLocation"
                 android:layout_width="match_parent"
@@ -114,24 +138,6 @@
             android:text="@string/add_qr_submit"
             android:textColor="@color/white"
             android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/txtvw_timesLiked"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/med_blue"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/btn_like"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="@string/qr_details_like"
-            android:textColor="@color/white" />
     </LinearLayout>
 
 </ScrollView>

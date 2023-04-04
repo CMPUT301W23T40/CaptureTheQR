@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class QRDetailsActivity extends AppCompatActivity {
     private Button buttonSubmit;
     private TextView timesLikedText;
     private int timesLiked;
+    private boolean alreadyLiked = false;
 
 
     /**
@@ -61,8 +63,9 @@ public class QRDetailsActivity extends AppCompatActivity {
         commentEditText = findViewById(R.id.edtxt_qrDetComment);
         buttonSubmit = findViewById(R.id.btn_submitComment);
         TextView commentHint = findViewById(R.id.txtvw_qrDetCommentHint);
-        Button likeButton = findViewById(R.id.btn_like);
+        ImageButton likeButton = findViewById(R.id.imgbtn_like_heart);
         timesLikedText = findViewById(R.id.txtvw_timesLiked);
+
 
         // set View contents
         visText.setText(code.getVisualization());
@@ -104,7 +107,7 @@ public class QRDetailsActivity extends AppCompatActivity {
             @Override
             public void onCallBack(int timesLikedInDB) {
                 timesLiked = timesLikedInDB;
-                timesLikedText.setText(String.valueOf(timesLiked));
+                timesLikedText.setText("Likes: " + String.valueOf(timesLiked));
             }
         });
 
@@ -125,8 +128,11 @@ public class QRDetailsActivity extends AppCompatActivity {
         });
 
         likeButton.setOnClickListener(v -> {
-            timesLiked += 1;
-            timesLikedText.setText(String.valueOf(timesLiked));
+            if(!alreadyLiked){
+                timesLiked += 1;
+                timesLikedText.setText("Likes: " + String.valueOf(timesLiked));
+                alreadyLiked = true;
+            }
         });
     }
 
