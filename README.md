@@ -8,6 +8,11 @@ When a player scans a QR code they will have the option to take a photo of what 
 
 On a map, players can see local QR codes that other players have scanned.
 
+
+https://user-images.githubusercontent.com/26641941/230705039-7203eb3a-1374-4933-b7f7-a44a2d80750c.mp4
+
+
+
 # Members
 | Name| Github Username|
 | ----------- | ----------- |
